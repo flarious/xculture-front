@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'package:fluttertoast/fluttertoast.dart';
 
-import '../data.dart';
+import '../../data.dart';
 import 'dart:convert';
 import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
@@ -10,7 +10,7 @@ import 'package:xculturetestapi/pages/forum/forum_new.dart';
 import 'package:xculturetestapi/pages/forum/forum_detail.dart';
 import 'package:xculturetestapi/navbar.dart';
 
-import '../helper/auth.dart';
+import '../../helper/auth.dart';
 
 class SearchPage extends StatefulWidget {
   const SearchPage({Key? key}) : super(key: key);
