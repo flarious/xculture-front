@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:xculturetestapi/pages/menu/menu_page.dart';
 import 'package:xculturetestapi/pages/profile/profile_screen.dart';
-import 'package:xculturetestapi/pages/search_page.dart';
+import 'package:xculturetestapi/pages/search/search_page.dart';
 import 'package:xculturetestapi/pages/event/event_page.dart';
 import 'package:xculturetestapi/pages/forum/forum_home.dart';
 import 'package:xculturetestapi/pages/community/commu_page.dart';
