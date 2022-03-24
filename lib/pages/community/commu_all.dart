@@ -11,15 +11,21 @@ import 'package:xculturetestapi/pages/community/commudetail_page.dart';
 
 
 class CommuAllPage extends StatefulWidget {
-  const CommuAllPage({Key? key}) : super(key: key);
+  //const CommuAllPage({Key? key}) : super(key: key);
+
+  String value;
+  CommuAllPage({Key? key, required this.value}) : super(key: key);
 
   @override
-  _CommuAllPageState createState() => _CommuAllPageState();
+  _CommuAllPageState createState() => _CommuAllPageState(value);
 }
 
 class _CommuAllPageState extends State<CommuAllPage> {
 
-  String? value;
+  String? values;
+  String searchString;
+  _CommuAllPageState(this.searchString);
+
   List sortList = [
     "Newest",
     "Oldest",
@@ -27,8 +33,8 @@ class _CommuAllPageState extends State<CommuAllPage> {
     "Most Favorited"
   ];
 
-  String searchString = "";
-  TextEditingController searchController = TextEditingController();
+  // String searchString = "";
+  // TextEditingController searchController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -86,7 +92,7 @@ class _CommuAllPageState extends State<CommuAllPage> {
                         searchString = value; 
                       });
                   },
-                  controller: searchController,
+                  // controller: searchController,
                   decoration: InputDecoration(
                     hintText: "Search Here...",
                     enabledBorder: OutlineInputBorder(
@@ -122,10 +128,10 @@ class _CommuAllPageState extends State<CommuAllPage> {
                         child: Text(value),
                       );
                     }).toList(),
-                    value: value,
+                    value: values,
                     onChanged: (value) {
                       setState(() {
-                        this.value = value as String?;
+                        values = value as String?;
                       });
                     }
                   ),

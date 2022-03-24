@@ -10,15 +10,21 @@ import 'package:xculturetestapi/pages/event/eventdetail_page.dart';
 
 
 class EventAllPage extends StatefulWidget {
-  const EventAllPage({Key? key}) : super(key: key);
+  // const EventAllPage({Key? key}) : super(key: key);
+
+  String value;
+  EventAllPage({Key? key, required this.value}) : super(key: key);
 
   @override
-  _EventAllPageState createState() => _EventAllPageState();
+  _EventAllPageState createState() => _EventAllPageState(value);
 }
 
 class _EventAllPageState extends State<EventAllPage> {
 
-  String? value;
+  String? values;
+  String searchString;
+  _EventAllPageState(this.searchString);
+
   List sortList = [
     "Newest",
     "Oldest",
@@ -26,8 +32,8 @@ class _EventAllPageState extends State<EventAllPage> {
     "Most Favorited"
   ];
 
-  String searchString = "";
-  TextEditingController searchController = TextEditingController();
+  // String searchString = "";
+  // TextEditingController searchController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -80,12 +86,12 @@ class _EventAllPageState extends State<EventAllPage> {
             children: [
               Expanded(
                 child: TextFormField(
-                  onChanged: (value) {
+                  onChanged: (text) {
                       setState((){
-                        searchString = value; 
+                        searchString = text; 
                       });
                   },
-                  controller: searchController,
+                  // controller: searchController,
                   decoration: InputDecoration(
                     hintText: "Search Here...",
                     enabledBorder: OutlineInputBorder(
@@ -121,10 +127,10 @@ class _EventAllPageState extends State<EventAllPage> {
                         child: Text(value),
                       );
                     }).toList(),
-                    value: value,
+                    value: values,
                     onChanged: (value) {
                       setState(() {
-                        this.value = value as String?;
+                        values = value as String?;
                       });
                     }
                   ),

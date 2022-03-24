@@ -1,25 +1,32 @@
-import 'package:fluttertoast/fluttertoast.dart';
-import 'package:xculturetestapi/data.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
+import 'package:xculturetestapi/data.dart';
+import 'package:xculturetestapi/navbar.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:xculturetestapi/pages/forum/forum_new.dart';
 import 'package:xculturetestapi/pages/forum/forum_detail.dart';
-import 'package:xculturetestapi/navbar.dart';
+
 
 import '../../helper/auth.dart';
 
 
 
 class ForumAllPage extends StatefulWidget {
-  const ForumAllPage({Key? key}) : super(key: key);
+  // const ForumAllPage({Key? key}) : super(key: key);
+
+  String value;
+  ForumAllPage({Key? key, required this.value}) : super(key: key);
 
   @override
-  _ForumAllPageState createState() => _ForumAllPageState();
+  _ForumAllPageState createState() => _ForumAllPageState(value);
 }
 
 class _ForumAllPageState extends State<ForumAllPage> {
 
-  String? value;
+  String? values;
+  String searchString;
+  _ForumAllPageState(this.searchString);
+
   List sortList = [
     "Newest",
     "Oldest",
@@ -27,8 +34,8 @@ class _ForumAllPageState extends State<ForumAllPage> {
     "Most Favorited"
   ];
 
-  String searchString = "";
-  TextEditingController searchController = TextEditingController();
+  // String searchString = "";
+  // TextEditingController searchController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -124,7 +131,7 @@ class _ForumAllPageState extends State<ForumAllPage> {
                         searchString = value; 
                       });
                   },
-                  controller: searchController,
+                  // controller: searchController,
                   decoration: InputDecoration(
                     hintText: "Search Here...",
                     enabledBorder: OutlineInputBorder(
@@ -160,10 +167,10 @@ class _ForumAllPageState extends State<ForumAllPage> {
                         child: Text(value),
                       );
                     }).toList(),
-                    value: value,
+                    value: values,
                     onChanged: (value) {
                       setState(() {
-                        this.value = value as String?;
+                        this.values = value as String?;
                       });
                     }
                   ),
