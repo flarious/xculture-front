@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:ui';
 import 'package:intl/intl.dart';
 
 import '../../data.dart';
@@ -43,133 +44,151 @@ class _EventPageState extends State<EventPage> {
       body: SingleChildScrollView(
         child: Column(
           children: [
-              const SizedBox(height: 20),
-              Container(
-                margin: const EdgeInsets.all(10),
-                child: Row(
-                  children: const [
-                    Text("Trending Event",
-                      style: TextStyle(fontWeight: FontWeight.bold, color: Colors.red, fontSize: 22),
-                    ),
-                    Spacer(),
-                    Text("See all"),
-                  ],
-                ),
-              ),
-              Container(
-                height: 250,
-                width: double.maxFinite,
-                child: FutureBuilder<List<Event>>(
-                  future: _futureEvent,
-                  builder: (BuildContext context, AsyncSnapshot<List<Event>> snapshot) { 
-                    if(snapshot.hasData) {
-                      return ListView.builder(
-                        itemCount: (snapshot.data!.length <= 5) ? snapshot.data!.length : 5, // number of item to display
-                        scrollDirection: Axis.horizontal,
-                        itemBuilder: (BuildContext context, int index) {
-                          var dt = DateTime.parse(snapshot.data![index].date).toLocal();
-                          String dateEvent = DateFormat('MMMM dd, yyyy').format(dt);
 
-                          return InkWell(
-                            child: Container(
-                              margin: const EdgeInsets.all(10),
-                              width: 300,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(20),
-                                color: Colors.lightBlue[100],
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Colors.grey.withOpacity(0.7),
-                                    blurRadius: 5.0,
-                                    offset: const Offset(0.0, 5.0),
+            const SizedBox(height: 20),
+
+            //Trending Event
+            Container(
+              margin: const EdgeInsets.all(10),
+              child: Row(
+                children: const [
+                  Text("Trending Event",
+                    style: TextStyle(fontWeight: FontWeight.bold, color: Colors.red, fontSize: 22),
+                  ),
+                  Spacer(),
+                  Text("See all"),
+                ],
+              ),
+            ),
+
+            //Event Box
+            Container(
+              height: 150,
+              width: double.maxFinite,
+              child: FutureBuilder<List<Event>>(
+                future: _futureEvent,
+                builder: (BuildContext context, AsyncSnapshot<List<Event>> snapshot) { 
+                  if(snapshot.hasData) {
+                    return ListView.builder(
+                      itemCount: (snapshot.data!.length <= 5) ? snapshot.data!.length : 5, // number of item to display
+                      scrollDirection: Axis.horizontal,
+                      itemBuilder: (BuildContext context, int index) {
+                        var dt = DateTime.parse(snapshot.data![index].date).toLocal();
+                        String dateEvent = DateFormat('MMMM dd, yyyy').format(dt);
+
+                        return InkWell(
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(20),
+                            child: BackdropFilter(
+                              filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+                              child: Container(
+                                margin: const EdgeInsets.all(10),
+                                width: 350,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(20),
+                                  gradient: LinearGradient(colors: [
+                                    Colors.lightBlue.withOpacity(0.2),
+                                    Colors.lightBlue.withOpacity(0.05),
+                                  ], begin: Alignment.topLeft, end: Alignment.bottomRight),
+                                  border: Border.all(
+                                    color: Colors.lightBlue.withOpacity(0.08),
                                   ),
-                                ],
-                              ),
-                              child: Stack(
-                                children: [
-                                  Positioned(
-                                    top: 0,
-                                    child: Container(
-                                      height: 120,
-                                      width: 300,
-                                      decoration: BoxDecoration(
-                                        borderRadius: const BorderRadius.only(
-                                          topLeft: Radius.circular(20),
-                                          topRight: Radius.circular(20),
+                                ),
+                                child: Stack(
+                                  children: [
+
+                                    //Cover Photo
+                                    Positioned(
+                                      top: 0,
+                                      left: 0,
+                                      child: Container(
+                                        height: 130,
+                                        width: 100,
+                                        decoration: BoxDecoration(
+                                          borderRadius: const BorderRadius.only(
+                                            topLeft: Radius.circular(20),
+                                            topRight: Radius.circular(20),
+                                          ),
+                                          image: DecorationImage(
+                                            fit: BoxFit.fitHeight,
+                                            image: NetworkImage(snapshot.data![index].thumbnail) // Event Image
+                                          ),
                                         ),
-                                        image: DecorationImage(
-                                          fit: BoxFit.fill,
-                                          image: NetworkImage(snapshot.data![index].thumbnail) // Event Image
-                                        ),
-                                      ),
+                                      )
+                                    ),
+
+                                    //Text
+                                    Container(
+                                      margin: const EdgeInsets.only(top: 0, left: 120, right: 0, bottom: 0),
+                                      padding: const EdgeInsets.all(10),
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            snapshot.data![index].name,
+                                            style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                                            overflow: TextOverflow.ellipsis, // Event name
+                                          ),
+                                          Text(
+                                            dateEvent,
+                                            style: const TextStyle(fontSize: 15), // Event date
+                                            overflow: TextOverflow.ellipsis,
+                                          ),
+                                          Text(
+                                            snapshot.data![index].location,
+                                            style: const TextStyle(fontSize: 15),
+                                            overflow: TextOverflow.ellipsis, // Event loca
+                                          ),
+                                        ],
+                                      )
                                     )
-                                  ),
-                                  Container(
-                                    margin: const EdgeInsets.only(top: 140, left: 20, right: 0, bottom: 0),
-                                    /* top: 140,
-                                    left: 20, */
-                                    child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          snapshot.data![index].name,
-                                          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
-                                          overflow: TextOverflow.ellipsis, // Event name
-                                        ),
-                                        Text(
-                                          dateEvent,
-                                          style: const TextStyle(fontSize: 15), // Event date
-                                          overflow: TextOverflow.ellipsis,
-                                        ),
-                                        Text(
-                                          snapshot.data![index].location,
-                                          style: const TextStyle(fontSize: 15),
-                                          overflow: TextOverflow.ellipsis, // Event loca
-                                        ),
-                                      ],
-                                    )
-                                  )
-                                ],
+                                  ],
+                                ),
                               ),
                             ),
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => const EventDetailPage(),
-                                  settings: RouteSettings(
-                                    arguments: snapshot.data![index],
-                                  ),
-                                )
-                              ).then(refreshPage);
-                            },
-                          );
-                        }
-                      );
-                    }
-                    else {
-                      return const CircularProgressIndicator();
-                    }
-                  }
-                ),
-              ),
+                          ),
 
-              const SizedBox(height: 20),
-              Container(
-                margin: const EdgeInsets.all(10),
-                child: Row(
-                  children: const [
-                    Text("Newest Event",
-                      style: TextStyle(fontWeight: FontWeight.bold, color: Colors.red, fontSize: 22),
-                    ),
-                    Spacer(),
-                    Text("See all"),
-                  ],
-                ),
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const EventDetailPage(),
+                                settings: RouteSettings(
+                                  arguments: snapshot.data![index],
+                                ),
+                              )
+                            ).then(refreshPage);
+                          },
+                        );
+                      }
+                    );
+                  }
+                  else {
+                    return const CircularProgressIndicator();
+                  }
+                }
               ),
-            ],
+            ),
+
+            const SizedBox(height: 20),
+
+            //Newest Event
+            Container(
+              margin: const EdgeInsets.all(10),
+              child: Row(
+                children: const [
+                  Text("Newest Event",
+                    style: TextStyle(fontWeight: FontWeight.bold, color: Colors.red, fontSize: 22),
+                  ),
+                  Spacer(),
+                  Text("See all"),
+                ],
+              ),
+            ),
+          ],
         ),
       ),
+      
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           if (AuthHelper.checkAuth()) {
