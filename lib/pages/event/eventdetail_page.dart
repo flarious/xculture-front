@@ -36,9 +36,10 @@ class _EventDetailPageState extends State<EventDetailPage> {
               if (snapshot.hasData) {
                   var dt = DateTime.parse(snapshot.data!.date).toLocal();
                   String dateEvent = DateFormat('MMMM dd, yyyy').format(dt);
-
+                  
                   return Stack(
                     children: [
+
                       // Thumbnail Image
                       Container(
                         margin: const EdgeInsets.only(right: 0, left: 0),
@@ -52,17 +53,19 @@ class _EventDetailPageState extends State<EventDetailPage> {
                           ),
                         ),
                       ),
+
                       // Iconbutton back
                       Container(
                         margin: const EdgeInsets.only(top: 40, left: 20),
                         child: Container(
-                          decoration: const BoxDecoration(
-                            color: Colors.grey,
+                          decoration: BoxDecoration(
+                            color: Colors.grey.withOpacity(0.8),
                             shape: BoxShape.circle,
                           ),
                           child: IconButton(
                             visualDensity: VisualDensity.compact,
                             icon: const Icon(Icons.arrow_back),
+                            iconSize: 30,
                             color: Colors.white,
                             onPressed: () {
                               Navigator.pop(context);
@@ -70,39 +73,60 @@ class _EventDetailPageState extends State<EventDetailPage> {
                           ),
                         ),   
                       ),
+
                       // Iconbutton menu
                       Container(
                         alignment: Alignment.centerRight,
                         margin: const EdgeInsets.only(top: 40, right: 20),
                         child: Container(
-                          decoration: const BoxDecoration(
-                            color: Colors.grey,
+                          padding: const EdgeInsets.all(8),
+                          decoration: BoxDecoration(
+                            color: Colors.grey.withOpacity(0.8),
                             shape: BoxShape.circle,
-                            
                           ),
-                          child: IconButton(
-                            visualDensity: VisualDensity.compact,
-                            icon: const Icon(Icons.edit),
-                            // icon: const Icon(Icons.more_vert),
-                            color: Colors.white,
-                            onPressed: () {
-                              if (AuthHelper.checkAuth() && snapshot.data!.host.id == AuthHelper.auth.currentUser!.uid) {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => const EditEventPage(),
-                                    settings: RouteSettings(
-                                      arguments: snapshot.data,),
-                                  )
-                                ).then(refreshPage);
-                              }
-                              else {
-                                Fluttertoast.showToast(msg: "You are not the owner");
-                              }
-                            },
+                          child: PopupMenuButton(
+                            itemBuilder: (context) => [
+                              PopupMenuItem(
+                                child: const Text("Edit"),
+                                onTap: (){
+                                  if (AuthHelper.checkAuth() && snapshot.data!.host.id == AuthHelper.auth.currentUser!.uid) {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => const EditEventPage(),
+                                        settings: RouteSettings(
+                                          arguments: snapshot.data,),
+                                      )
+                                    ).then(refreshPage);
+                                  }
+                                  else {
+                                    Fluttertoast.showToast(msg: "You are not the owner");
+                                  }
+                                },
+                              ),
+                              PopupMenuItem(
+                                child: const Text("Delete"),
+                                onTap: (){
+                                  //delete
+                                },
+                              ),
+                              PopupMenuItem(
+                                child: const Text("Report"),
+                                onTap: (){
+                                  //report
+                                },
+                              ),
+                            ],
+                            child: const Icon(
+                              Icons.more_vert,
+                              color: Colors.white,
+                              size: 30,
+                            ), 
                           ),
                         ),
                       ),
+  
+                      //Content
                       Container(
                         margin: const EdgeInsets.only(top: 280, left: 0, right: 0, bottom: 0),
                         child: Container(
@@ -118,39 +142,48 @@ class _EventDetailPageState extends State<EventDetailPage> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              // Desc Header
+
+                              //Header
                               Padding(
                                 padding: EdgeInsets.symmetric(vertical: 5.0),
                                 child: Text(snapshot.data!.name,
-                                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 23, color: Colors.red)
+                                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 25, color: Colors.red)
                                 ),
                               ),
+
+                              //Date Event
                               Padding(
                                 padding: EdgeInsets.symmetric(vertical: 5.0),
                                 child: Text(dateEvent,
-                                  style: TextStyle(fontWeight: FontWeight.bold),
+                                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                                 ),
                               ),
-                              // Desc Header
+
+                              //Location
                               Padding(
                                 padding: EdgeInsets.symmetric(vertical: 5.0),
                                 child: Text(snapshot.data!.location,
-                                  style: TextStyle(fontSize: 15),
+                                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                                 ),
                               ),
+
+                              //Host Name
                               Padding(
                                 padding: EdgeInsets.symmetric(vertical: 5.0),
                                 child: Text(snapshot.data!.host.name,
-                                  style: TextStyle(fontSize: 15),
+                                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                                 ),
                               ),
+
+                              //Interested Count
                               Padding(
                                 padding: EdgeInsets.symmetric(vertical: 5.0),
                                 child: Text("Interested : ${snapshot.data!.interestedAmount.toString()}",
                                   style: TextStyle(fontSize: 15),
                                 ),
                               ),
-                              // Division line
+
+                              //Division line
                               Padding(
                                 padding: const EdgeInsets.symmetric(vertical: 5.0),
                                 child: Container(
@@ -159,61 +192,117 @@ class _EventDetailPageState extends State<EventDetailPage> {
                                     color: Colors.grey,
                                 ),
                               ),
+
+                              //Description
                               const Padding(
                                 padding: EdgeInsets.symmetric(vertical: 5.0),
                                 child: Text("Description",
-                                  style: TextStyle(fontWeight: FontWeight.bold),
+                                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                                 ),
                               ),
+
                               // Desc Content
                               Padding(
-                                padding: EdgeInsets.symmetric(vertical: 5.0),
+                                padding: const EdgeInsets.symmetric(vertical: 5.0),
                                 child: Text(snapshot.data!.body),
                               ),
+
                               const SizedBox(height: 20),
                               /*(AuthHelper.checkAuth()  && snapshot.data!.members.contains(AuthHelper.auth.currentUser!.uid) )*/ 
+                              
                               toggle ?
                               ElevatedButton(
                                 onPressed: () async {
-                                  if(snapshot.data!.host.id != AuthHelper.auth.currentUser!.uid) {
-                                    var success = await unjoinEvent(snapshot.data!.id);
-                                    if (success) {
-                                      Fluttertoast.showToast(msg: "Uninterested");
-                                    }
-                                    setState(() {
-                                      toggle = !toggle;
-                                    });
-                                  } 
-                                  else {
-                                    Fluttertoast.showToast(msg: "Action not allowed");
-                                  }
-                                }, 
-                                child: const SizedBox(
+                                  showDialog(
+                                    context: context,
+                                    builder: (context) => AlertDialog(
+                                      title: Text("Join"),
+                                      content: Text("Do you want to join?"),
+                                      actions: [
+                                        FlatButton(
+                                          onPressed: (){
+                                            //No
+                                          }, 
+                                          child: Text("No")
+                                        ),
+                                        FlatButton(
+                                          onPressed: () async {
+                                            if(snapshot.data!.host.id != AuthHelper.auth.currentUser!.uid) {
+                                              var success = await unjoinEvent(snapshot.data!.id);
+                                              if (success) {
+                                                Fluttertoast.showToast(msg: "Uninterested");
+                                              }
+                                              setState(() {
+                                                toggle = !toggle;
+                                              });
+                                            } 
+                                            else {
+                                              Fluttertoast.showToast(msg: "Action not allowed");
+                                            }
+                                          }, 
+                                          child: Text("Yes", style: TextStyle(color: Colors.red)),
+                                        ),
+                                      ],
+                                      elevation: 24.0,
+                                    ),
+                                  ); 
+                                },
+                                child: SizedBox(
                                   width: double.infinity,
                                   height: 50,
-                                  child: Center(
-                                    child: Text("Uninterest")
+                                  child: Row(
+                                    children: const [
+                                      Icon(Icons.star),
+                                      SizedBox(width: 5),
+                                      Text("Uninterest"),
+                                    ],
                                   ),
                                 ),
                               ) : 
                               ElevatedButton(
-                                onPressed: () async {
-                                  var success = await joinEvent(snapshot.data!.id);
-                                  if (success) {
-                                    Fluttertoast.showToast(msg: "Interested");
-                                  }
-                                  setState(() {
-                                    toggle = !toggle;
-                                  });
+                                onPressed: (){
+                                  showDialog(
+                                    context: context,
+                                    builder: (context) => AlertDialog(
+                                      title: Text("Interest"),
+                                      content: Text("Do you interesting?"),
+                                      actions: [
+                                        FlatButton(
+                                          onPressed: (){
+                                            //No
+                                          }, 
+                                          child: Text("No")
+                                        ),
+                                        FlatButton(
+                                          onPressed: () async {
+                                            var success = await joinEvent(snapshot.data!.id);
+                                            if (success) {
+                                              Fluttertoast.showToast(msg: "Interested");
+                                            }
+                                            setState(() {
+                                              toggle = !toggle;
+                                            });
+                                          }, 
+                                          child: Text("Yes", style: TextStyle(color: Colors.red)),
+                                        ),
+                                      ],
+                                      elevation: 24.0,
+                                    ),
+                                  );
                                 }, 
-                                child: const SizedBox(
+                                child: SizedBox(
                                   width: double.infinity,
                                   height: 50,
-                                  child: Center(
-                                    child: Text("Interest")
+                                  child: Row(
+                                    children: const [
+                                      Icon(Icons.star_border),
+                                      SizedBox(width: 5),
+                                      Text("Interest"),
+                                    ],
                                   ),
                                 ),
                               ),
+  
                               const SizedBox(height: 20),
                             ],
                           ),
@@ -230,7 +319,6 @@ class _EventDetailPageState extends State<EventDetailPage> {
       ),
     );
   }
-
 
   FutureOr refreshPage(eventID) {
     setState(() {
@@ -268,8 +356,6 @@ class _EventDetailPageState extends State<EventDetailPage> {
       return false;
     }
   }
-
-
 
   Future<bool> unjoinEvent(eventID) async {
     final userToken = await AuthHelper.getToken();
