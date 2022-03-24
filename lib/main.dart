@@ -2,6 +2,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:xculturetestapi/pages/event/event_page.dart';
 import 'package:xculturetestapi/pages/event/eventdetail_page.dart';
+import 'package:xculturetestapi/pages/report/report_page.dart';
 //import 'package:xculturetestapi/pages/Navbar.dart';
 //import 'package:xculturetestapi/routes.dart';
 //import 'package:xculturetestapi/pages/forum/forum_home.dart';
@@ -40,7 +41,7 @@ class MyApp extends StatelessWidget {
       // initialRoute: SplashScreen.routeName,
       // routes: routes,
       // home: const ForumPage(),
-      home: EventDetailPage(),
+      home: ReportPage(),
       /*
       initialRoute: 'navbar', // Set first page
       routes: {
