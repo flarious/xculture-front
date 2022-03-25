@@ -84,7 +84,7 @@ class _ForumPageState extends State<ForumPage> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => const ForumAllPage(),
+                      builder: (context) => ForumAllPage(value: '',),
                       settings: RouteSettings(
                         arguments: _futureForum,
                       ),
