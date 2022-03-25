@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:xculturetestapi/model/user.dart';
+import 'package:xculturetestapi/pages/hamburger/your_community_page.dart';
+import 'package:xculturetestapi/pages/hamburger/your_event_page.dart';
+import 'package:xculturetestapi/pages/hamburger/your_forum_page.dart';
 import 'package:xculturetestapi/widgets/hamburger_widget.dart';
 import 'package:xculturetestapi/widgets/number_widget.dart';
 import 'package:xculturetestapi/widgets/cardList_widget.dart';
@@ -38,20 +41,22 @@ class _ProfilePageStage extends State<ProfilePage>{
                 //);
               //},
             ),
-            const SizedBox(height: 20),
+            const SizedBox(height: 10),
             buildName(user),
             //maybe tags here?? max 3 tags/at least 1 tags
             NumbersWidget(),
-            const SizedBox(height: 25),
+            const SizedBox(height: 10),
             buildAboutme(user),
           SingleChildScrollView(
             child: Column(
-              children: <Widget>[
-                ListView.builder(
-                  itemBuilder:(context, index)=>CardListWidget(),
-                  shrinkWrap : true,
-                  itemCount: 4,
-                )
+               children: <Widget>[
+                buildCardItem(text: 'Forum', icon: Icons.book,onClicked: ()=> selectedItem(context, 0)),
+                buildCardItem(text: 'Community', icon: Icons.comment,onClicked: ()=> selectedItem(context, 1)),
+                buildCardItem(text: 'Event', icon: Icons.location_city,onClicked: ()=> selectedItem(context, 2))  // ListView.builder(
+                //   itemBuilder:(context, index)=>CardListWidget(),
+                //   shrinkWrap : true,
+                //  itemCount: 6,
+                // )
               ],
             ),
           ),
@@ -59,7 +64,6 @@ class _ProfilePageStage extends State<ProfilePage>{
       ),
     );
   }
-  
   Widget buildName(User user) => Column(
     children: [
         Text(
@@ -80,7 +84,7 @@ class _ProfilePageStage extends State<ProfilePage>{
       const SizedBox(height: 10),
           Text(
             user.about,
-            style: TextStyle(fontSize: 20,fontWeight: FontWeight.w500,height: 1.3),
+            style: TextStyle(fontSize: 18,fontWeight: FontWeight.w500,height: 1.3),
         ),
       const SizedBox(height: 25),
       // Container(
@@ -94,13 +98,50 @@ class _ProfilePageStage extends State<ProfilePage>{
         ],
       )
     );
-// GestureDetector buildListOfActivities(BuildContext context, String title) {
-//     return GestureDetector(
-//       onTap: () {
-//         Navigator.of(context).push(
-//           MaterialPageRoute(builder:(context)=> EditProfilePage()), 
-//         );
-//       },
-//     );
-//   }
 }
+Widget buildCardItem({
+    required String text,
+    required IconData icon,
+    VoidCallback? onClicked,
+  }) {
+    final color = Colors.red;
+    final hoverColor = Colors.red;
+   
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 15.0,vertical: 2.5),
+      child: 
+        Card(
+          margin: EdgeInsets.all(1),
+          child: 
+            ListTile(
+              tileColor: Color.fromARGB(255, 235, 235, 235),
+              leading: Icon(icon, color: Color.fromARGB(255, 255, 89, 89),size: 35),
+              title: Text(text, style: TextStyle(fontSize:22, color: Colors.black,fontWeight:FontWeight.w500)),
+              hoverColor: hoverColor,
+              onTap: onClicked,
+            ),
+        ),
+    );
+  }
+  
+  void selectedItem(BuildContext context, int index) {
+    Navigator.of(context).pop();
+    switch (index) {
+      case 0:
+        Navigator.of(context).push(MaterialPageRoute(
+          builder: (context) => YourForumPage(),
+        ));
+        break;
+      case 1:
+        Navigator.of(context).push(MaterialPageRoute(
+          builder: (context) => CommunityPage(),
+        ));
+        break;
+      case 2:
+        Navigator.of(context).push(MaterialPageRoute(
+          builder: (context) => YourEventPage(),
+        ));
+        break;       
+    }
+  }
+
