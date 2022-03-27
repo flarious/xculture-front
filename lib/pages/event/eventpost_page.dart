@@ -81,7 +81,7 @@ class _EventPostPageState extends State<EventPostPage>{
                     iconSize: 30,
                     color: Colors.white,
                     onPressed: () {
-                      //Back
+                      Navigator.pop(context);
                     },
                   ),
                 ),   
