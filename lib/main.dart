@@ -6,8 +6,6 @@ import 'package:firebase_core/firebase_core.dart';
 // import 'package:xculturetestapi/pages/report/report_page.dart';
 import 'package:xculturetestapi/pages/splash/splash_screen.dart';
 // import 'package:xculturetestapi/pages/event/eventdetail_page.dart';
-
-
 //import 'package:xculturetestapi/routes.dart';
 //import 'package:xculturetestapi/pages/Navbar.dart';
 // import 'package:xculturetestapi/pages/forum_all.dart';
