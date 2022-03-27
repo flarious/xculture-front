@@ -1,7 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
+import 'package:xculturetestapi/pages/hamburger/change_pass.dart';
 import 'package:xculturetestapi/pages/hamburger/edit_profile_page.dart';
+import 'package:xculturetestapi/pages/hamburger/profile_page.dart';
+
 
 class SettingsPage extends StatefulWidget {
   @override
@@ -88,8 +90,8 @@ class _SettingsPageState extends State<SettingsPage> {
             SizedBox(
               height: 10,
             ),
-            buildAccountOptionRow(context, "Edit Profile"),
-            buildAccountOptionRow(context, "Change Password"),
+            buildAccountOptionRow1(context, "Edit Profile"),
+            buildAccountOptionRow2(context, "Change Password"),
             buildNotificationOptionRow("Recommended System", valNotify5, onChangeFunction5),
             SizedBox(
               height: 40,
@@ -176,36 +178,41 @@ class _SettingsPageState extends State<SettingsPage> {
     );
   }
 
-  GestureDetector buildAccountOptionRow(BuildContext context, String title) {
+  GestureDetector buildAccountOptionRow1(BuildContext context, String title) {
     return GestureDetector(
       onTap: () {
         Navigator.of(context).push(
           MaterialPageRoute(builder:(context)=> EditProfilePage()), 
         );
-
-        // showDialog(
-        //     context: context,
-        //     builder: (BuildContext context) {
-        //       return AlertDialog(
-        //         title: Text(title),
-        //         content: Column(
-                  
-        //           mainAxisSize: MainAxisSize.min,
-        //           children: [
-        //             Text("Option 1"),
-        //             Text("Option 2"),
-        //             Text("Option 3"),
-        //           ],
-        //         ),
-        //         actions: [
-        //           FlatButton(
-        //               onPressed: () {
-        //                 Navigator.of(context).pop();
-        //               },
-        //               child: Text("Close")),
-        //         ],
-        //       );
-        //     });
+      },
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 8.0),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              title,
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.w500,
+                color: Colors.grey[600],
+              ),
+            ),
+            Icon(
+              Icons.arrow_forward_ios,
+              color: Colors.grey,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+  GestureDetector buildAccountOptionRow2(BuildContext context, String title) {
+    return GestureDetector(
+      onTap: () {
+        Navigator.of(context).push(
+          MaterialPageRoute(builder:(context)=> ChangePasswordPage()), 
+        );
       },
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 8.0),
