@@ -91,7 +91,7 @@ class _ForumPageState extends State<ForumPage> {
                     )
                   ).then(refreshPage);
                 }, 
-                child: const Text("see all")),
+                child: const Text("See all")),
               ],
             ),
           ),
@@ -225,7 +225,7 @@ class _ForumPageState extends State<ForumPage> {
                   ).then(refreshPage);
                   */
                 }, 
-                child: const Text("see all")),
+                child: const Text("See all")),
               ],
             ),
           ),

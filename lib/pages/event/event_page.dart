@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:ui';
 import 'package:intl/intl.dart';
+import 'package:xculturetestapi/pages/event/event_all.dart';
 
 import '../../data.dart';
 import 'package:http/http.dart' as http;
@@ -51,12 +52,25 @@ class _EventPageState extends State<EventPage> {
             Container(
               margin: const EdgeInsets.all(10),
               child: Row(
-                children: const [
-                  Text("Trending Event",
+                children: [
+                  const Text("Trending Event",
                     style: TextStyle(fontWeight: FontWeight.bold, color: Colors.red, fontSize: 22),
                   ),
-                  Spacer(),
-                  Text("See all"),
+                  const Spacer(),
+                  TextButton(
+                    onPressed: () {
+                    // Navigator.pushNamed(context, 'forumAllPage', arguments: _futureForum).then(refreshPage);
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => EventAllPage(value: '',),
+                        settings: RouteSettings(
+                          arguments: _futureEvent,
+                        ),
+                      )
+                    ).then(refreshPage);
+                  }, 
+                  child: const Text("See all")),
                 ],
               ),
             ),
@@ -176,12 +190,24 @@ class _EventPageState extends State<EventPage> {
             Container(
               margin: const EdgeInsets.all(10),
               child: Row(
-                children: const [
-                  Text("Newest Event",
+                children: [
+                  const Text("Newest Event",
                     style: TextStyle(fontWeight: FontWeight.bold, color: Colors.red, fontSize: 22),
                   ),
-                  Spacer(),
-                  Text("See all"),
+                  const Spacer(),
+                  TextButton(
+                    onPressed: () {
+                    // Navigator.push(
+                    //   context,
+                    //   MaterialPageRoute(
+                    //     builder: (context) => EventAllPage(value: '',),
+                    //     settings: RouteSettings(
+                    //       arguments: _futureEvent,
+                    //     ),
+                    //   )
+                    // ).then(refreshPage);
+                  }, 
+                  child: const Text("See all")),
                 ],
               ),
             ),
