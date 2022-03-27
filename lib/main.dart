@@ -42,7 +42,7 @@ class MyApp extends StatelessWidget {
       // initialRoute: SplashScreen.routeName,
       // routes: routes,
      //home: const ForumPage(),
-  home: ProfilePage(),
+ home: ProfilePage(),
 //home: ChangePasswordPage(),
 //home: SettingsPage(),
 //  home: EditProfilePage(),
