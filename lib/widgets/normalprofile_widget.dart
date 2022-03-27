@@ -40,6 +40,7 @@ class NormalProfileWidget extends StatelessWidget{
        fit: BoxFit.cover,
        width: 130,
        height: 130,
+       
        //child: InkWell(onTap:onclicked),
       ),
     )

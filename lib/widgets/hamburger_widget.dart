@@ -1,18 +1,22 @@
 import 'package:flutter/material.dart';
+import 'package:xculturetestapi/pages/hamburger/Setting.dart';
 import 'package:xculturetestapi/pages/hamburger/profile_page.dart';
 import 'package:xculturetestapi/pages/hamburger/profilepic_page.dart';
 import 'package:xculturetestapi/pages/hamburger/your_forum_page.dart';
 import 'package:xculturetestapi/pages/hamburger/your_community_page.dart';
 import 'package:xculturetestapi/pages/hamburger/your_event_page.dart';
-import 'package:xculturetestapi/pages/hamburger/setting_page.dart';
+import 'package:xculturetestapi/model/user.dart';
+import 'package:xculturetestapi/utils/user_info.dart';
 
 class NavigationDrawerWidget extends StatelessWidget {
   final padding = EdgeInsets.symmetric(horizontal: 23);
   @override
   Widget build(BuildContext context) {
-    final name = 'Chat_eiei';
-    final username = 'SE@gmail.com';
-    final urlImage ='https://images.unsplash.com/photo-1537151672256-6caf2e9f8c95?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=687&q=80';
+    final user = UserInfo.userTest;
+    
+    // final name = 'Chat_eiei';
+    // final username = 'SE@gmail.com';
+    // final urlImage ='https://images.unsplash.com/photo-1537151672256-6caf2e9f8c95?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=687&q=80';
 
     return Drawer(
       child: Material(
@@ -20,13 +24,13 @@ class NavigationDrawerWidget extends StatelessWidget {
         child: ListView(
           children: <Widget>[
             buildHeader(
-              urlImage: urlImage,
-              name: name,
-              email: username,
+              urlImage: user.imagePath,
+              name: user.username,
+              email: user.email,
               onClicked: () => Navigator.of(context).push(MaterialPageRoute(
                 builder: (context) => UserPage(
-                  name: name,
-                  urlImage: urlImage,
+                  name: user.username,
+                  urlImage: user.imagePath,
                 ),
               )),
             ),
@@ -134,7 +138,7 @@ class NavigationDrawerWidget extends StatelessWidget {
       onTap: onClicked,
     );
   }
-//style: TextStyle(fontSize: 13, color: Colors.white),
+ //style: TextStyle(fontSize: 13, color: Colors.white),
   void selectedItem(BuildContext context, int index) {
     Navigator.of(context).pop();
     switch (index) {

@@ -39,7 +39,7 @@ class _TextfieldWidgetState extends State<TextFieldWidget>{
     children: [
       Text(
         widget.label,
-        style: TextStyle(fontWeight: FontWeight.bold, fontSize: 22),
+        style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
       ),
       const SizedBox(height: 8),
       TextField(
@@ -50,7 +50,7 @@ class _TextfieldWidgetState extends State<TextFieldWidget>{
           ),
         ),
         maxLines: widget.maxLines,
-        style: TextStyle(fontSize: 20),
+        style: TextStyle(fontSize: 16),
       ),
     ],
   );

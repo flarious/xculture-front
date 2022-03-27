@@ -36,7 +36,7 @@ class _EditProfilePageState extends State<EditProfilePage>{
               children: [
                 const SizedBox(height: 20),
                 //const UploadProfileImageWidget(),
-                 UploadProfilePicWidget(
+                UploadProfilePicWidget(
                   imagePath: user.imagePath, 
                   isEdit : true,
                   onclicked: () async{},

@@ -149,10 +149,9 @@ pickImage(ImageSource imageType) async {
       child: IconButton(
         onPressed: imagePickerOption,
         icon: const Icon(
-        
-        Icons.edit,
+        Icons.mode_edit_rounded,
         color: Color.fromARGB(255, 255, 255, 255),
-        size: 50,
+        size: 70,
       ),
     ),
        //child: InkWell(onTap:onclicked{}),

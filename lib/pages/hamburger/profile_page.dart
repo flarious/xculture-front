@@ -19,7 +19,6 @@ class _ProfilePageStage extends State<ProfilePage>{
   @override
     Widget build(BuildContext context){
       final user = UserInfo.userTest;
-
       return Scaffold(
          endDrawer: NavigationDrawerWidget(),
         appBar: AppBar(
