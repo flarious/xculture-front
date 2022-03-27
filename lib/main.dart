@@ -1,24 +1,20 @@
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:xculturetestapi/pages/event/event_edit.dart';
-import 'package:xculturetestapi/pages/forum/forum_home.dart';
-import 'package:xculturetestapi/pages/hamburger/change_pass.dart';
-import 'package:xculturetestapi/pages/hamburger/setting.dart';
-import 'package:xculturetestapi/pages/hamburger/edit_profile_page.dart';
-import 'package:xculturetestapi/pages/hamburger/profile_page.dart';
-//import 'package:xculturetestapi/pages/Navbar.dart';
-//import 'package:xculturetestapi/routes.dart';
-//import 'package:xculturetestapi/pages/forum/forum_home.dart';
+// import 'pages/event/eventpost_page.dart';
+import 'package:firebase_core/firebase_core.dart';
+// import 'package:xculturetestapi/pages/forum/forum_home.dart';
+// import 'package:xculturetestapi/pages/event/event_page.dart';
+// import 'package:xculturetestapi/pages/report/report_page.dart';
 import 'package:xculturetestapi/pages/splash/splash_screen.dart';
-import 'package:xculturetestapi/firebase/firebase_options.dart';
-//import 'package:xculturetestapi/widgets/uploadprofile_widget.dart';
-
-// import 'package:xculturetestapi/pages/comment_edit.dart';
+// import 'package:xculturetestapi/pages/event/eventdetail_page.dart';
+//import 'package:xculturetestapi/routes.dart';
+//import 'package:xculturetestapi/pages/Navbar.dart';
 // import 'package:xculturetestapi/pages/forum_all.dart';
-// import 'package:xculturetestapi/pages/forum_edit.dart';
-// import 'package:xculturetestapi/pages/forum_detail.dart';
 // import 'package:xculturetestapi/pages/forum_new.dart';
 // import 'package:xculturetestapi/pages/reply_edit.dart';
+// import 'package:xculturetestapi/pages/forum_edit.dart';
+// import 'package:xculturetestapi/pages/comment_edit.dart';
+// import 'package:xculturetestapi/pages/forum_detail.dart';
+import 'package:xculturetestapi/firebase/firebase_options.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -41,18 +37,13 @@ class MyApp extends StatelessWidget {
       ),
       // initialRoute: SplashScreen.routeName,
       // routes: routes,
-     //home: const ForumPage(),
- home: ProfilePage(),
-//home: ChangePasswordPage(),
-//home: SettingsPage(),
-//  home: EditProfilePage(),
-  // home:UploadProfileImageWidget(),
-     //home: const EditEventPage(),
-      //home: SplashScreen(),
+      home: SplashScreen(),
+      // home: const ForumPage(),
+      // home: ReportPage(),
       /*
       initialRoute: 'navbar', // Set first page
       routes: {
-        //'navbar': (context) => const NavBar(),
+        // 'navbar': (context) => const NavBar(),
         'homePage': (context) => const ForumPage(),
         // 'forumAllPage': (context) => const ForumAllPage(),
         // 'forumDetailPage': (context) => const ForumDetailPage(),
@@ -65,10 +56,6 @@ class MyApp extends StatelessWidget {
     );
   }
 }
-
-
-
-
 
 
 

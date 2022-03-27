@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:xculturetestapi/data.dart';
@@ -33,6 +34,8 @@ class _EditEventPageState extends State<EditEventPage>{
 
   final _formKey = GlobalKey<FormState>();
 
+  DateTime? _dateTime;
+
   @override
   Widget build(BuildContext context) {
     final eventDetail = ModalRoute.of(context)!.settings.arguments as Event;
@@ -46,333 +49,255 @@ class _EditEventPageState extends State<EditEventPage>{
     _date.text = dateEvent;
 
     return Scaffold(
-      appBar: AppBar(
-        centerTitle: true,
-        title: const Text(
-          "Edit Event",
-          style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: 25),
-        ),
-      ),
+      // appBar: AppBar(
+      //   centerTitle: true,
+      //   title: const Text(
+      //     "Edit Event",
+      //     style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: 25),
+      //   ),
+      // ),
       body: WillPopScope(
         onWillPop: () async {
           Navigator.pop(context, eventDetail.id);
           return false;
         },
         child: SingleChildScrollView(
-          child: Form(
-            key: _formKey,
-            child: Container(
-              padding: const EdgeInsets.all(20),
-              child: Column(
-                children: [
-                  /*
-                  TextFormField(
-                    controller: _locationname,
-                    decoration: const InputDecoration(
-                      labelText: "Location Name",
-                      labelStyle: TextStyle(color: Colors.grey),
-                      enabledBorder: UnderlineInputBorder(
-                        borderSide: BorderSide(
-                          color: Colors.grey
-                        ),
-                      ),
-                    ),
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return "Please enter event's location name";
-                      }
-                      else {
-                        return null;
-                      }
-                    },
+          child: Stack(
+            children: [
+
+              //Report text
+              Container(
+                margin: const EdgeInsets.only(right: 0, left: 0),
+                height: 180,
+                color: Color.fromRGBO(220, 71, 47, 1),
+                child: const Center(
+                  child: Text("Post Event", 
+                    style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold, color: Colors.white),
                   ),
-                  const SizedBox(height: 20),
-                  TextFormField(
-                    controller: _address1,
-                    decoration: const InputDecoration(
-                      labelText: "Address 1",
-                      labelStyle: TextStyle(color: Colors.grey),
-                      enabledBorder: UnderlineInputBorder(
-                        borderSide: BorderSide(
-                          color: Colors.grey
-                        ),
-                      ),
-                    ),
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return "Please enter event's address 1";
-                      }
-                      else {
-                        return null;
-                      }
-                    },
-                  ),
-                  const SizedBox(height: 20),
-                  TextFormField(
-                    controller: _address2,
-                    decoration: const InputDecoration(
-                      labelText: "Address 2",
-                      labelStyle: TextStyle(color: Colors.grey),
-                      enabledBorder: UnderlineInputBorder(
-                        borderSide: BorderSide(
-                          color: Colors.grey
-                        ),
-                      ),
-                    ),
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return "Please enter event's address 2";
-                      }
-                      else {
-                        return null;
-                      }
-                    },
-                  ),
-                  const SizedBox(height: 20),
-                  TextFormField(
-                    controller: _subdistrict,
-                    decoration: const InputDecoration(
-                      labelText: "Sub-District",
-                      labelStyle: TextStyle(color: Colors.grey),
-                      enabledBorder: UnderlineInputBorder(
-                        borderSide: BorderSide(
-                          color: Colors.grey
-                        ),
-                      ),
-                    ),
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return "Please enter event's sub-district";
-                      }
-                      else {
-                        return null;
-                      }
-                    },
-                  ),
-                  const SizedBox(height: 20),
-                  TextFormField(
-                    controller: _district,
-                    decoration: const InputDecoration(
-                      labelText: "District",
-                      labelStyle: TextStyle(color: Colors.grey),
-                      enabledBorder: UnderlineInputBorder(
-                        borderSide: BorderSide(
-                          color: Colors.grey
-                        ),
-                      ),
-                    ),
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return "Please enter event's district";
-                      }
-                      else {
-                        return null;
-                      }
-                    },
-                  ),
-                  const SizedBox(height: 20),
-                  TextFormField(
-                    controller: _province,
-                    decoration: const InputDecoration(
-                      labelText: "Province",
-                      labelStyle: TextStyle(color: Colors.grey),
-                      enabledBorder: UnderlineInputBorder(
-                        borderSide: BorderSide(
-                          color: Colors.grey
-                        ),
-                      ),
-                    ),
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return "Please enter event's province";
-                      }
-                      else {
-                        return null;
-                      }
-                    },
-                  ),
-                  const SizedBox(height: 20),
-                  TextFormField(
-                    controller: _zipcode,
-                    decoration: const InputDecoration(
-                      labelText: "ZIP Code",
-                      labelStyle: TextStyle(color: Colors.grey),
-                      enabledBorder: UnderlineInputBorder(
-                        borderSide: BorderSide(
-                          color: Colors.grey
-                        ),
-                      ),
-                    ),
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return "Please enter event's zip code";
-                      }
-                      else {
-                        return null;
-                      }
-                    },
-                  ),
-                  */
-                  // const SizedBox(height: 20),
-                  TextFormField(
-                  controller: _name,
-                  decoration: const InputDecoration(
-                    labelText: "Name",
-                    labelStyle: TextStyle(color: Colors.grey),
-                    enabledBorder: UnderlineInputBorder(
-                      borderSide: BorderSide(
-                        color: Colors.grey
-                      ),
-                    ),
-                  ),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return "Please enter event's name";
-                    }
-                    else {
-                      return null;
-                    }
-                  },
                 ),
-                const SizedBox(height: 20),
-                  TextFormField(
-                    controller: _thumbnail,
-                    decoration: const InputDecoration(
-                      hintText: "Upload Thumbnail URL",
-                      hintStyle: TextStyle(color: Colors.grey),
-                      enabledBorder: UnderlineInputBorder(
-                        borderSide: BorderSide(
-                          color: Colors.grey
-                        ),
-                      ),
-                    ),
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return "Please enter event's thumbnail url";
-                      }
-                      else {
-                        return null;
-                      }
-                    },
-                  ),
-                const SizedBox(height: 20),
-                TextFormField(
-                  controller: _location,
-                  decoration: const InputDecoration(
-                    labelText: "Name",
-                    labelStyle: TextStyle(color: Colors.grey),
-                    enabledBorder: UnderlineInputBorder(
-                      borderSide: BorderSide(
-                        color: Colors.grey
-                      ),
-                    ),
-                  ),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return "Please enter event's location";
-                    }
-                    else {
-                      return null;
-                    }
-                  },
-                ),
-                  const SizedBox(height: 20),
-                  TextFormField(
-                    maxLines: 10,
-                    keyboardType: TextInputType.multiline,
-                    controller: _desc,
-                    decoration: const InputDecoration(
-                      labelText: "Description",
-                      labelStyle: TextStyle(color: Colors.grey),
-                      enabledBorder: OutlineInputBorder(
-                        borderSide: BorderSide(
-                          color: Colors.grey
-                        ),
-                      ),
-                    ),
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return "Please enter event's description";
-                      }
-                      else {
-                        return null;
-                      }
-                    },
-                  ),
-                  const SizedBox(height: 20),
-                  TextFormField(
-                        keyboardType: TextInputType.multiline,
-                        controller: _date,
-                        decoration: const InputDecoration(
-                          labelText: "Event Date DD/MM/YYYY",
-                          labelStyle: TextStyle(color: Colors.grey),
-                          enabledBorder: OutlineInputBorder(
-                            borderSide: BorderSide(
-                              color: Colors.grey
-                            ),
-                          ),
-                        ),
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return "Please enter event's date";
-                          }
-                          else {
-                            return null;
-                          }
-                        },
-                      ),
-                  /*
-                  Row(
-                    children: [
-                      TextFormField(
-                        maxLines: 10,
-                        keyboardType: TextInputType.multiline,
-                        controller: _date,
-                        decoration: const InputDecoration(
-                          hintText: "Event Date DD/MM/YYYY",
-                          hintStyle: TextStyle(color: Colors.grey),
-                          enabledBorder: OutlineInputBorder(
-                            borderSide: BorderSide(
-                              color: Colors.grey
-                            ),
-                          ),
-                        ),
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return "Please enter event's date";
-                          }
-                          else {
-                            return null;
-                          }
-                        },
-                      ),
-                      IconButton(onPressed: (){}, icon: Icon(Icons.event)),
-                      const SizedBox(width: 100),
-                    ],
-                  ),
-                  */
-                  const SizedBox(height: 20),
-                  ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      minimumSize: const Size(350, 50),
-                    ),
-                    onPressed: () async {
-                      if(_formKey.currentState!.validate()) {
-                        var success = await updateForumDetail(eventDetail.id, _name.text, _desc.text, _thumbnail.text, _location.text, _date.text);
-                        if (success) {
-                          Fluttertoast.showToast(msg: "Your post has been updated.");
-                          Navigator.pop(context, eventDetail.id);
-                        }
-                      }
-                    }, 
-                    child: const Text("Edit Event")
-                  ),
-                  const SizedBox(height: 50),
-                ],
               ),
-            )
-          )
-        )
+
+              //Back Icon
+              Container(
+                margin: const EdgeInsets.only(top: 40, left: 20),
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: Colors.grey.withOpacity(0.8),
+                    shape: BoxShape.circle,
+                  ),
+                  child: IconButton(
+                    visualDensity: VisualDensity.compact,
+                    icon: const Icon(Icons.arrow_back),
+                    iconSize: 30,
+                    color: Colors.white,
+                    onPressed: () {
+                      //Back
+                    },
+                  ),
+                ),   
+              ),
+
+              //White box(content)
+              Container(
+                margin: const EdgeInsets.only(top: 150, left: 0, right: 0, bottom: 0),
+                child: Container(
+                  padding: const EdgeInsets.only(left: 20, right: 20, top: 20),
+                  width: MediaQuery.of(context).size.width,
+                  decoration: const BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(20),
+                      topRight: Radius.circular(20),
+                    ),
+                  ),
+                  child: Form(
+                    key: _formKey,
+                    child: Padding(
+                      padding: const EdgeInsets.all(20),
+                      child: Column(
+                        children: [
+                          //Name of Event
+                          TextFormField(
+                            controller: _name,
+                            decoration: const InputDecoration(
+                              labelText: "Name",
+                              labelStyle: TextStyle(color: Colors.grey),
+                              enabledBorder: UnderlineInputBorder(
+                                borderSide: BorderSide(
+                                  color: Colors.grey
+                                ),
+                              ),
+                            ),
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return "Please enter event's name";
+                              }
+                              else {
+                                return null;
+                              }
+                            },
+                          ),
+                          
+                          const SizedBox(height: 20),
+
+                          //Thumbnail URL
+                          TextFormField(
+                            controller: _thumbnail,
+                            decoration: const InputDecoration(
+                              labelText: "Upload Thumbnail URL",
+                              labelStyle: TextStyle(color: Colors.grey),
+                              enabledBorder: UnderlineInputBorder(
+                                borderSide: BorderSide(
+                                  color: Colors.grey
+                                ),
+                              ),
+                            ),
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return "Please enter event's thumbnail url";
+                              }
+                              else {
+                                return null;
+                              }
+                            },
+                          ),
+
+                          const SizedBox(height: 20),
+
+                          //Location
+                          TextFormField(
+                            controller: _location,
+                            decoration: const InputDecoration(
+                              labelText: "Location",
+                              labelStyle: TextStyle(color: Colors.grey),
+                              enabledBorder: UnderlineInputBorder(
+                                borderSide: BorderSide(
+                                  color: Colors.grey
+                                ),
+                              ),
+                            ),
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return "Please enter event's location";
+                              }
+                              else {
+                                return null;
+                              }
+                            },
+                          ),
+
+                          const SizedBox(height: 20),
+
+                          //Description
+                          TextFormField(
+                            maxLines: 10,
+                            keyboardType: TextInputType.multiline,
+                            controller: _desc,
+                            decoration: const InputDecoration(
+                              hintText: "Description",
+                              hintStyle: TextStyle(color: Colors.grey),
+                              enabledBorder: UnderlineInputBorder(
+                                borderSide: BorderSide(
+                                  color: Colors.grey
+                                ),
+                              ),
+                            ),
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return "Please enter event's description";
+                              }
+                              else {
+                                return null;
+                              }
+                            },
+                          ),
+
+                          const SizedBox(height: 20),
+
+                          //Start Date
+                          Row(
+                            children: [
+                              const Padding(
+                                padding: EdgeInsets.symmetric(vertical: 5),
+                                child: Text("Start Date",
+                                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.black),
+                                ),
+                              ),
+                              IconButton(
+                                onPressed: (){
+                                  DatePicker.showDateTimePicker(context, 
+                                    showTitleActions: true,
+                                    minTime: DateTime.now(),
+                                    onChanged: (date) {
+                                      print('change $date in time zone ' +
+                                          date.timeZoneOffset.inHours.toString());
+                                    }, onConfirm: (date) {
+                                      setState(() {
+                                        _dateTime = date;
+                                      });
+                                    }, currentTime: DateTime.now()
+                                  );
+                                }, icon: const Icon(Icons.event)
+                              ),
+                            ],
+                          ),
+
+                          //Date result
+                          Container(
+                            alignment: Alignment.centerLeft,
+                            padding: const EdgeInsets.symmetric(vertical: 5),
+                            child: Text(_dateTime == null ? "Click an calendar icon above" : _dateTime.toString(),
+                              style: const TextStyle(fontSize: 15, color: Colors.black),
+                            ),
+                          ),
+
+                          const SizedBox(height: 20),
+
+                          ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              minimumSize: const Size(350, 50),
+                            ),
+                            onPressed: (){
+                              showDialog(
+                                context: context,
+                                builder: (context) => AlertDialog(
+                                  title: Text("Post"),
+                                  content: Text("Do you want to post this event?"),
+                                  actions: [
+                                    FlatButton(
+                                      onPressed: (){}, 
+                                      child: Text("No")
+                                    ),
+                                    FlatButton(
+                                      onPressed: () async {
+                                        if(_formKey.currentState!.validate()) {
+                                          var success = await updateForumDetail(eventDetail.id, _name.text, _desc.text, _thumbnail.text, _location.text, _date.text);
+                                          if (success) {
+                                            Fluttertoast.showToast(msg: "Your post has been updated.");
+                                            Navigator.pop(context, eventDetail.id);
+                                          }
+                                        }
+                                      }, 
+                                      child: Text("Yes", style: TextStyle(color: Colors.red)),
+                                    ),
+                                  ],
+                                  elevation: 24.0,
+                                ),
+                              );
+                            }, 
+                            child: const Text("Edit Event")
+                          ),
+                          
+                          const SizedBox(height: 30),
+                        ]
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
       ),
       bottomNavigationBar: Navbar.navbar(context, 0),
     );
@@ -404,3 +329,5 @@ class _EditEventPageState extends State<EditEventPage>{
     }
   }
 }
+
+                  

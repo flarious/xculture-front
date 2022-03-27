@@ -84,14 +84,14 @@ class _ForumPageState extends State<ForumPage> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => const ForumAllPage(),
+                      builder: (context) => ForumAllPage(value: '',),
                       settings: RouteSettings(
                         arguments: _futureForum,
                       ),
                     )
                   ).then(refreshPage);
                 }, 
-                child: const Text("see all")),
+                child: const Text("See all")),
               ],
             ),
           ),
@@ -225,7 +225,7 @@ class _ForumPageState extends State<ForumPage> {
                   ).then(refreshPage);
                   */
                 }, 
-                child: const Text("see all")),
+                child: const Text("See all")),
               ],
             ),
           ),

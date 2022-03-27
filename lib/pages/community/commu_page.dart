@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:xculturetestapi/navbar.dart';
+import 'package:xculturetestapi/pages/community/commu_all.dart';
 import 'package:xculturetestapi/pages/community/commudetail_page.dart';
 import 'package:xculturetestapi/pages/community/commupost_page.dart';
 import 'package:http/http.dart' as http;
@@ -45,12 +46,25 @@ class _CommuPageState extends State<CommuPage> {
               Container(
                 margin: const EdgeInsets.all(10),
                 child: Row(
-                  children: const [
-                    Text("Trending Community",
+                  children: [
+                    const Text("Trending Community",
                       style: TextStyle(fontWeight: FontWeight.bold, color: Colors.red, fontSize: 22),
                     ),
-                    Spacer(),
-                    Text("See all"),
+                    const Spacer(),
+                    TextButton(
+                      onPressed: () {
+                      // Navigator.pushNamed(context, 'forumAllPage', arguments: _futureForum).then(refreshPage);
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => CommuAllPage(value: '',),
+                          settings: RouteSettings(
+                            arguments: _futureCommu,
+                          ),
+                        )
+                      ).then(refreshPage);
+                    }, 
+                    child: const Text("See all")),
                   ],
                 ),
               ),
@@ -152,12 +166,24 @@ class _CommuPageState extends State<CommuPage> {
               Container(
                 margin: const EdgeInsets.all(10),
                 child: Row(
-                  children: const [
-                    Text("Newest Community",
+                  children: [
+                    const Text("Newest Community",
                       style: TextStyle(fontWeight: FontWeight.bold, color: Colors.red, fontSize: 22),
                     ),
-                    Spacer(),
-                    Text("See all"),
+                    const Spacer(),
+                    TextButton(
+                      onPressed: () {
+                      // Navigator.push(
+                      //   context,
+                      //   MaterialPageRoute(
+                      //     builder: (context) => CommuAllPage(value: '',),
+                      //     settings: RouteSettings(
+                      //       arguments: _futureCommu,
+                      //     ),
+                      //   )
+                      // ).then(refreshPage);
+                    }, 
+                    child: const Text("See all")),
                   ],
                 ),
               ),

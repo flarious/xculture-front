@@ -1,31 +1,30 @@
 import 'package:intl/intl.dart';
+import '../../helper/auth.dart';
 import 'package:flutter/material.dart';
 import 'package:xculturetestapi/data.dart';
 import 'package:xculturetestapi/navbar.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:xculturetestapi/pages/forum/forum_new.dart';
-import 'package:xculturetestapi/pages/forum/forum_detail.dart';
-
-
-import '../../helper/auth.dart';
+import 'package:xculturetestapi/pages/community/commupost_page.dart';
+import 'package:xculturetestapi/pages/community/commudetail_page.dart';
 
 
 
-class ForumAllPage extends StatefulWidget {
-  // const ForumAllPage({Key? key}) : super(key: key);
+
+class CommuAllPage extends StatefulWidget {
+  //const CommuAllPage({Key? key}) : super(key: key);
 
   String value;
-  ForumAllPage({Key? key, required this.value}) : super(key: key);
+  CommuAllPage({Key? key, required this.value}) : super(key: key);
 
   @override
-  _ForumAllPageState createState() => _ForumAllPageState(value);
+  _CommuAllPageState createState() => _CommuAllPageState(value);
 }
 
-class _ForumAllPageState extends State<ForumAllPage> {
+class _CommuAllPageState extends State<CommuAllPage> {
 
   String? values;
   String searchString;
-  _ForumAllPageState(this.searchString);
+  _CommuAllPageState(this.searchString);
 
   List sortList = [
     "Newest",
@@ -39,18 +38,18 @@ class _ForumAllPageState extends State<ForumAllPage> {
 
   @override
   Widget build(BuildContext context) {
-    final forumList =
-        ModalRoute.of(context)!.settings.arguments as Future<List<Forum>>;
+    final commuList =
+        ModalRoute.of(context)!.settings.arguments as Future<List<Community>>;
 
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
         title: const Text(
-          "Forum",
+          "Community",
           style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: 25),
         )
       ),
-      body: showAllForum(forumList),
+      body: showAllCommu(commuList),
       // bottomNavigationBar: BottomNavigationBar(const NavBar()),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
@@ -58,7 +57,7 @@ class _ForumAllPageState extends State<ForumAllPage> {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => const NewForumPage(),
+                builder: (context) => const CommuPostPage(),
               )
             );
           }
@@ -68,57 +67,19 @@ class _ForumAllPageState extends State<ForumAllPage> {
         },
         child: const Icon(Icons.post_add)
       ),
-      bottomNavigationBar: Navbar.navbar(context, 2),
+      bottomNavigationBar: Navbar.navbar(context, 3),
     );
   }
 
-  Widget showAllForum(Future<List<Forum>> dataList) {
+  Widget showAllCommu(Future<List<Community>> dataList) {
     return Column(
       children: <Widget>[
         const SizedBox(height: 20),
         Container(
           alignment: Alignment.centerLeft,
           padding: const EdgeInsets.only(left: 20),
-          child: const Text("Trending Forum", style: TextStyle(fontSize: 20)),
+          child: const Text("Trending Community", style: TextStyle(fontSize: 20)),
         ),
-        /*
-        const SizedBox(height: 20),
-        Container(
-          alignment: Alignment.centerLeft,
-          padding: const EdgeInsets.symmetric(horizontal: 10),
-          child: Row(
-            children: [
-              Expanded(
-                child: TextFormField(
-                  onChanged: (value) {
-                      setState((){
-                        searchString = value; 
-                      });
-                  },
-                  controller: searchController,
-                  decoration: InputDecoration(
-                    hintText: "Search Here...",
-                    enabledBorder: OutlineInputBorder(
-                      borderSide: const BorderSide(
-                        color: Colors.redAccent,
-                      ),
-                      borderRadius: BorderRadius.circular(50),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderSide: const BorderSide(
-                        color: Colors.redAccent,
-                      ),
-                      borderRadius: BorderRadius.circular(50),
-                      
-                    ),
-                    prefixIcon: const Icon(Icons.search, color: Colors.red),
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-        */
         Container(
           alignment: Alignment.centerLeft,
           padding: const EdgeInsets.symmetric(horizontal: 10),
@@ -170,7 +131,7 @@ class _ForumAllPageState extends State<ForumAllPage> {
                     value: values,
                     onChanged: (value) {
                       setState(() {
-                        this.values = value as String?;
+                        values = value as String?;
                       });
                     }
                   ),
@@ -181,21 +142,19 @@ class _ForumAllPageState extends State<ForumAllPage> {
         ),
         const SizedBox(height: 10),
         Expanded(
-          child: FutureBuilder<List<Forum>>(
-            builder: (BuildContext context, AsyncSnapshot<List<Forum>> snapshot) {
+          child: FutureBuilder<List<Community>>(
+            builder: (BuildContext context, AsyncSnapshot<List<Community>> snapshot) {
               if (snapshot.hasData) {
                 return ListView.builder(
                   itemCount: snapshot.data?.length,
                   itemBuilder: (context, index) {
-                    var dt = DateTime.parse(snapshot.data![index].updateDate).toLocal();
-                    String formattedDate = DateFormat('dd/MM/yyyy – HH:mm a').format(dt);
                     var contained = isContain(snapshot.data![index], searchString);
                     return contained ? InkWell(
                       // padding: const EdgeInsets.all(20.0),
                       child: 
                         Container(
                           margin: const EdgeInsets.all(10),
-                          height: 120,
+                          height: 90,
                           child: Row(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
@@ -211,7 +170,7 @@ class _ForumAllPageState extends State<ForumAllPage> {
                                       ),
                                       image: DecorationImage(
                                         fit: BoxFit.fill,
-                                        image: NetworkImage(snapshot.data![index].thumbnail) // Forum Image
+                                        image: NetworkImage(snapshot.data![index].thumbnail) // Commu Image
                                       ),
                                     ),
                                 ),
@@ -225,14 +184,16 @@ class _ForumAllPageState extends State<ForumAllPage> {
                                       Column(
                                         crossAxisAlignment: CrossAxisAlignment.start,
                                         children: [
-                                          Text(snapshot.data![index].title,
+                                          // const SizedBox(height: 20),
+                                          Text(snapshot.data![index].name,
                                             overflow: TextOverflow.ellipsis,
                                             style: const TextStyle(
                                               fontWeight: FontWeight.bold,
                                             ),
                                           ),
                                           const Padding(padding: EdgeInsets.only(bottom: 2.0)),
-                                          Text(snapshot.data![index].subtitle,
+                                          Text(
+                                            snapshot.data![index].shortdesc,
                                             overflow: TextOverflow.ellipsis,
                                             style: const TextStyle(
                                               fontSize: 12.0,
@@ -240,28 +201,9 @@ class _ForumAllPageState extends State<ForumAllPage> {
                                             ),
                                           ),
                                           const SizedBox(height: 5),
-                                          Wrap(
-                                            crossAxisAlignment: WrapCrossAlignment.start,
-                                            children: snapshot.data![index].tags.take(2).map((tag) => Padding(
-                                              padding: const EdgeInsets.only(right: 10),
-                                              child: Chip(
-                                                visualDensity: const VisualDensity(horizontal: -4, vertical: -4), // Chip size -4 -> 4
-                                                label: Text(tag.name),
-                                              ),
-                                            )).toList(),
-                                          ),
-                                          const SizedBox(height: 5),
-                                          Text(snapshot.data![index].author.name,
-                                            style: const TextStyle(
-                                              fontSize: 12.0,
-                                              //color: Colors.black,
-                                            ),
-                                          ),
-                                          Text(formattedDate,
-                                            style: const TextStyle(
-                                              fontSize: 12.0,
-                                              //color: Colors.grey,
-                                            ),
+                                          Text(
+                                            "Members : ${snapshot.data![index].memberAmount.toString()}",
+                                            style: const TextStyle(fontSize: 15), // Community Subtitle
                                           ),
                                         ],
                                       ),
@@ -276,7 +218,7 @@ class _ForumAllPageState extends State<ForumAllPage> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => const ForumDetailPage(),
+                              builder: (context) => const CommuDetailPage(),
                               settings: RouteSettings(
                                 arguments: snapshot.data![index],
                               ),
@@ -297,18 +239,11 @@ class _ForumAllPageState extends State<ForumAllPage> {
     );
   }
 
-  bool isContain(Forum data, String search) {
+  bool isContain(Community data, String search) {
     var isContain = false;
 
-    if (data.title.toLowerCase().contains(search.toLowerCase())) {
+    if (data.name.toLowerCase().contains(search.toLowerCase())) {
       isContain = true;
-    }
-    else if (data.tags.isNotEmpty) {
-      for (var tag in data.tags) {
-        if(tag.name.toLowerCase().contains(search.toLowerCase())) {
-          isContain = true;
-        }
-      }
     }
 
     return isContain;
