@@ -133,7 +133,7 @@ Widget buildCardItem({
         break;
       case 1:
         Navigator.of(context).push(MaterialPageRoute(
-          builder: (context) => CommunityPage(),
+          builder: (context) => YourCommuPage(),
         ));
         break;
       case 2:
