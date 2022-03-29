@@ -234,7 +234,7 @@ class _EditCommuPageState extends State<EditCommuPage>{
     );
   }
 
-  updateCommuDetail(int commuID, String name, String shortdesc, String thumbnail, String desc) async {
+  updateCommuDetail(String commuID, String name, String shortdesc, String thumbnail, String desc) async {
     final userToken = await AuthHelper.getToken();
     final response = await http.put(
       Uri.parse('http://10.0.2.2:3000/communities/$commuID'),

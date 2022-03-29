@@ -303,7 +303,7 @@ class _EditEventPageState extends State<EditEventPage>{
     );
   }
 
-  Future<bool> updateForumDetail(int eventID, String name, String desc, String thumbnail, String location, String date) async {
+  Future<bool> updateForumDetail(String eventID, String name, String desc, String thumbnail, String location, String date) async {
     final userToken = await AuthHelper.getToken();
     final response = await http.put(
       Uri.parse('http://10.0.2.2:3000/events/$eventID'),

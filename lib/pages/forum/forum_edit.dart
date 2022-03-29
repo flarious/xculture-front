@@ -237,7 +237,7 @@ class _EditForumPageState extends State<EditForumPage>{
     );
   }
 
-  Future<bool> updateForumDetail(int forumID, String title, String subtitle, String thumbnailUrl, String content, bool incognito, List<Tag> tags) async {
+  Future<bool> updateForumDetail(String forumID, String title, String subtitle, String thumbnailUrl, String content, bool incognito, List<Tag> tags) async {
     List<int> tagsID = [];
     for (var tag in tags) {
       tagsID.add(tag.id);

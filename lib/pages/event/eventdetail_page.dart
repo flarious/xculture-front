@@ -335,7 +335,7 @@ class _EventDetailPageState extends State<EventDetailPage> {
     } else {
       Fluttertoast.showToast(msg: ServerResponse.fromJson(jsonDecode(response.body)).message);
       Navigator.pop(context);
-      return Event(id: 0, name: "", body: "", interestedAmount: 0, thumbnail: "", location: "", date: DateTime.now().toString(), host: User(id: "", name: "", profilePic: ""), members: []);
+      return Event(id: "", name: "", body: "", interestedAmount: 0, thumbnail: "", location: "", date: DateTime.now().toString(), host: User(id: "", name: "", profilePic: ""), members: []);
     }
   }
 

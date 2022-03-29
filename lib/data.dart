@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class Forum {
-  final int id;
+  final String id;
   final String title;
   final String subtitle;
   final String content;
@@ -226,7 +226,7 @@ class User {
 }
 
 class Community {
-  final int id;
+  final String id;
   final String name;
   final String shortdesc;
   final String desc;
@@ -273,7 +273,7 @@ class Community {
 }
 
 class Event {
-  final int id;
+  final String id;
   final String name;
   final String body;
   final String thumbnail;

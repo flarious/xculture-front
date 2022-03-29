@@ -798,7 +798,7 @@ class _ForumDetailPageState extends State<ForumDetailPage> {
     } else {
       Fluttertoast.showToast(msg: ServerResponse.fromJson(jsonDecode(response.body)).message);
       Navigator.pop(context);
-      return Forum(id: 0, title: "", subtitle: "", content: "", thumbnail: "", author: User(id: "", name: "", profilePic: ""), 
+      return Forum(id: "", title: "", subtitle: "", content: "", thumbnail: "", author: User(id: "", name: "", profilePic: ""), 
       incognito: false, viewed: 0, favorited: 0, date: DateTime.now().toString(), updateDate: DateTime.now().toString(), comments: [], tags: []);
     }
   }
