@@ -19,7 +19,10 @@ class YourForumPage extends StatefulWidget {
 }
 
 class _YourForumPageState extends State<YourForumPage> with TickerProviderStateMixin {
-  Future<List<Forum>>? _futureForum;
+  
+  // Future List
+  Future<List<Forum>>? _futureUserForum;
+  Future<User>? userDetail;
 
 
   // Change color (prefix icon)
@@ -36,25 +39,22 @@ class _YourForumPageState extends State<YourForumPage> with TickerProviderStateM
   @override
   void initState() {
     super.initState();
-    _futureForum = getForums();
+    userDetail = getUserProfile();
+    _futureUserForum = getUserForums();
     _tabController = TabController(length: 2, vsync: this, initialIndex: 0);
 
   }
 
 
     @override
-  Widget build(BuildContext context) {
-    
+  Widget build(BuildContext context) {  
     return SafeArea(
       child: Scaffold(
         body: SingleChildScrollView(
-          child: FutureBuilder<List<Forum>>(
-            future: _futureForum,
-            builder: (BuildContext context, AsyncSnapshot<List<Forum>> snapshot) {
+          child: FutureBuilder<User>(
+            future: userDetail,
+            builder: (BuildContext context, AsyncSnapshot<User> snapshot) {
               if (snapshot.hasData) {
-                  // var dt = DateTime.parse(snapshot.data!.date).toLocal();
-                  // String dateEvent = DateFormat('MMMM dd, yyyy').format(dt);
-                  
                   return Stack(
                     children: [
                       // Thumbnail Image
@@ -271,7 +271,7 @@ class _YourForumPageState extends State<YourForumPage> with TickerProviderStateM
                                             return const CircularProgressIndicator();
                                           }
                                         },
-                                        future: _futureForum,
+                                        future: _futureUserForum,
                                       ),
                                       FutureBuilder<List<Forum>>(
                                         builder: (BuildContext context, AsyncSnapshot<List<Forum>> snapshot) {
@@ -369,7 +369,7 @@ class _YourForumPageState extends State<YourForumPage> with TickerProviderStateM
                                             return const CircularProgressIndicator();
                                           }
                                         },
-                                        future: _futureForum,
+                                        future: _futureUserForum,
                                       ),
                                     ],
                                   )
@@ -425,20 +425,47 @@ class _YourForumPageState extends State<YourForumPage> with TickerProviderStateM
           ),
         ),
         // Navbar
-        bottomNavigationBar: Navbar.navbar(context, 4),
+        // bottomNavigationBar: Navbar.navbar(context, 4),
       ),
     );
   }
 
     FutureOr refreshPage(dynamic value) {
     setState(() {
-      _futureForum = getForums();
+      _futureUserForum = getUserForums();
     });
   }
 
-    Future<List<Forum>> getForums() async {
-    final response = await http.get(Uri.parse('http://10.0.2.2:3000/forums'));
+    // Function get profile
+  Future<User> getUserProfile() async {
+    final userToken = await AuthHelper.getToken();
+    final response = await http.get(
+      Uri.parse("http://10.0.2.2:3000/user"),
+      headers: <String, String> {
+        'Authorization': 'bearer $userToken'
+      }
+    );
+
+    if(response.statusCode == 200) {
+      return User.formJson(jsonDecode(response.body));
+    } else {
+      Fluttertoast.showToast(msg: "error");
+      return User(id: "", name: "", profilePic: "", bio: "", email: "");
+    }
+  }
+
+  // Function get user forums
+  Future<List<Forum>> getUserForums() async {
+
     final List<Forum> forumList = [];
+
+    final userToken = await AuthHelper.getToken();
+    final response = await http.get(
+      Uri.parse('http://10.0.2.2:3000/user/forums'),
+      headers: <String, String> {
+        'Authorization': 'bearer $userToken'
+      }
+    );
 
     if(response.statusCode == 200) {
       var decoded = jsonDecode(response.body);
@@ -449,7 +476,8 @@ class _YourForumPageState extends State<YourForumPage> with TickerProviderStateM
       Fluttertoast.showToast(msg: ServerResponse.fromJson(jsonDecode(response.body)).message);
       return forumList;
     }
-  } 
+
+  }
 
   // Function Search Forum
   bool searchForum(Forum data, String search) {

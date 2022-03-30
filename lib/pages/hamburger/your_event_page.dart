@@ -20,8 +20,9 @@ class YourEventPage extends StatefulWidget {
 }
 
 class _YourEventPageState extends State<YourEventPage> with TickerProviderStateMixin {
-  Future<List<Event>>? _futureEvent;
-
+  
+  Future<List<Event>>? _futureUserEvent;
+  Future<User>? userDetail;
 
   // Change color (prefix icon)
   FocusNode fieldnode = FocusNode();
@@ -37,7 +38,8 @@ class _YourEventPageState extends State<YourEventPage> with TickerProviderStateM
   @override
   void initState() {
     super.initState();
-    _futureEvent = getEvents();
+    userDetail = getUserProfile();
+    _futureUserEvent = getUserEvents();
     _tabController = TabController(length: 2, vsync: this, initialIndex: 0);
 
   }
@@ -49,9 +51,9 @@ class _YourEventPageState extends State<YourEventPage> with TickerProviderStateM
     return SafeArea(
       child: Scaffold(
         body: SingleChildScrollView(
-          child: FutureBuilder<List<Event>>(
-            future: _futureEvent,
-            builder: (BuildContext context, AsyncSnapshot<List<Event>> snapshot) {
+          child: FutureBuilder<User>(
+            future: userDetail,
+            builder: (BuildContext context, AsyncSnapshot<User> snapshot) {
               if (snapshot.hasData) {               
                   return Stack(
                     children: [
@@ -267,7 +269,7 @@ class _YourEventPageState extends State<YourEventPage> with TickerProviderStateM
                                             return const CircularProgressIndicator();
                                           }
                                         },
-                                        future: _futureEvent,
+                                        future: _futureUserEvent,
                                       ),
                                       FutureBuilder<List<Event>>(
                                         builder: (BuildContext context, AsyncSnapshot<List<Event>> snapshot) {
@@ -362,7 +364,7 @@ class _YourEventPageState extends State<YourEventPage> with TickerProviderStateM
                                             return const CircularProgressIndicator();
                                           }
                                         },
-                                        future: _futureEvent,
+                                        future: _futureUserEvent,
                                       ),
                                     ],
                                   )
@@ -418,20 +420,48 @@ class _YourEventPageState extends State<YourEventPage> with TickerProviderStateM
           ),
         ),
         // Navbar
-        bottomNavigationBar: Navbar.navbar(context, 4),
+        // bottomNavigationBar: Navbar.navbar(context, 4),
       ),
     );
   }
 
     FutureOr refreshPage(dynamic value) {
     setState(() {
-      _futureEvent = getEvents();
+      _futureUserEvent = getUserEvents();
     });
   }
 
-    Future<List<Event>> getEvents() async {
-    final response = await http.get(Uri.parse('http://10.0.2.2:3000/events'));
+  // Function get profile
+  Future<User> getUserProfile() async {
+    final userToken = await AuthHelper.getToken();
+    final response = await http.get(
+      Uri.parse("http://10.0.2.2:3000/user"),
+      headers: <String, String> {
+        'Authorization': 'bearer $userToken'
+      }
+    );
+
+    if(response.statusCode == 200) {
+      return User.formJson(jsonDecode(response.body));
+    } else {
+      Fluttertoast.showToast(msg: "error");
+      return User(id: "", name: "", profilePic: "", bio: "", email: "");
+    }
+  }
+
+
+  // Function get user events  
+  Future<List<Event>> getUserEvents() async {
+
     final List<Event> eventList = [];
+
+    final userToken = await AuthHelper.getToken();
+    final response = await http.get(
+      Uri.parse('http://10.0.2.2:3000/user/events'),
+      headers: <String, String> {
+        'Authorization': 'bearer $userToken'
+      }
+    );
 
     if(response.statusCode == 200) {
       var decoded = jsonDecode(response.body);
@@ -442,7 +472,8 @@ class _YourEventPageState extends State<YourEventPage> with TickerProviderStateM
       Fluttertoast.showToast(msg: ServerResponse.fromJson(jsonDecode(response.body)).message);
       return eventList;
     }
-  } 
+
+  }
 
   // Function Search Event
   bool searchEvent(Event data, String search) {

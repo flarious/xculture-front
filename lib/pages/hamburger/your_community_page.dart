@@ -19,7 +19,11 @@ class YourCommuPage extends StatefulWidget {
 }
 
 class _YourCommuPageState extends State<YourCommuPage> with TickerProviderStateMixin {
-  Future<List<Community>>? _futureCommu;
+  
+  // Future List
+  Future<User>? userDetail;
+  Future<List<Community>>? _futureUserCommu;
+
 
 
   // Change color (prefix icon)
@@ -36,7 +40,9 @@ class _YourCommuPageState extends State<YourCommuPage> with TickerProviderStateM
   @override
   void initState() {
     super.initState();
-    _futureCommu = getCommus();
+    userDetail = getUserProfile();
+    _futureUserCommu = getUserCommu();
+    
     _tabController = TabController(length: 2, vsync: this, initialIndex: 0);
 
   }
@@ -48,9 +54,9 @@ class _YourCommuPageState extends State<YourCommuPage> with TickerProviderStateM
     return SafeArea(
       child: Scaffold(
         body: SingleChildScrollView(
-          child: FutureBuilder<List<Community>>(
-            future: _futureCommu,
-            builder: (BuildContext context, AsyncSnapshot<List<Community>> snapshot) {
+          child: FutureBuilder<User>(
+            future: userDetail,
+            builder: (BuildContext context, AsyncSnapshot<User> snapshot) {
               if (snapshot.hasData) {               
                   return Stack(
                     children: [
@@ -263,7 +269,7 @@ class _YourCommuPageState extends State<YourCommuPage> with TickerProviderStateM
                                             return const CircularProgressIndicator();
                                           }
                                         },
-                                        future: _futureCommu,
+                                        future: _futureUserCommu,
                                       ),
                                       FutureBuilder<List<Community>>(
                                         builder: (BuildContext context, AsyncSnapshot<List<Community>> snapshot) {
@@ -357,7 +363,7 @@ class _YourCommuPageState extends State<YourCommuPage> with TickerProviderStateM
                                             return const CircularProgressIndicator();
                                           }
                                         },
-                                        future: _futureCommu,
+                                        future: _futureUserCommu,
                                       ),
                                     ],
                                   )
@@ -414,31 +420,74 @@ class _YourCommuPageState extends State<YourCommuPage> with TickerProviderStateM
           ),
         ),
         // Navbar
-        bottomNavigationBar: Navbar.navbar(context, 4),
+        // bottomNavigationBar: Navbar.navbar(context, 4),
       ),
     );
   }
 
     FutureOr refreshPage(dynamic value) {
     setState(() {
-      _futureCommu = getCommus();
+      _futureUserCommu = getUserCommu();
     });
   }
 
-    Future<List<Community>> getCommus() async {
-    final response = await http.get(Uri.parse('http://10.0.2.2:3000/communities'));
-    final List<Community> forumList = [];
+  // Function get profile
+  Future<User> getUserProfile() async {
+    final userToken = await AuthHelper.getToken();
+    final response = await http.get(
+      Uri.parse("http://10.0.2.2:3000/user"),
+      headers: <String, String> {
+        'Authorization': 'bearer $userToken'
+      }
+    );
+
+    if(response.statusCode == 200) {
+      return User.formJson(jsonDecode(response.body));
+    } else {
+      Fluttertoast.showToast(msg: "error");
+      return User(id: "", name: "", profilePic: "", bio: "", email: "");
+    }
+  }
+
+  // Function get user communities  
+  Future<List<Community>> getUserCommu() async {
+
+    final List<Community> commuList = [];
+
+    final userToken = await AuthHelper.getToken();
+    final response = await http.get(
+      Uri.parse('http://10.0.2.2:3000/user/communities'),
+      headers: <String, String> {
+        'Authorization': 'bearer $userToken'
+      }
+    );
 
     if(response.statusCode == 200) {
       var decoded = jsonDecode(response.body);
-      decoded.forEach((obj) => forumList.add(Community.fromJson(obj)));
-      return forumList;
+      decoded.forEach((obj) => commuList.add(Community.fromJson(obj)));
+      return commuList;
     } 
     else {
       Fluttertoast.showToast(msg: ServerResponse.fromJson(jsonDecode(response.body)).message);
-      return forumList;
+      return commuList;
     }
-  } 
+
+  }
+
+  //   Future<List<Community>> getCommus() async {
+  //   final response = await http.get(Uri.parse('http://10.0.2.2:3000/communities'));
+  //   final List<Community> forumList = [];
+
+  //   if(response.statusCode == 200) {
+  //     var decoded = jsonDecode(response.body);
+  //     decoded.forEach((obj) => forumList.add(Community.fromJson(obj)));
+  //     return forumList;
+  //   } 
+  //   else {
+  //     Fluttertoast.showToast(msg: ServerResponse.fromJson(jsonDecode(response.body)).message);
+  //     return forumList;
+  //   }
+  // } 
 
   // Function Search Community
   bool searchCommunity(Community data, String search) {
