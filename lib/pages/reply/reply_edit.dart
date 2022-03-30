@@ -102,7 +102,7 @@ class _EditReplyPageState extends State<EditReplyPage> {
           ),
         ),
       ),
-      bottomNavigationBar: Navbar.navbar(context, 2),
+      // bottomNavigationBar: Navbar.navbar(context, 2),
     );
   }
 

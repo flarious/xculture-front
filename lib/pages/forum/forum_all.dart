@@ -8,6 +8,7 @@ import 'package:xculturetestapi/pages/forum/forum_detail.dart';
 
 
 import '../../helper/auth.dart';
+import '../../widgets/hamburger_widget.dart';
 
 
 
@@ -48,7 +49,8 @@ class _ForumAllPageState extends State<ForumAllPage> {
         title: const Text(
           "Forum",
           style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: 25),
-        )
+        ),
+        actions: <Widget>[Container()],
       ),
       body: showAllForum(forumList),
       // bottomNavigationBar: BottomNavigationBar(const NavBar()),
@@ -68,7 +70,8 @@ class _ForumAllPageState extends State<ForumAllPage> {
         },
         child: const Icon(Icons.post_add)
       ),
-      bottomNavigationBar: Navbar.navbar(context, 2),
+      endDrawer: const NavigationDrawerWidget(),
+      bottomNavigationBar: const Navbar(currentIndex: 2),
     );
   }
 

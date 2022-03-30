@@ -9,6 +9,8 @@ import 'package:find_dropdown/find_dropdown.dart';
 import 'package:xculturetestapi/helper/auth.dart';
 import 'package:xculturetestapi/navbar.dart';
 
+import '../../widgets/hamburger_widget.dart';
+
 class EventPostPage extends StatefulWidget {
   const EventPostPage({ Key? key }) : super(key: key);
 
@@ -290,7 +292,8 @@ class _EventPostPageState extends State<EventPostPage>{
           ),
         ),
       ),
-      bottomNavigationBar: Navbar.navbar(context, 0),
+      endDrawer: const NavigationDrawerWidget(),
+      bottomNavigationBar: const Navbar(currentIndex: 0),
     );
   }
 

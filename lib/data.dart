@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class Forum {
-  final int id;
+  final String id;
   final String title;
   final String subtitle;
   final String content;
@@ -201,17 +201,23 @@ class User {
   final String id;
   final String name;
   final String profilePic;
+  final String? bio;
+  final String? email;
 
   User({
     required this.id,
     required this.name,
-    required this.profilePic
+    required this.profilePic,
+    required this.bio,
+    required this.email
   });
 
   factory User.formJson(Map<String, dynamic> json) {
     return User(
       id: json['id'],
       name: json['name'],
+      bio: json['bio'],
+      email: json['email'],
       profilePic: json['profile_pic']
     );
   }
@@ -219,14 +225,16 @@ class User {
   factory User.fromMemberJson(Map<String, dynamic> json) {
     return User(
       id: json['member']['id'], 
-      name: json['member']['name'], 
+      name: json['member']['name'],
+      bio: json['member']['bio'],
+      email: json['member']['email'],
       profilePic: json['member']['profile_pic']
     );
   }
 }
 
 class Community {
-  final int id;
+  final String id;
   final String name;
   final String shortdesc;
   final String desc;
@@ -273,7 +281,7 @@ class Community {
 }
 
 class Event {
-  final int id;
+  final String id;
   final String name;
   final String body;
   final String thumbnail;

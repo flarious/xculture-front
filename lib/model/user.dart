@@ -1,10 +1,10 @@
-class User{
+class UserProfile{
   final String imagePath;
   final String username;
   final String email;
   final String about;
 
-  const User({
+  const UserProfile({
     required this.imagePath,
     required this.username,
     required this.email,

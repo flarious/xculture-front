@@ -13,7 +13,7 @@ class EditProfilePage extends StatefulWidget{
 }
 
 class _EditProfilePageState extends State<EditProfilePage>{
-  User user = UserInfo.userTest;
+  UserProfile user = UserInfo.userTest;
 
   @override
   Widget build(BuildContext context) {

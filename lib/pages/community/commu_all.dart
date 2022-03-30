@@ -7,6 +7,8 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:xculturetestapi/pages/community/commupost_page.dart';
 import 'package:xculturetestapi/pages/community/commudetail_page.dart';
 
+import '../../widgets/hamburger_widget.dart';
+
 
 
 
@@ -47,10 +49,10 @@ class _CommuAllPageState extends State<CommuAllPage> {
         title: const Text(
           "Community",
           style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: 25),
-        )
+        ),
+        actions: <Widget>[Container()],
       ),
       body: showAllCommu(commuList),
-      // bottomNavigationBar: BottomNavigationBar(const NavBar()),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           if (AuthHelper.checkAuth()) {
@@ -67,7 +69,8 @@ class _CommuAllPageState extends State<CommuAllPage> {
         },
         child: const Icon(Icons.post_add)
       ),
-      bottomNavigationBar: Navbar.navbar(context, 3),
+      endDrawer: const NavigationDrawerWidget(),
+      bottomNavigationBar: const Navbar(currentIndex: 3),
     );
   }
 
