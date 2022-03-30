@@ -8,6 +8,9 @@ import 'package:xculturetestapi/data.dart';
 import 'package:xculturetestapi/helper/auth.dart';
 import 'package:xculturetestapi/pages/community/commuedit_page.dart';
 
+import '../../navbar.dart';
+import '../../widgets/hamburger_widget.dart';
+
 class CommuDetailPage extends StatefulWidget {
   const CommuDetailPage({ Key? key }) : super(key: key);
 
@@ -217,7 +220,9 @@ class _CommuDetailPageState extends State<CommuDetailPage> {
               }
             },
           ),
-        ), 
+        ),
+        endDrawer: const NavigationDrawerWidget(),
+        bottomNavigationBar: const Navbar(currentIndex: 3), 
       ),
     );
   }
@@ -238,7 +243,7 @@ class _CommuDetailPageState extends State<CommuDetailPage> {
     } else {
       Fluttertoast.showToast(msg: ServerResponse.fromJson(jsonDecode(response.body)).message);
       Navigator.pop(context);
-      return Community(id: "", name: "", shortdesc: "", desc: "", thumbnail: "", memberAmount: 0, date: DateTime.now().toString(), owner: User(id: "", name: "", profilePic: ""), members: []);
+      return Community(id: "", name: "", shortdesc: "", desc: "", thumbnail: "", memberAmount: 0, date: DateTime.now().toString(), owner: User(id: "", name: "", profilePic: "", bio: "", email: ""), members: []);
     }
   }
 
