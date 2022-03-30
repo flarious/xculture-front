@@ -8,6 +8,9 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:xculturetestapi/helper/auth.dart';
 import 'package:xculturetestapi/pages/event/event_edit.dart';
 
+import '../../navbar.dart';
+import '../../widgets/hamburger_widget.dart';
+
 
 class EventDetailPage extends StatefulWidget {
   const EventDetailPage({ Key? key }) : super(key: key);
@@ -56,7 +59,7 @@ class _EventDetailPageState extends State<EventDetailPage> {
 
                       // Iconbutton back
                       Container(
-                        margin: const EdgeInsets.only(top: 40, left: 20),
+                        margin: const EdgeInsets.only(top: 20, left: 20),
                         child: Container(
                           decoration: BoxDecoration(
                             color: Colors.grey.withOpacity(0.8),
@@ -77,7 +80,7 @@ class _EventDetailPageState extends State<EventDetailPage> {
                       // Iconbutton menu
                       Container(
                         alignment: Alignment.centerRight,
-                        margin: const EdgeInsets.only(top: 40, right: 20),
+                        margin: const EdgeInsets.only(top: 20, right: 20),
                         child: Container(
                           padding: const EdgeInsets.all(8),
                           decoration: BoxDecoration(
@@ -316,6 +319,8 @@ class _EventDetailPageState extends State<EventDetailPage> {
             }
           ),
         ),
+      endDrawer: const NavigationDrawerWidget(),
+      bottomNavigationBar: const Navbar(currentIndex: 0),
       ),
     );
   }
@@ -335,7 +340,7 @@ class _EventDetailPageState extends State<EventDetailPage> {
     } else {
       Fluttertoast.showToast(msg: ServerResponse.fromJson(jsonDecode(response.body)).message);
       Navigator.pop(context);
-      return Event(id: "", name: "", body: "", interestedAmount: 0, thumbnail: "", location: "", date: DateTime.now().toString(), host: User(id: "", name: "", profilePic: ""), members: []);
+      return Event(id: "", name: "", body: "", interestedAmount: 0, thumbnail: "", location: "", date: DateTime.now().toString(), host: User(id: "", name: "", profilePic: "", bio: "", email: ""), members: []);
     }
   }
 

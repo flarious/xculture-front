@@ -9,6 +9,8 @@ import 'package:find_dropdown/find_dropdown.dart';
 import 'package:xculturetestapi/helper/auth.dart';
 import 'package:xculturetestapi/navbar.dart';
 
+import '../../widgets/hamburger_widget.dart';
+
 class EditEventPage extends StatefulWidget {
   const EditEventPage({ Key? key }) : super(key: key);
 
@@ -299,7 +301,8 @@ class _EditEventPageState extends State<EditEventPage>{
           ),
         ),
       ),
-      bottomNavigationBar: Navbar.navbar(context, 0),
+      endDrawer: const NavigationDrawerWidget(),
+      bottomNavigationBar: const Navbar(currentIndex: 0),
     );
   }
 

@@ -105,7 +105,7 @@ class _EditCommentPageState extends State<EditCommentPage> {
           ),
         ),
       ),
-      bottomNavigationBar: Navbar.navbar(context, 2),
+      // bottomNavigationBar: Navbar.navbar(context, 2),
     );
   }
 

@@ -7,6 +7,8 @@ import 'package:find_dropdown/find_dropdown.dart';
 import 'package:xculturetestapi/helper/auth.dart';
 import 'package:xculturetestapi/navbar.dart';
 
+import '../../widgets/hamburger_widget.dart';
+
 class EditForumPage extends StatefulWidget {
   const EditForumPage({ Key? key }) : super(key: key);
 
@@ -233,7 +235,8 @@ class _EditForumPageState extends State<EditForumPage>{
           )
         )
       ),
-      bottomNavigationBar: Navbar.navbar(context, 2),
+      endDrawer: const NavigationDrawerWidget(),
+      bottomNavigationBar: const Navbar(currentIndex: 2),
     );
   }
 

@@ -7,6 +7,8 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:xculturetestapi/pages/forum/forum_new.dart';
 import 'package:xculturetestapi/pages/event/eventdetail_page.dart';
 
+import '../../widgets/hamburger_widget.dart';
+
 
 
 class EventAllPage extends StatefulWidget {
@@ -46,10 +48,10 @@ class _EventAllPageState extends State<EventAllPage> {
         title: const Text(
           "Event",
           style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: 25),
-        )
+        ),
+        actions: <Widget>[Container()],
       ),
       body: showAllForum(eventList),
-      // bottomNavigationBar: BottomNavigationBar(const NavBar()),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           if (AuthHelper.checkAuth()) {
@@ -66,7 +68,8 @@ class _EventAllPageState extends State<EventAllPage> {
         },
         child: const Icon(Icons.post_add)
       ),
-      bottomNavigationBar: Navbar.navbar(context, 0),
+      endDrawer: const NavigationDrawerWidget(),
+      bottomNavigationBar: const Navbar(currentIndex: 0),
     );
   }
 
