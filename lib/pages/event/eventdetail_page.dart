@@ -37,6 +37,7 @@ class _EventDetailPageState extends State<EventDetailPage> {
             future: eventDetail,
             builder: (BuildContext context, AsyncSnapshot<Event> snapshot) {
               if (snapshot.hasData) {
+                  toggle = (AuthHelper.checkAuth() && snapshot.data!.members.map((member) => member.id).contains(AuthHelper.auth.currentUser!.uid));
                   var dt = DateTime.parse(snapshot.data!.date).toLocal();
                   String dateEvent = DateFormat('MMMM dd, yyyy').format(dt);
                   
@@ -219,21 +220,23 @@ class _EventDetailPageState extends State<EventDetailPage> {
                                   showDialog(
                                     context: context,
                                     builder: (context) => AlertDialog(
-                                      title: Text("Join"),
-                                      content: Text("Do you want to join?"),
+                                      title: const Text("Uninterest"),
+                                      content: const Text("Do you uninterested in this event?"),
                                       actions: [
-                                        FlatButton(
+                                        TextButton(
                                           onPressed: (){
                                             //No
+                                            Navigator.pop(context);
                                           }, 
-                                          child: Text("No")
+                                          child: const Text("No", style: TextStyle(color: Colors.grey)),
                                         ),
-                                        FlatButton(
+                                        TextButton(
                                           onPressed: () async {
                                             if(snapshot.data!.host.id != AuthHelper.auth.currentUser!.uid) {
                                               var success = await unjoinEvent(snapshot.data!.id);
                                               if (success) {
                                                 Fluttertoast.showToast(msg: "Uninterested");
+                                                Navigator.pop(context);
                                               }
                                               setState(() {
                                                 toggle = !toggle;
@@ -243,7 +246,7 @@ class _EventDetailPageState extends State<EventDetailPage> {
                                               Fluttertoast.showToast(msg: "Action not allowed");
                                             }
                                           }, 
-                                          child: Text("Yes", style: TextStyle(color: Colors.red)),
+                                          child: const Text("Yes", style: TextStyle(color: Colors.red)),
                                         ),
                                       ],
                                       elevation: 24.0,
@@ -257,41 +260,20 @@ class _EventDetailPageState extends State<EventDetailPage> {
                                     children: const [
                                       Icon(Icons.star),
                                       SizedBox(width: 5),
-                                      Text("Uninterest"),
+                                      Text("Interested"),
                                     ],
                                   ),
                                 ),
                               ) : 
                               ElevatedButton(
-                                onPressed: (){
-                                  showDialog(
-                                    context: context,
-                                    builder: (context) => AlertDialog(
-                                      title: Text("Interest"),
-                                      content: Text("Do you interesting?"),
-                                      actions: [
-                                        FlatButton(
-                                          onPressed: (){
-                                            //No
-                                          }, 
-                                          child: Text("No")
-                                        ),
-                                        FlatButton(
-                                          onPressed: () async {
-                                            var success = await joinEvent(snapshot.data!.id);
-                                            if (success) {
-                                              Fluttertoast.showToast(msg: "Interested");
-                                            }
-                                            setState(() {
-                                              toggle = !toggle;
-                                            });
-                                          }, 
-                                          child: Text("Yes", style: TextStyle(color: Colors.red)),
-                                        ),
-                                      ],
-                                      elevation: 24.0,
-                                    ),
-                                  );
+                                onPressed: () async {
+                                  var success = await joinEvent(snapshot.data!.id);
+                                  if (success) {
+                                    Fluttertoast.showToast(msg: "Interested");
+                                  }
+                                  setState(() {
+                                    toggle = !toggle;
+                                  });
                                 }, 
                                 child: SizedBox(
                                   width: double.infinity,
