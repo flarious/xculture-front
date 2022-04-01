@@ -23,6 +23,7 @@ class _YourCommuPageState extends State<YourCommuPage> with TickerProviderStateM
   // Future List
   Future<User>? userDetail;
   Future<List<Community>>? _futureUserCommu;
+  Future<List<Community>>? _futureUserJoinedCommu;
 
 
 
@@ -42,6 +43,7 @@ class _YourCommuPageState extends State<YourCommuPage> with TickerProviderStateM
     super.initState();
     userDetail = getUserProfile();
     _futureUserCommu = getUserCommu();
+    _futureUserJoinedCommu = getUserJoinedCommu();
     
     _tabController = TabController(length: 2, vsync: this, initialIndex: 0);
 
@@ -363,7 +365,7 @@ class _YourCommuPageState extends State<YourCommuPage> with TickerProviderStateM
                                             return const CircularProgressIndicator();
                                           }
                                         },
-                                        future: _futureUserCommu,
+                                        future: _futureUserJoinedCommu,
                                       ),
                                     ],
                                   )
@@ -406,8 +408,8 @@ class _YourCommuPageState extends State<YourCommuPage> with TickerProviderStateM
                           indicatorPadding: const EdgeInsets.all(0),
                           tabs: [
 
-                            _individualTab("Joined"),
-                            const Tab(text: "Pending")
+                            _individualTab("Owned"),
+                            const Tab(text: "Joined")
                           ],
                         ),
                       ),
@@ -428,6 +430,7 @@ class _YourCommuPageState extends State<YourCommuPage> with TickerProviderStateM
     FutureOr refreshPage(dynamic value) {
     setState(() {
       _futureUserCommu = getUserCommu();
+      _futureUserJoinedCommu = getUserJoinedCommu();
     });
   }
 
@@ -457,6 +460,30 @@ class _YourCommuPageState extends State<YourCommuPage> with TickerProviderStateM
     final userToken = await AuthHelper.getToken();
     final response = await http.get(
       Uri.parse('http://10.0.2.2:3000/user/communities'),
+      headers: <String, String> {
+        'Authorization': 'bearer $userToken'
+      }
+    );
+
+    if(response.statusCode == 200) {
+      var decoded = jsonDecode(response.body);
+      decoded.forEach((obj) => commuList.add(Community.fromJson(obj)));
+      return commuList;
+    } 
+    else {
+      Fluttertoast.showToast(msg: ServerResponse.fromJson(jsonDecode(response.body)).message);
+      return commuList;
+    }
+
+  }
+
+   Future<List<Community>> getUserJoinedCommu() async {
+
+    final List<Community> commuList = [];
+
+    final userToken = await AuthHelper.getToken();
+    final response = await http.get(
+      Uri.parse('http://10.0.2.2:3000/user/communities/joined'),
       headers: <String, String> {
         'Authorization': 'bearer $userToken'
       }

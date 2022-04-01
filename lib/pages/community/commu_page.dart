@@ -61,7 +61,7 @@ class _CommuPageState extends State<CommuPage> {
                     child: Container(
                       padding: const EdgeInsets.only(left: 60, top: 30),
                       // padding: EdgeInsets.symmetric(vertical: 20.0),
-                      child: const Text("Communitiy",
+                      child: const Text("Community",
                         style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: 40),
                       ),
                     ),

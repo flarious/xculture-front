@@ -22,6 +22,7 @@ class YourEventPage extends StatefulWidget {
 class _YourEventPageState extends State<YourEventPage> with TickerProviderStateMixin {
   
   Future<List<Event>>? _futureUserEvent;
+  Future<List<Event>>? _futureUserInterestedEvent;
   Future<User>? userDetail;
 
   // Change color (prefix icon)
@@ -40,6 +41,7 @@ class _YourEventPageState extends State<YourEventPage> with TickerProviderStateM
     super.initState();
     userDetail = getUserProfile();
     _futureUserEvent = getUserEvents();
+    _futureUserInterestedEvent = getUserInterestedEvents();
     _tabController = TabController(length: 2, vsync: this, initialIndex: 0);
 
   }
@@ -364,7 +366,7 @@ class _YourEventPageState extends State<YourEventPage> with TickerProviderStateM
                                             return const CircularProgressIndicator();
                                           }
                                         },
-                                        future: _futureUserEvent,
+                                        future: _futureUserInterestedEvent,
                                       ),
                                     ],
                                   )
@@ -428,6 +430,7 @@ class _YourEventPageState extends State<YourEventPage> with TickerProviderStateM
     FutureOr refreshPage(dynamic value) {
     setState(() {
       _futureUserEvent = getUserEvents();
+      _futureUserInterestedEvent = getUserInterestedEvents();
     });
   }
 
@@ -458,6 +461,30 @@ class _YourEventPageState extends State<YourEventPage> with TickerProviderStateM
     final userToken = await AuthHelper.getToken();
     final response = await http.get(
       Uri.parse('http://10.0.2.2:3000/user/events'),
+      headers: <String, String> {
+        'Authorization': 'bearer $userToken'
+      }
+    );
+
+    if(response.statusCode == 200) {
+      var decoded = jsonDecode(response.body);
+      decoded.forEach((obj) => eventList.add(Event.fromJson(obj)));
+      return eventList;
+    } 
+    else {
+      Fluttertoast.showToast(msg: ServerResponse.fromJson(jsonDecode(response.body)).message);
+      return eventList;
+    }
+
+  }
+
+  Future<List<Event>> getUserInterestedEvents() async {
+
+    final List<Event> eventList = [];
+
+    final userToken = await AuthHelper.getToken();
+    final response = await http.get(
+      Uri.parse('http://10.0.2.2:3000/user/events/interested'),
       headers: <String, String> {
         'Authorization': 'bearer $userToken'
       }
