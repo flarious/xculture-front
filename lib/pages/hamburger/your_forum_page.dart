@@ -22,6 +22,7 @@ class _YourForumPageState extends State<YourForumPage> with TickerProviderStateM
   
   // Future List
   Future<List<Forum>>? _futureUserForum;
+  Future<List<Forum>>? _futureUserFavoritedForum;
   Future<User>? userDetail;
 
 
@@ -41,6 +42,7 @@ class _YourForumPageState extends State<YourForumPage> with TickerProviderStateM
     super.initState();
     userDetail = getUserProfile();
     _futureUserForum = getUserForums();
+    _futureUserFavoritedForum = getUserFavoritedForums();
     _tabController = TabController(length: 2, vsync: this, initialIndex: 0);
 
   }
@@ -369,7 +371,7 @@ class _YourForumPageState extends State<YourForumPage> with TickerProviderStateM
                                             return const CircularProgressIndicator();
                                           }
                                         },
-                                        future: _futureUserForum,
+                                        future: _futureUserFavoritedForum,
                                       ),
                                     ],
                                   )
@@ -433,6 +435,7 @@ class _YourForumPageState extends State<YourForumPage> with TickerProviderStateM
     FutureOr refreshPage(dynamic value) {
     setState(() {
       _futureUserForum = getUserForums();
+      _futureUserFavoritedForum = getUserFavoritedForums();
     });
   }
 
@@ -462,6 +465,30 @@ class _YourForumPageState extends State<YourForumPage> with TickerProviderStateM
     final userToken = await AuthHelper.getToken();
     final response = await http.get(
       Uri.parse('http://10.0.2.2:3000/user/forums'),
+      headers: <String, String> {
+        'Authorization': 'bearer $userToken'
+      }
+    );
+
+    if(response.statusCode == 200) {
+      var decoded = jsonDecode(response.body);
+      decoded.forEach((obj) => forumList.add(Forum.fromJson(obj)));
+      return forumList;
+    } 
+    else {
+      Fluttertoast.showToast(msg: ServerResponse.fromJson(jsonDecode(response.body)).message);
+      return forumList;
+    }
+
+  }
+
+  Future<List<Forum>> getUserFavoritedForums() async {
+
+    final List<Forum> forumList = [];
+
+    final userToken = await AuthHelper.getToken();
+    final response = await http.get(
+      Uri.parse('http://10.0.2.2:3000/user/forums/favorites'),
       headers: <String, String> {
         'Authorization': 'bearer $userToken'
       }
