@@ -381,7 +381,10 @@ class _NavigationDrawerWidgetState extends State<NavigationDrawerWidget> with Ti
         Navigator.of(context).push(MaterialPageRoute(
           builder: (context) => SettingsPage(),
         ));
-      break;          
+      break;
+      case 5:
+        AuthHelper.signOut();     
+        Navigator.pop(context);     
     }
   } //selected page
 

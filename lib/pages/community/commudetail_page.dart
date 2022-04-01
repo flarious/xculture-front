@@ -35,6 +35,7 @@ class _CommuDetailPageState extends State<CommuDetailPage> {
             future: commuDetail,
             builder: (BuildContext context, AsyncSnapshot<Community> snapshot) {
               if(snapshot.hasData) {
+                toggle = (AuthHelper.checkAuth() && snapshot.data!.members.map((member) => member.id).contains(AuthHelper.auth.currentUser!.uid));
                 var dt = DateTime.parse(snapshot.data!.date).toLocal();
                 String dateCommu = DateFormat('MMMM dd, yyyy – HH:mm a').format(dt);
                 
@@ -168,19 +169,42 @@ class _CommuDetailPageState extends State<CommuDetailPage> {
                             toggle ?
                             ElevatedButton(
                               onPressed: () async {
-                                if(snapshot.data!.owner.id != AuthHelper.auth.currentUser!.uid) {
-                                  var success = await unjoinCommu(snapshot.data!.id);
-                                  if (success) {
-                                    Fluttertoast.showToast(msg: "Leaved");
-                                  }
-                                  setState(() {
-                                    toggle = !toggle;
-                                  });
-                                }
-                                else {
-                                  Fluttertoast.showToast(msg: "Action not allowed");
-                                }
-                              }, 
+                                showDialog(
+                                  context: context,
+                                  builder: (context) => AlertDialog(
+                                    title: const Text("Leave"),
+                                    content: const Text("Do you want to leave this community?"),
+                                    actions: [
+                                      TextButton(
+                                        onPressed: (){
+                                          //No
+                                          Navigator.pop(context);
+                                        }, 
+                                        child: const Text("No", style: TextStyle(color: Colors.grey)),
+                                      ),
+                                      TextButton(
+                                        onPressed: () async {
+                                          if(snapshot.data!.owner.id != AuthHelper.auth.currentUser!.uid) {
+                                            var success = await unjoinCommu(snapshot.data!.id);
+                                            if (success) {
+                                              Fluttertoast.showToast(msg: "Leaved");
+                                              Navigator.pop(context);
+                                            }
+                                            setState(() {
+                                              toggle = !toggle;
+                                            });
+                                          }
+                                          else {
+                                            Fluttertoast.showToast(msg: "Action not allowed");
+                                          }
+                                        }, 
+                                        child: const Text("Yes", style: TextStyle(color: Colors.red)),
+                                      ),
+                                    ],
+                                    elevation: 24.0,
+                                  ),
+                                ); 
+                              },
                               child: const SizedBox(
                                 width: double.infinity,
                                 height: 50,

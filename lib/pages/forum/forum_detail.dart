@@ -67,11 +67,13 @@ class _ForumDetailPageState extends State<ForumDetailPage> {
               future: fullDetail,
               builder: (BuildContext context, AsyncSnapshot<Forum> snapshot) {
                 if (snapshot.hasData) {
+                  favourite = (AuthHelper.checkAuth() && snapshot.data!.favoritedBy.contains(AuthHelper.auth.currentUser!.uid)) ? true : false;
                   var viewed = snapshot.data!.viewed.toString();
                   var favorited = snapshot.data!.favorited.toString();
                   var dt = DateTime.parse(snapshot.data!.updateDate).toLocal();
                   String dateforum = DateFormat('MMMM dd, yyyy – HH:mm a').format(dt);
                   for (var comment in snapshot.data!.comments) {
+                    _favComment = (AuthHelper.checkAuth() && comment.favoritedBy.contains(AuthHelper.auth.currentUser!.uid));
                     final TextEditingController _contentReply = TextEditingController();
                     List<bool> _favRepliesPerComment = [];
                     var index = snapshot.data!.comments.indexOf(comment);
@@ -87,6 +89,7 @@ class _ForumDetailPageState extends State<ForumDetailPage> {
                     }
                     
                     for(var reply in comment.replies) {
+                      _favReply = (AuthHelper.checkAuth() && reply.favoritedBy.contains(AuthHelper.auth.currentUser!.uid));
                       if(_favRepliesTotal[index].length < comment.replies.length) { // Depend on the amount of replies
                         _favRepliesTotal[index].add(_favReply);
                       }
@@ -729,7 +732,7 @@ class _ForumDetailPageState extends State<ForumDetailPage> {
       Fluttertoast.showToast(msg: ServerResponse.fromJson(jsonDecode(response.body)).message);
       Navigator.pop(context);
       return Forum(id: "", title: "", subtitle: "", content: "", thumbnail: "", author: User(id: "", name: "", profilePic: "", bio: "", email: ""), 
-      incognito: false, viewed: 0, favorited: 0, date: DateTime.now().toString(), updateDate: DateTime.now().toString(), comments: [], tags: []);
+      incognito: false, viewed: 0, favorited: 0, date: DateTime.now().toString(), updateDate: DateTime.now().toString(), comments: [], tags: [], favoritedBy: []);
     }
   }
   
