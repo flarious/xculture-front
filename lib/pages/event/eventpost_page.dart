@@ -254,7 +254,7 @@ class _EventPostPageState extends State<EventPostPage>{
                               showDialog(
                                 context: context,
                                 builder: (context) => AlertDialog(
-                                  title: Text("Post"),
+                                  title: Text("Post Event"),
                                   content: Text("Do you want to post this event?"),
                                   actions: [
                                     FlatButton(
@@ -268,7 +268,7 @@ class _EventPostPageState extends State<EventPostPage>{
                                         if(_formKey.currentState!.validate()) {
                                           var success = await sendEventDetail(_name.text, _desc.text, _thumbnail.text, _location.text, _dateTime.toString());
                                           if (success) {
-                                            Fluttertoast.showToast(msg: "Your post has been created.");
+                                            Fluttertoast.showToast(msg: "Your event has been created.");
                                             Navigator.pop(context);
                                           }
                                         }
