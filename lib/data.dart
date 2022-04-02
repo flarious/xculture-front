@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class Forum {
-  final int id;
+  final String id;
   final String title;
   final String subtitle;
   final String content;
@@ -14,6 +14,7 @@ class Forum {
   final String updateDate;
   final List<Comment> comments; 
   final List<Tag> tags;
+  final List<String> favoritedBy;
 
   Forum({
     required this.id, 
@@ -29,6 +30,7 @@ class Forum {
     required this.updateDate,
     required this.comments,
     required this.tags,
+    required this.favoritedBy,
   });
 
   factory Forum.fromJson(Map<String, dynamic> json) {
@@ -46,6 +48,7 @@ class Forum {
       updateDate: json['update_date'],
       comments: getCommentsFromJson(json['comments']),
       tags: getTagsFromJson(json['tags']),
+      favoritedBy: getFavoritedByFromJson(json['favoritedBy'])
     );
   }
 
@@ -70,6 +73,15 @@ class Forum {
     }
     return list;
   }
+
+  static List<String> getFavoritedByFromJson(users) {
+    List<String> list = [];
+    if(users != null) {
+      users.forEach( (user) => list.add(user['user']['id']));
+    }
+
+    return list;
+  }
 }
 
 class Comment {
@@ -82,6 +94,7 @@ class Comment {
   final String date;
   final String updateDate;
   final List<Reply> replies;
+  final List<String> favoritedBy;
 
   Comment({
     required this.id,
@@ -93,6 +106,7 @@ class Comment {
     required this.date,
     required this.updateDate,
     required this.replies,
+    required this.favoritedBy,
   });
 
   factory Comment.fromJson(Map<String, dynamic> json) {
@@ -106,6 +120,7 @@ class Comment {
       date: json["date"],
       updateDate: json["update_date"],
       replies: getRepliesFromJson(json["replies"]),
+      favoritedBy: getFavoritedByFromJson(json["favoritedBy"])
     );
   }
 
@@ -122,6 +137,15 @@ class Comment {
     return list;
 
   }
+
+  static List<String> getFavoritedByFromJson(users) {
+    List<String> list = [];
+    if(users != null) {
+      users.forEach( (user) => list.add(user['user']['id']));
+    }
+
+    return list;
+  }
 }
 
 class Reply {
@@ -132,6 +156,7 @@ class Reply {
   final int favorited;
   final String date;
   final String updateDate;
+  final List<String> favoritedBy;
 
   Reply({
     required this.id,
@@ -141,6 +166,7 @@ class Reply {
     required this.favorited,
     required this.date,
     required this.updateDate,
+    required this.favoritedBy,
   });
 
   factory Reply.fromJson(Map<String, dynamic> json) {
@@ -152,11 +178,21 @@ class Reply {
       favorited: json["liked_reply"],
       date: json["date"],
       updateDate: json["update_date"],
+      favoritedBy: getFavoritedByFromJson(json["favoritedBy"])
     );
   }
 
   static User getAuthorFromJson(author) {
     return User.formJson(author);
+  }
+
+  static List<String> getFavoritedByFromJson(users) {
+    List<String> list = [];
+    if(users != null) {
+      users.forEach( (user) => list.add(user['user']['id']));
+    }
+
+    return list;
   }
 }
 
@@ -201,17 +237,23 @@ class User {
   final String id;
   final String name;
   final String profilePic;
+  final String? bio;
+  final String? email;
 
   User({
     required this.id,
     required this.name,
-    required this.profilePic
+    required this.profilePic,
+    required this.bio,
+    required this.email
   });
 
   factory User.formJson(Map<String, dynamic> json) {
     return User(
       id: json['id'],
       name: json['name'],
+      bio: json['bio'],
+      email: json['email'],
       profilePic: json['profile_pic']
     );
   }
@@ -219,14 +261,16 @@ class User {
   factory User.fromMemberJson(Map<String, dynamic> json) {
     return User(
       id: json['member']['id'], 
-      name: json['member']['name'], 
+      name: json['member']['name'],
+      bio: json['member']['bio'],
+      email: json['member']['email'],
       profilePic: json['member']['profile_pic']
     );
   }
 }
 
 class Community {
-  final int id;
+  final String id;
   final String name;
   final String shortdesc;
   final String desc;
@@ -273,7 +317,7 @@ class Community {
 }
 
 class Event {
-  final int id;
+  final String id;
   final String name;
   final String body;
   final String thumbnail;

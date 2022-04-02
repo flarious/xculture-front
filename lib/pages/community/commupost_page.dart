@@ -5,6 +5,8 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import '../../data.dart';
 import '../../helper/auth.dart';
+import '../../navbar.dart';
+import '../../widgets/hamburger_widget.dart';
 
 class CommuPostPage extends StatefulWidget {
   const CommuPostPage({ Key? key }) : super(key: key);
@@ -321,6 +323,8 @@ class _CommuPostPageState extends State<CommuPostPage> {
             ],
           ),
         ),
+        endDrawer: const NavigationDrawerWidget(),
+        bottomNavigationBar: const Navbar(currentIndex: 3),
     );
   }
 

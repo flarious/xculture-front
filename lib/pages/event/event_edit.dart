@@ -9,6 +9,8 @@ import 'package:find_dropdown/find_dropdown.dart';
 import 'package:xculturetestapi/helper/auth.dart';
 import 'package:xculturetestapi/navbar.dart';
 
+import '../../widgets/hamburger_widget.dart';
+
 class EditEventPage extends StatefulWidget {
   const EditEventPage({ Key? key }) : super(key: key);
 
@@ -299,11 +301,12 @@ class _EditEventPageState extends State<EditEventPage>{
           ),
         ),
       ),
-      bottomNavigationBar: Navbar.navbar(context, 0),
+      endDrawer: const NavigationDrawerWidget(),
+      bottomNavigationBar: const Navbar(currentIndex: 0),
     );
   }
 
-  Future<bool> updateForumDetail(int eventID, String name, String desc, String thumbnail, String location, String date) async {
+  Future<bool> updateForumDetail(String eventID, String name, String desc, String thumbnail, String location, String date) async {
     final userToken = await AuthHelper.getToken();
     final response = await http.put(
       Uri.parse('http://10.0.2.2:3000/events/$eventID'),

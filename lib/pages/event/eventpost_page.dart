@@ -9,6 +9,8 @@ import 'package:find_dropdown/find_dropdown.dart';
 import 'package:xculturetestapi/helper/auth.dart';
 import 'package:xculturetestapi/navbar.dart';
 
+import '../../widgets/hamburger_widget.dart';
+
 class EventPostPage extends StatefulWidget {
   const EventPostPage({ Key? key }) : super(key: key);
 
@@ -83,7 +85,7 @@ class _EventPostPageState extends State<EventPostPage>{
                     iconSize: 30,
                     color: Colors.white,
                     onPressed: () {
-                      //Back
+                      Navigator.pop(context);
                     },
                   ),
                 ),   
@@ -258,13 +260,15 @@ class _EventPostPageState extends State<EventPostPage>{
                                   content: Text("Do you want to post this event?"),
                                   actions: [
                                     FlatButton(
-                                      onPressed: (){}, 
+                                      onPressed: (){
+                                        Navigator.pop(context);
+                                      }, 
                                       child: Text("No")
                                     ),
                                     FlatButton(
                                       onPressed: () async {
                                         if(_formKey.currentState!.validate()) {
-                                          var success = await sendForumDetail(_name.text, _desc.text, _thumbnail.text, _location.text, _date.text);
+                                          var success = await sendEventDetail(_name.text, _desc.text, _thumbnail.text, _location.text, _dateTime.toString());
                                           if (success) {
                                             Fluttertoast.showToast(msg: "Your post has been created.");
                                             Navigator.pop(context);
@@ -292,11 +296,12 @@ class _EventPostPageState extends State<EventPostPage>{
           ),
         ),
       ),
-      bottomNavigationBar: Navbar.navbar(context, 0),
+      endDrawer: const NavigationDrawerWidget(),
+      bottomNavigationBar: const Navbar(currentIndex: 0),
     );
   }
 
-  Future<bool> sendForumDetail(String name, String desc, String thumbnail, String location, String date) async {
+  Future<bool> sendEventDetail(String name, String desc, String thumbnail, String location, String date) async {
     final userToken = await AuthHelper.getToken();
     final response = await http.post(
       Uri.parse('http://10.0.2.2:3000/events'),

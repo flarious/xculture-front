@@ -8,6 +8,8 @@ import 'package:find_dropdown/find_dropdown.dart';
 import 'package:xculturetestapi/helper/auth.dart';
 import 'package:xculturetestapi/navbar.dart';
 
+import '../../widgets/hamburger_widget.dart';
+
 
 class NewForumPage extends StatefulWidget {
   const NewForumPage({ Key? key }) : super(key: key);
@@ -219,7 +221,8 @@ class _NewForumPageState extends State<NewForumPage> {
           ),
         ),
       ),
-      bottomNavigationBar: Navbar.navbar(context, 2),
+      endDrawer: const NavigationDrawerWidget(),
+      bottomNavigationBar: const Navbar(currentIndex: 2),
     );
   }
   Future<bool> sendForumDetail(String title, String subtitle, String thumbnailUrl, String content, bool isSwitched, List<Tag> tags) async {

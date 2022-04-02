@@ -7,6 +7,8 @@ import 'package:find_dropdown/find_dropdown.dart';
 import 'package:xculturetestapi/helper/auth.dart';
 import 'package:xculturetestapi/navbar.dart';
 
+import '../../widgets/hamburger_widget.dart';
+
 class EditCommuPage extends StatefulWidget {
   const EditCommuPage({ Key? key }) : super(key: key);
 
@@ -330,11 +332,12 @@ class _EditCommuPageState extends State<EditCommuPage>{
           ),
         )
       ),
-      bottomNavigationBar: Navbar.navbar(context, 3),
+      endDrawer: const NavigationDrawerWidget(),
+      bottomNavigationBar: const Navbar(currentIndex: 3),
     );
   }
 
-  updateCommuDetail(int commuID, String name, String shortdesc, String thumbnail, String desc) async {
+  updateCommuDetail(String commuID, String name, String shortdesc, String thumbnail, String desc) async {
     final userToken = await AuthHelper.getToken();
     final response = await http.put(
       Uri.parse('http://10.0.2.2:3000/communities/$commuID'),

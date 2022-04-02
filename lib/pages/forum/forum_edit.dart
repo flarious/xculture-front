@@ -7,6 +7,8 @@ import 'package:find_dropdown/find_dropdown.dart';
 import 'package:xculturetestapi/helper/auth.dart';
 import 'package:xculturetestapi/navbar.dart';
 
+import '../../widgets/hamburger_widget.dart';
+
 class EditForumPage extends StatefulWidget {
   const EditForumPage({ Key? key }) : super(key: key);
 
@@ -233,11 +235,12 @@ class _EditForumPageState extends State<EditForumPage>{
           )
         )
       ),
-      bottomNavigationBar: Navbar.navbar(context, 2),
+      endDrawer: const NavigationDrawerWidget(),
+      bottomNavigationBar: const Navbar(currentIndex: 2),
     );
   }
 
-  Future<bool> updateForumDetail(int forumID, String title, String subtitle, String thumbnailUrl, String content, bool incognito, List<Tag> tags) async {
+  Future<bool> updateForumDetail(String forumID, String title, String subtitle, String thumbnailUrl, String content, bool incognito, List<Tag> tags) async {
     List<int> tagsID = [];
     for (var tag in tags) {
       tagsID.add(tag.id);

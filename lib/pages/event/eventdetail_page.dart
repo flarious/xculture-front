@@ -8,6 +8,9 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:xculturetestapi/helper/auth.dart';
 import 'package:xculturetestapi/pages/event/event_edit.dart';
 
+import '../../navbar.dart';
+import '../../widgets/hamburger_widget.dart';
+
 
 class EventDetailPage extends StatefulWidget {
   const EventDetailPage({ Key? key }) : super(key: key);
@@ -34,6 +37,7 @@ class _EventDetailPageState extends State<EventDetailPage> {
             future: eventDetail,
             builder: (BuildContext context, AsyncSnapshot<Event> snapshot) {
               if (snapshot.hasData) {
+                  toggle = (AuthHelper.checkAuth() && snapshot.data!.members.map((member) => member.id).contains(AuthHelper.auth.currentUser!.uid));
                   var dt = DateTime.parse(snapshot.data!.date).toLocal();
                   String dateEvent = DateFormat('MMMM dd, yyyy').format(dt);
                   
@@ -56,7 +60,7 @@ class _EventDetailPageState extends State<EventDetailPage> {
 
                       // Iconbutton back
                       Container(
-                        margin: const EdgeInsets.only(top: 40, left: 20),
+                        margin: const EdgeInsets.only(top: 20, left: 20),
                         child: Container(
                           decoration: BoxDecoration(
                             color: Colors.grey.withOpacity(0.8),
@@ -77,7 +81,7 @@ class _EventDetailPageState extends State<EventDetailPage> {
                       // Iconbutton menu
                       Container(
                         alignment: Alignment.centerRight,
-                        margin: const EdgeInsets.only(top: 40, right: 20),
+                        margin: const EdgeInsets.only(top: 20, right: 20),
                         child: Container(
                           padding: const EdgeInsets.all(8),
                           decoration: BoxDecoration(
@@ -216,21 +220,23 @@ class _EventDetailPageState extends State<EventDetailPage> {
                                   showDialog(
                                     context: context,
                                     builder: (context) => AlertDialog(
-                                      title: Text("Join"),
-                                      content: Text("Do you want to join?"),
+                                      title: const Text("Uninterest"),
+                                      content: const Text("Do you uninterested in this event?"),
                                       actions: [
-                                        FlatButton(
+                                        TextButton(
                                           onPressed: (){
                                             //No
+                                            Navigator.pop(context);
                                           }, 
-                                          child: Text("No")
+                                          child: const Text("No", style: TextStyle(color: Colors.grey)),
                                         ),
-                                        FlatButton(
+                                        TextButton(
                                           onPressed: () async {
                                             if(snapshot.data!.host.id != AuthHelper.auth.currentUser!.uid) {
                                               var success = await unjoinEvent(snapshot.data!.id);
                                               if (success) {
                                                 Fluttertoast.showToast(msg: "Uninterested");
+                                                Navigator.pop(context);
                                               }
                                               setState(() {
                                                 toggle = !toggle;
@@ -240,7 +246,7 @@ class _EventDetailPageState extends State<EventDetailPage> {
                                               Fluttertoast.showToast(msg: "Action not allowed");
                                             }
                                           }, 
-                                          child: Text("Yes", style: TextStyle(color: Colors.red)),
+                                          child: const Text("Yes", style: TextStyle(color: Colors.red)),
                                         ),
                                       ],
                                       elevation: 24.0,
@@ -254,41 +260,20 @@ class _EventDetailPageState extends State<EventDetailPage> {
                                     children: const [
                                       Icon(Icons.star),
                                       SizedBox(width: 5),
-                                      Text("Uninterest"),
+                                      Text("Interested"),
                                     ],
                                   ),
                                 ),
                               ) : 
                               ElevatedButton(
-                                onPressed: (){
-                                  showDialog(
-                                    context: context,
-                                    builder: (context) => AlertDialog(
-                                      title: Text("Interest"),
-                                      content: Text("Do you interesting?"),
-                                      actions: [
-                                        FlatButton(
-                                          onPressed: (){
-                                            //No
-                                          }, 
-                                          child: Text("No")
-                                        ),
-                                        FlatButton(
-                                          onPressed: () async {
-                                            var success = await joinEvent(snapshot.data!.id);
-                                            if (success) {
-                                              Fluttertoast.showToast(msg: "Interested");
-                                            }
-                                            setState(() {
-                                              toggle = !toggle;
-                                            });
-                                          }, 
-                                          child: Text("Yes", style: TextStyle(color: Colors.red)),
-                                        ),
-                                      ],
-                                      elevation: 24.0,
-                                    ),
-                                  );
+                                onPressed: () async {
+                                  var success = await joinEvent(snapshot.data!.id);
+                                  if (success) {
+                                    Fluttertoast.showToast(msg: "Interested");
+                                  }
+                                  setState(() {
+                                    toggle = !toggle;
+                                  });
                                 }, 
                                 child: SizedBox(
                                   width: double.infinity,
@@ -316,6 +301,8 @@ class _EventDetailPageState extends State<EventDetailPage> {
             }
           ),
         ),
+      endDrawer: const NavigationDrawerWidget(),
+      bottomNavigationBar: const Navbar(currentIndex: 0),
       ),
     );
   }
@@ -335,7 +322,7 @@ class _EventDetailPageState extends State<EventDetailPage> {
     } else {
       Fluttertoast.showToast(msg: ServerResponse.fromJson(jsonDecode(response.body)).message);
       Navigator.pop(context);
-      return Event(id: 0, name: "", body: "", interestedAmount: 0, thumbnail: "", location: "", date: DateTime.now().toString(), host: User(id: "", name: "", profilePic: ""), members: []);
+      return Event(id: "", name: "", body: "", interestedAmount: 0, thumbnail: "", location: "", date: DateTime.now().toString(), host: User(id: "", name: "", profilePic: "", bio: "", email: ""), members: []);
     }
   }
 

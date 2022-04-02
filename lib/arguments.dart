@@ -1,7 +1,7 @@
 import 'data.dart';
 
 class EditCommentArguments {
-  final int forumID;
+  final String forumID;
   final Comment comment;
 
   EditCommentArguments({
@@ -11,7 +11,7 @@ class EditCommentArguments {
 }
 
 class EditReplyArguments {
-  final int forumID;
+  final String forumID;
   final int commentID;
   final Reply reply;
   
