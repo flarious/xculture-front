@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -41,7 +42,10 @@ class _CommuPageState extends State<CommuPage> {
         body: SingleChildScrollView(
           child: Column(
             children: [
+
               const SizedBox(height: 20),
+
+              //Trending
               Container(
                 margin: const EdgeInsets.all(10),
                 child: Row(
@@ -54,8 +58,10 @@ class _CommuPageState extends State<CommuPage> {
                   ],
                 ),
               ),
+
+              //Box
               Container(
-                height: 250,
+                height: 150,
                 width: double.maxFinite,
                 child: FutureBuilder<List<Community>>(
                   future: _futureCommu,
@@ -66,66 +72,72 @@ class _CommuPageState extends State<CommuPage> {
                         scrollDirection: Axis.horizontal,
                         itemBuilder: (BuildContext context, int index) {
                           return InkWell(
-                            child: Container(
-                              margin: const EdgeInsets.all(10),
-                              width: 300,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(20),
-                                color: Colors.lightBlue[100],
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Colors.grey.withOpacity(0.7),
-                                    blurRadius: 5.0,
-                                    offset: const Offset(0.0, 5.0),
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(20),
+                              child: BackdropFilter(
+                                filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+                                child: Container(
+                                  margin: const EdgeInsets.all(10),
+                                  width: 350,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(20),
+                                    gradient: LinearGradient(colors: [
+                                      Colors.lightBlue.withOpacity(0.2),
+                                      Colors.lightBlue.withOpacity(0.05),
+                                    ], begin: Alignment.topLeft, end: Alignment.bottomRight),
+                                    border: Border.all(
+                                      color: Colors.lightBlue.withOpacity(0.08),
+                                    ),
                                   ),
-                                ],
-                              ),
-                              child: Stack(
-                                children: [
-                                  Positioned(
-                                    top: 0,
-                                    child: Container(
-                                      height: 120,
-                                      width: 300,
-                                      decoration: BoxDecoration(
-                                        borderRadius: const BorderRadius.only(
-                                          topLeft: Radius.circular(20),
-                                          topRight: Radius.circular(20),
-                                        ),
-                                        image: DecorationImage(
-                                          fit: BoxFit.fill,
-                                          image: NetworkImage(snapshot.data![index].thumbnail) // Community Image
-                                        ),
+                                  child: Stack(
+                                    children: [
+                                      Positioned(
+                                        top: 0,
+                                        child: Container(
+                                          height: 130,
+                                          width: 100,
+                                          decoration: BoxDecoration(
+                                            borderRadius: const BorderRadius.only(
+                                              topLeft: Radius.circular(20),
+                                              topRight: Radius.circular(20),
+                                            ),
+                                            image: DecorationImage(
+                                              fit: BoxFit.fill,
+                                              image: NetworkImage(snapshot.data![index].thumbnail) // Community Image
+                                            ),
+                                          ),
+                                        )
                                       ),
-                                    )
+                                      Container(
+                                        margin: const EdgeInsets.only(top: 140, left: 20, right: 0, bottom: 0),
+                                        /* top: 140,
+                                        left: 20, */
+                                        child: Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              snapshot.data![index].name,
+                                              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+                                              overflow: TextOverflow.ellipsis, // Community Title
+                                            ),
+                                            Text(
+                                              snapshot.data![index].shortdesc,
+                                              style: const TextStyle(fontSize: 15), // Community Subtitle
+                                              overflow: TextOverflow.ellipsis,
+                                            ),
+                                            Text(
+                                              "Members : ${snapshot.data![index].memberAmount.toString()}",
+                                              style: const TextStyle(fontSize: 15), // Community Subtitle
+                                            ),
+                                          ],
+                                        )
+                                      )
+                                    ],
                                   ),
-                                  Container(
-                                    margin: const EdgeInsets.only(top: 140, left: 20, right: 0, bottom: 0),
-                                    /* top: 140,
-                                    left: 20, */
-                                    child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          snapshot.data![index].name,
-                                          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
-                                          overflow: TextOverflow.ellipsis, // Community Title
-                                        ),
-                                        Text(
-                                          snapshot.data![index].shortdesc,
-                                          style: const TextStyle(fontSize: 15), // Community Subtitle
-                                          overflow: TextOverflow.ellipsis,
-                                        ),
-                                        Text(
-                                          "Members : ${snapshot.data![index].memberAmount.toString()}",
-                                          style: const TextStyle(fontSize: 15), // Community Subtitle
-                                        ),
-                                      ],
-                                    )
-                                  )
-                                ],
+                                ),
                               ),
                             ),
+
                             onTap: () {
                               Navigator.push(
                                 context,
@@ -149,6 +161,7 @@ class _CommuPageState extends State<CommuPage> {
               ),
 
               const SizedBox(height: 20),
+
               Container(
                 margin: const EdgeInsets.all(10),
                 child: Row(
@@ -236,6 +249,7 @@ class _CommuPageState extends State<CommuPage> {
             ],
           ),
         ),
+        
         floatingActionButton: FloatingActionButton(
           onPressed: () {
             if (AuthHelper.checkAuth()) {

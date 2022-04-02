@@ -37,6 +37,7 @@ class _CommuDetailPageState extends State<CommuDetailPage> {
                 
                 return Stack(
                   children: [
+
                     // Thumbnail Image
                     Container(
                       margin: const EdgeInsets.only(right: 0, left: 0),
@@ -50,17 +51,19 @@ class _CommuDetailPageState extends State<CommuDetailPage> {
                         ),
                       ),
                     ),
+
                     // Iconbutton back
                     Container(
                       margin: const EdgeInsets.only(top: 40, left: 20),
                       child: Container(
-                        decoration: const BoxDecoration(
-                          color: Colors.grey,
+                        decoration: BoxDecoration(
+                          color: Colors.grey.withOpacity(0.8),
                           shape: BoxShape.circle,
                         ),
                         child: IconButton(
                           visualDensity: VisualDensity.compact,
                           icon: const Icon(Icons.arrow_back),
+                          iconSize: 30,
                           color: Colors.white,
                           onPressed: () {
                             Navigator.pop(context);
@@ -68,38 +71,60 @@ class _CommuDetailPageState extends State<CommuDetailPage> {
                         ),
                       ),   
                     ),
+
                     // Iconbutton menu
                     Container(
                       alignment: Alignment.centerRight,
                       margin: const EdgeInsets.only(top: 40, right: 20),
                       child: Container(
-                        decoration: const BoxDecoration(
-                          color: Colors.grey,
+                        padding: const EdgeInsets.all(8),
+                        decoration: BoxDecoration(
+                          color: Colors.grey.withOpacity(0.8),
                           shape: BoxShape.circle,
                         ),
-                        child: IconButton(
-                          visualDensity: VisualDensity.compact,
-                          icon: const Icon(Icons.edit),
-                          // icon: const Icon(Icons.more_vert),
-                          color: Colors.white,
-                          onPressed: () {
-                            if (AuthHelper.checkAuth() && snapshot.data!.owner.id == AuthHelper.auth.currentUser!.uid) {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => const EditCommuPage(),
-                                  settings: RouteSettings(
-                                    arguments: snapshot.data,),
-                                )
-                              ).then(refreshPage);
-                            }
-                            else {
-                              Fluttertoast.showToast(msg: "You are not the owner");
-                            }
-                          },
+                        child: PopupMenuButton(
+                          itemBuilder: (context) => [
+                            PopupMenuItem(
+                              child: const Text("Edit"),
+                              onTap: (){
+                                if (AuthHelper.checkAuth() && snapshot.data!.owner.id == AuthHelper.auth.currentUser!.uid) {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => const EditCommuPage(),
+                                      settings: RouteSettings(
+                                        arguments: snapshot.data,),
+                                    )
+                                  ).then(refreshPage);
+                                }
+                                else {
+                                  Fluttertoast.showToast(msg: "You are not the owner");
+                                }
+                              },
+                            ),
+                            PopupMenuItem(
+                              child: const Text("Delete"),
+                              onTap: (){
+                                //delete
+                              },
+                            ),
+                            PopupMenuItem(
+                              child: const Text("Report"),
+                              onTap: (){
+                                //report
+                              },
+                            ),
+                          ],
+                          child: const Icon(
+                            Icons.more_vert,
+                            color: Colors.white,
+                            size: 30,
+                          ), 
                         ),
                       ),
                     ),
+
+                    //Content
                     Container(
                       margin: const EdgeInsets.only(top: 280, left: 0, right: 0, bottom: 0),
                       child: Container(
@@ -115,32 +140,40 @@ class _CommuDetailPageState extends State<CommuDetailPage> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            // Desc Header
+
+                            //Header
                             Padding(
                               padding: EdgeInsets.symmetric(vertical: 5.0),
                               child: Text(snapshot.data!.name,
-                                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 23, color: Colors.red)
+                                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 25, color: Colors.red)
                               ),
                             ),
+
+                            //Catagory
                             Padding(
                               padding: EdgeInsets.symmetric(vertical: 5.0),
                               child: Text(snapshot.data!.shortdesc,
-                                style: TextStyle(fontWeight: FontWeight.bold),
+                                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                               ),
                             ),
+
+                            //Author
                             Padding(
                               padding: EdgeInsets.symmetric(vertical: 5.0),
                               child: Text("Created by: ${snapshot.data!.owner.name}",
-                                style: TextStyle(fontSize: 15),
+                                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                               ),
                             ),
+
+                            //Start Date
                             Padding(
                               padding: EdgeInsets.symmetric(vertical: 5.0),
                               child: Text(dateCommu,
-                                style: TextStyle(fontSize: 15),
+                                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                               ),
                             ),
-                            // Division line
+
+                            //Division line
                             Padding(
                               padding: const EdgeInsets.symmetric(vertical: 5.0),
                               child: Container(
@@ -149,34 +182,58 @@ class _CommuDetailPageState extends State<CommuDetailPage> {
                                   color: Colors.grey,
                               ),
                             ),
+
+                            //Description
                             const Padding(
                               padding: EdgeInsets.symmetric(vertical: 5.0),
                               child: Text("Description",
-                                style: TextStyle(fontWeight: FontWeight.bold),
+                                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                               ),
                             ),
+
                             // Desc Content
                             Padding(
                               padding: const EdgeInsets.symmetric(vertical: 5.0),
                               child: Text(snapshot.data!.desc),
                             ),
+
                             const SizedBox(height: 20),
+
                             /*(AuthHelper.checkAuth() && snapshot.data!.members.contains(AuthHelper.auth.currentUser!.uid) )*/ 
                             toggle ?
                             ElevatedButton(
-                              onPressed: () async {
-                                if(snapshot.data!.owner.id != AuthHelper.auth.currentUser!.uid) {
-                                  var success = await unjoinCommu(snapshot.data!.id);
-                                  if (success) {
-                                    Fluttertoast.showToast(msg: "Leaved");
-                                  }
-                                  setState(() {
-                                    toggle = !toggle;
-                                  });
-                                }
-                                else {
-                                  Fluttertoast.showToast(msg: "Action not allowed");
-                                }
+                              onPressed: (){
+                                showDialog(
+                                  context: context,
+                                  builder: (context) => AlertDialog(
+                                    title: Text("Join"),
+                                    content: Text("Do you want to join?"),
+                                    actions: [
+                                      FlatButton(
+                                        onPressed: (){}, 
+                                        child: Text("No")
+                                      ),
+                                      FlatButton(
+                                        onPressed: () async {
+                                          if(snapshot.data!.owner.id != AuthHelper.auth.currentUser!.uid) {
+                                            var success = await unjoinCommu(snapshot.data!.id);
+                                            if (success) {
+                                              Fluttertoast.showToast(msg: "Leaved");
+                                            }
+                                            setState(() {
+                                              toggle = !toggle;
+                                            });
+                                          }
+                                          else {
+                                            Fluttertoast.showToast(msg: "Action not allowed");
+                                          }
+                                        }, 
+                                        child: Text("Yes", style: TextStyle(color: Colors.deepOrange)),
+                                      ),
+                                    ],
+                                    elevation: 24.0,
+                                  ),
+                                );
                               }, 
                               child: const SizedBox(
                                 width: double.infinity,
@@ -187,14 +244,33 @@ class _CommuDetailPageState extends State<CommuDetailPage> {
                               ),
                             ) : 
                             ElevatedButton(
-                              onPressed: () async {
-                                var success = await joinCommu(snapshot.data!.id);
-                                if (success) {
-                                  Fluttertoast.showToast(msg: "Joined");
-                                }
-                                setState(() {
-                                  toggle = !toggle;
-                                });
+                              onPressed: (){
+                                showDialog(
+                                  context: context,
+                                  builder: (context) => AlertDialog(
+                                    title: Text("Join"),
+                                    content: Text("Do you want to join?"),
+                                    actions: [
+                                      FlatButton(
+                                        onPressed: (){}, 
+                                        child: Text("No")
+                                      ),
+                                      FlatButton(
+                                        onPressed: () async {
+                                          var success = await joinCommu(snapshot.data!.id);
+                                          if (success) {
+                                            Fluttertoast.showToast(msg: "Joined");
+                                          }
+                                          setState(() {
+                                            toggle = !toggle;
+                                          });
+                                        }, 
+                                        child: Text("Yes", style: TextStyle(color: Colors.deepOrange)),
+                                      ),
+                                    ],
+                                    elevation: 24.0,
+                                  ),
+                                );
                               }, 
                               child: const SizedBox(
                                 width: double.infinity,
@@ -204,6 +280,7 @@ class _CommuDetailPageState extends State<CommuDetailPage> {
                                 ),
                               ),
                             ),
+                            
                             const SizedBox(height: 20),
                           ],
                         ),

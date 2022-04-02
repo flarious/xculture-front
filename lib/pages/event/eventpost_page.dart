@@ -32,12 +32,14 @@ class _EventPostPageState extends State<EventPostPage>{
   final TextEditingController _desc = TextEditingController();
   final TextEditingController _date = TextEditingController();
 
+
   final _formKey = GlobalKey<FormState>();
 
   DateTime? _dateTime;
 
   @override
   Widget build(BuildContext context) {
+    _name.text = "name";
     return Scaffold(
       // appBar: AppBar(
       //   centerTitle: true,
@@ -92,7 +94,7 @@ class _EventPostPageState extends State<EventPostPage>{
                 margin: const EdgeInsets.only(top: 150, left: 0, right: 0, bottom: 0),
                 child: Container(
                   padding: const EdgeInsets.only(left: 20, right: 20, top: 20),
-                  width: MediaQuery.of(context).size.width,
+                  width: double.maxFinite,
                   decoration: const BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.only(
