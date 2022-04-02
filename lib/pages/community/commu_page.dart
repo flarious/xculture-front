@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -67,7 +68,6 @@ class _CommuPageState extends State<CommuPage> {
                     ),
                   ),
                 ),
-
                 Center(
                   child: Container (                                  
                     height: 40,
@@ -320,6 +320,7 @@ class _CommuPageState extends State<CommuPage> {
             ),
           ), 
         ),
+        
         floatingActionButton: FloatingActionButton(
           onPressed: () {
             if (AuthHelper.checkAuth()) {

@@ -51,6 +51,7 @@ class _NewForumPageState extends State<NewForumPage> {
             padding: const EdgeInsets.all(20),
             child: Column(
               children: [
+                
                 TextFormField(
                   controller: _title,
                   decoration: const InputDecoration(
