@@ -409,7 +409,7 @@ class _NavigationDrawerWidgetState extends State<NavigationDrawerWidget> with Ti
       return User.formJson(jsonDecode(response.body));
     } else {
       Fluttertoast.showToast(msg: "error");
-      return User(id: "", name: "", profilePic: "", bio: "", email: "");
+      return User(id: "", name: "", profilePic: "", bio: "", email: "", tags: []);
     }
   }
 

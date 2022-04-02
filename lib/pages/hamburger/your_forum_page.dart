@@ -7,6 +7,7 @@ import 'package:xculturetestapi/navbar.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:xculturetestapi/helper/auth.dart';
 import 'package:xculturetestapi/pages/forum/forum_detail.dart';
+import 'package:xculturetestapi/widgets/hamburger_widget.dart';
 
 
 
@@ -426,8 +427,8 @@ class _YourForumPageState extends State<YourForumPage> with TickerProviderStateM
             }
           ),
         ),
-        // Navbar
-        // bottomNavigationBar: Navbar.navbar(context, 4),
+        endDrawer: const NavigationDrawerWidget(),
+        bottomNavigationBar: const Navbar(currentIndex: 4),
       ),
     );
   }
@@ -453,7 +454,7 @@ class _YourForumPageState extends State<YourForumPage> with TickerProviderStateM
       return User.formJson(jsonDecode(response.body));
     } else {
       Fluttertoast.showToast(msg: "error");
-      return User(id: "", name: "", profilePic: "", bio: "", email: "");
+      return User(id: "", name: "", profilePic: "", bio: "", email: "", tags: []);
     }
   }
 

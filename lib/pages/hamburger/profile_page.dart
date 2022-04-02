@@ -276,40 +276,22 @@ class _ProfilePageState extends State<ProfilePage> with TickerProviderStateMixin
                                     ),
 
                                     // Tags
-                                    Container(
+                                    const Text(
+                                      "Interest tag : ",
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.bold
+                                      ),
+                                    ),
+                                    Padding(
                                       padding: const EdgeInsets.symmetric(vertical: 5.0),
-                                      child: Row(
-                                        children: [
-                                            const Text(
-                                              "Interest tag : ",
-                                              style: TextStyle(
-                                                fontWeight: FontWeight.bold
-                                              ),
-                                            ),
-                                            Wrap(
-                                            crossAxisAlignment: WrapCrossAlignment.start,
-                                            children: const [
-                                              Padding(
-                                                padding: EdgeInsets.only(right: 5, left: 5),
-                                                child: Chip(
-                                                  label: Text("Bacon"),
-                                                ),
-                                              ),
-                                              Padding(
-                                                padding: EdgeInsets.only(right: 5),
-                                                child: Chip(
-                                                  label: Text("Holiday"),
-                                                ),
-                                              ),
-                                              Padding(
-                                                padding: EdgeInsets.only(right: 5),
-                                                child: Chip(
-                                                  label: Text("Christ"),
-                                                ),
-                                              ),
-                                            ] 
+                                      child: Wrap(
+                                        crossAxisAlignment: WrapCrossAlignment.start,
+                                        children: snapshot.data!.tags!.map((tag) => Padding(
+                                          padding: const EdgeInsets.only(right: 10),
+                                          child: Chip(
+                                            label: Text(tag.name),
                                           ),
-                                        ],
+                                        )).toList(),
                                       ),
                                     ),
                                     
@@ -688,8 +670,8 @@ class _ProfilePageState extends State<ProfilePage> with TickerProviderStateMixin
             }
           ),
         ),
-        // Navbar
-        // bottomNavigationBar: Navbar.navbar(context, 4),
+        endDrawer: const NavigationDrawerWidget(),
+        bottomNavigationBar: const Navbar(currentIndex: 4),
       ),
     );
   }
@@ -717,7 +699,7 @@ class _ProfilePageState extends State<ProfilePage> with TickerProviderStateMixin
       return User.formJson(jsonDecode(response.body));
     } else {
       Fluttertoast.showToast(msg: "error");
-      return User(id: "", name: "", profilePic: "", bio: "", email: "");
+      return User(id: "", name: "", profilePic: "", bio: "", email: "", tags: []);
     }
   }
 
