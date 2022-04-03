@@ -57,7 +57,7 @@ class _EditEventPageState extends State<EditEventPage>{
         child: SingleChildScrollView(
           child: Stack(
             children: [
-              //Report text
+              //Event text
               Container(
                 margin: const EdgeInsets.only(right: 0, left: 0),
                 height: 180,
