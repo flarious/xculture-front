@@ -8,16 +8,12 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:find_dropdown/find_dropdown.dart';
 import 'package:xculturetestapi/helper/auth.dart';
 import 'package:xculturetestapi/navbar.dart';
-
 import '../../widgets/hamburger_widget.dart';
-
 class EditEventPage extends StatefulWidget {
   const EditEventPage({ Key? key }) : super(key: key);
-
   @override
   _EditEventPageState createState() => _EditEventPageState();
 }
-
 class _EditEventPageState extends State<EditEventPage>{
   /*
   final TextEditingController _locationname = TextEditingController();
@@ -32,24 +28,19 @@ class _EditEventPageState extends State<EditEventPage>{
   final TextEditingController _thumbnail = TextEditingController();
   final TextEditingController _name = TextEditingController();
   final TextEditingController _desc = TextEditingController();
-  final TextEditingController _date = TextEditingController();
-
   final _formKey = GlobalKey<FormState>();
-
   DateTime? _dateTime;
-
+  Event? eventDetail;
   @override
   Widget build(BuildContext context) {
-    final eventDetail = ModalRoute.of(context)!.settings.arguments as Event;
-
-    _location.text = eventDetail.location;
-    _thumbnail.text = eventDetail.thumbnail;
-    _name.text = eventDetail.name;
-    _desc.text = eventDetail.body;
-    var dt = DateTime.parse(eventDetail.date).toLocal();
-    String dateEvent = DateFormat('dd/MM/yyyy').format(dt);
-    _date.text = dateEvent;
-
+    if (eventDetail == null) {
+      eventDetail = ModalRoute.of(context)!.settings.arguments as Event;
+      _location.text = eventDetail!.location;
+      _thumbnail.text = eventDetail!.thumbnail;
+      _name.text = eventDetail!.name;
+      _desc.text = eventDetail!.body;
+      _dateTime = DateTime.parse(eventDetail!.date);
+    }
     return Scaffold(
       // appBar: AppBar(
       //   centerTitle: true,
@@ -60,25 +51,23 @@ class _EditEventPageState extends State<EditEventPage>{
       // ),
       body: WillPopScope(
         onWillPop: () async {
-          Navigator.pop(context, eventDetail.id);
+          Navigator.pop(context, eventDetail!.id);
           return false;
         },
         child: SingleChildScrollView(
           child: Stack(
             children: [
-
               //Event text
               Container(
                 margin: const EdgeInsets.only(right: 0, left: 0),
                 height: 180,
                 color: Color.fromRGBO(220, 71, 47, 1),
                 child: const Center(
-                  child: Text("Post Event", 
+                  child: Text("Edit Event", 
                     style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold, color: Colors.white),
                   ),
                 ),
               ),
-
               //Back Icon
               Container(
                 margin: const EdgeInsets.only(top: 40, left: 20),
@@ -93,12 +82,11 @@ class _EditEventPageState extends State<EditEventPage>{
                     iconSize: 30,
                     color: Colors.white,
                     onPressed: () {
-                      //Back
+                      Navigator.pop(context, eventDetail!.id);
                     },
                   ),
                 ),   
               ),
-
               //White box(content)
               Container(
                 margin: const EdgeInsets.only(top: 150, left: 0, right: 0, bottom: 0),
@@ -141,7 +129,6 @@ class _EditEventPageState extends State<EditEventPage>{
                           ),
                           
                           const SizedBox(height: 20),
-
                           //Thumbnail URL
                           TextFormField(
                             controller: _thumbnail,
@@ -163,9 +150,7 @@ class _EditEventPageState extends State<EditEventPage>{
                               }
                             },
                           ),
-
                           const SizedBox(height: 20),
-
                           //Location
                           TextFormField(
                             controller: _location,
@@ -187,9 +172,7 @@ class _EditEventPageState extends State<EditEventPage>{
                               }
                             },
                           ),
-
                           const SizedBox(height: 20),
-
                           //Description
                           TextFormField(
                             maxLines: 10,
@@ -213,9 +196,7 @@ class _EditEventPageState extends State<EditEventPage>{
                               }
                             },
                           ),
-
                           const SizedBox(height: 20),
-
                           //Start Date
                           Row(
                             children: [
@@ -243,7 +224,6 @@ class _EditEventPageState extends State<EditEventPage>{
                               ),
                             ],
                           ),
-
                           //Date result
                           Container(
                             alignment: Alignment.centerLeft,
@@ -252,9 +232,8 @@ class _EditEventPageState extends State<EditEventPage>{
                               style: const TextStyle(fontSize: 15, color: Colors.black),
                             ),
                           ),
-
                           const SizedBox(height: 20),
-
+                          //Button
                           ElevatedButton(
                             style: ElevatedButton.styleFrom(
                               minimumSize: const Size(350, 50),
@@ -263,20 +242,23 @@ class _EditEventPageState extends State<EditEventPage>{
                               showDialog(
                                 context: context,
                                 builder: (context) => AlertDialog(
-                                  title: Text("Post"),
-                                  content: Text("Do you want to post this event?"),
+                                  title: Text("Edit Event"),
+                                  content: Text("Do you want to edit this event?"),
                                   actions: [
                                     FlatButton(
-                                      onPressed: (){}, 
+                                      onPressed: (){
+                                        Navigator.pop(context);
+                                      }, 
                                       child: Text("No")
                                     ),
                                     FlatButton(
                                       onPressed: () async {
                                         if(_formKey.currentState!.validate()) {
-                                          var success = await updateForumDetail(eventDetail.id, _name.text, _desc.text, _thumbnail.text, _location.text, _date.text);
+                                          var success = await updateEventDetail(eventDetail!.id, _name.text, _desc.text, _thumbnail.text, _location.text, _dateTime.toString());
                                           if (success) {
-                                            Fluttertoast.showToast(msg: "Your post has been updated.");
-                                            Navigator.pop(context, eventDetail.id);
+                                            Fluttertoast.showToast(msg: "Your event has been edited.");
+                                            Navigator.pop(context);
+                                            Navigator.pop(context, eventDetail!.id);
                                           }
                                         }
                                       }, 
@@ -289,7 +271,6 @@ class _EditEventPageState extends State<EditEventPage>{
                             }, 
                             child: const Text("Edit Event")
                           ),
-                          
                           const SizedBox(height: 30),
                         ]
                       ),
@@ -305,8 +286,7 @@ class _EditEventPageState extends State<EditEventPage>{
       bottomNavigationBar: const Navbar(currentIndex: 0),
     );
   }
-
-  Future<bool> updateForumDetail(String eventID, String name, String desc, String thumbnail, String location, String date) async {
+  Future<bool> updateEventDetail(String eventID, String name, String desc, String thumbnail, String location, String date) async {
     final userToken = await AuthHelper.getToken();
     final response = await http.put(
       Uri.parse('http://10.0.2.2:3000/events/$eventID'),
@@ -332,5 +312,4 @@ class _EditEventPageState extends State<EditEventPage>{
     }
   }
 }
-
                   

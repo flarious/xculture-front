@@ -68,7 +68,7 @@ class Forum {
   static List<Tag> getTagsFromJson(tags) {
     List<Tag> list = [];
     if(tags != []) {
-      tags.forEach( (obj) => list.add(Tag.fromForumJson(obj)));
+      tags.forEach( (obj) => list.add(Tag.fromOtherClassJson(obj)));
       list.sort((a, b) => a.id.compareTo(b.id));
     }
     return list;
@@ -207,7 +207,7 @@ class Tag {
     required this.usage,
   });
 
-  factory Tag.fromForumJson(Map<String, dynamic> json) {
+  factory Tag.fromOtherClassJson(Map<String, dynamic> json) {
     return Tag(
       id: json["tag"]["id"],
       name: json["tag"]["name"],
@@ -239,13 +239,15 @@ class User {
   final String profilePic;
   final String? bio;
   final String? email;
+  final List<Tag>? tags;
 
   User({
     required this.id,
     required this.name,
     required this.profilePic,
     required this.bio,
-    required this.email
+    required this.email,
+    required this.tags
   });
 
   factory User.formJson(Map<String, dynamic> json) {
@@ -254,7 +256,8 @@ class User {
       name: json['name'],
       bio: json['bio'],
       email: json['email'],
-      profilePic: json['profile_pic']
+      profilePic: json['profile_pic'],
+      tags: getTagsFromJson(json['tags'])
     );
   }
 
@@ -264,8 +267,18 @@ class User {
       name: json['member']['name'],
       bio: json['member']['bio'],
       email: json['member']['email'],
-      profilePic: json['member']['profile_pic']
+      profilePic: json['member']['profile_pic'],
+      tags: getTagsFromJson(json['member']['tags'])
     );
+  }
+
+  static List<Tag> getTagsFromJson(tags) {
+    List<Tag> list = [];
+    if(tags != [] && tags != null) {
+      tags.forEach( (obj) => list.add(Tag.fromOtherClassJson(obj)));
+      list.sort((a, b) => a.id.compareTo(b.id));
+    }
+    return list;
   }
 }
 

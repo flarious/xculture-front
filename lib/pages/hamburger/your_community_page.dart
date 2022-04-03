@@ -8,6 +8,7 @@ import 'package:xculturetestapi/navbar.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:xculturetestapi/helper/auth.dart';
 import 'package:xculturetestapi/pages/community/commudetail_page.dart';
+import 'package:xculturetestapi/widgets/hamburger_widget.dart';
 
 
 
@@ -421,8 +422,8 @@ class _YourCommuPageState extends State<YourCommuPage> with TickerProviderStateM
             }
           ),
         ),
-        // Navbar
-        // bottomNavigationBar: Navbar.navbar(context, 4),
+        endDrawer: const NavigationDrawerWidget(),
+        bottomNavigationBar: const Navbar(currentIndex: 4),
       ),
     );
   }
@@ -448,7 +449,7 @@ class _YourCommuPageState extends State<YourCommuPage> with TickerProviderStateM
       return User.formJson(jsonDecode(response.body));
     } else {
       Fluttertoast.showToast(msg: "error");
-      return User(id: "", name: "", profilePic: "", bio: "", email: "");
+      return User(id: "", name: "", profilePic: "", bio: "", email: "", tags: []);
     }
   }
 

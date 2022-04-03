@@ -60,7 +60,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
       return User.formJson(jsonDecode(response.body));
     } else {
       Fluttertoast.showToast(msg: "error");
-      return User(id: "", name: "", profilePic: "", bio: "", email: "");
+      return User(id: "", name: "", profilePic: "", bio: "", email: "", tags: []);
     }
   }
 }

@@ -6,6 +6,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:find_dropdown/find_dropdown.dart';
 import 'package:xculturetestapi/helper/auth.dart';
 import 'package:xculturetestapi/navbar.dart';
+import 'package:xculturetestapi/widgets/textform_widget.dart';
 
 import '../../widgets/hamburger_widget.dart';
 
@@ -26,55 +27,50 @@ class _EditCommuPageState extends State<EditCommuPage>{
   final TextEditingController _shortdesc = TextEditingController();
   final TextEditingController _thumbnail = TextEditingController();
   final TextEditingController _desc = TextEditingController();
-  bool? isPrivate;
+  bool isPrivate = false;
 
   final _formKey = GlobalKey<FormState>();
 
+  Community? commuDetail;
+
   @override
   Widget build(BuildContext context) {
-    final commuDetail = ModalRoute.of(context)!.settings.arguments as Community;
+  
 
-    if(isPrivate == null) {
-       _name.text = commuDetail.name;
-       _shortdesc.text = commuDetail.shortdesc;
-       _thumbnail.text = commuDetail.thumbnail;
-       _desc.text = commuDetail.desc;
-       isPrivate = false;
+    if(commuDetail == null) {
+      commuDetail = ModalRoute.of(context)!.settings.arguments as Community;
+       _name.text = commuDetail!.name;
+       _shortdesc.text = commuDetail!.shortdesc;
+       _thumbnail.text = commuDetail!.thumbnail;
+       _desc.text = commuDetail!.desc;
+       // isPrivate = commuDetail!.type; -> No implementation for type yet
     }
 
     return Scaffold(
       // appBar: AppBar(
       //   centerTitle: true,
       //   title: const Text(
-      //     "Edit Community",
+      //     "Post Forum",
       //     style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: 25),
       //   ),
       // ),
       body: WillPopScope(
         onWillPop: () async {
-          Navigator.pop(context, commuDetail.id);
+          Navigator.pop(context, commuDetail!.id);
           return false;
         },
         child: SingleChildScrollView(
           child: Stack(
             children: [
 
-              //Community text
+              //Report text
               Container(
                 margin: const EdgeInsets.only(right: 0, left: 0),
                 height: 180,
                 color: Color.fromRGBO(220, 71, 47, 1),
-                child: Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: const [
-                      Text("Edit", 
-                        style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold, color: Colors.white),
-                      ),
-                      Text("Community", 
-                        style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold, color: Colors.white),
-                      ),
-                    ],
+                child: const Center(
+                  child: Text("Edit Community", 
+                    style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold, color: Colors.white),
                   ),
                 ),
               ),
@@ -93,12 +89,13 @@ class _EditCommuPageState extends State<EditCommuPage>{
                     iconSize: 30,
                     color: Colors.white,
                     onPressed: () {
-                      //Back
+                      Navigator.pop(context, commuDetail!.id);
                     },
                   ),
                 ),   
               ),
 
+              //White box(content)
               Container(
                 margin: const EdgeInsets.only(top: 150, left: 0, right: 0, bottom: 0),
                 child: Container(
@@ -112,13 +109,11 @@ class _EditCommuPageState extends State<EditCommuPage>{
                     ),
                   ),
                   child: Form(
-                    key: _formKey,
+                    key: _formKey, 
                     child: Container(
                       padding: const EdgeInsets.all(20),
                       child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                        
                           TextFormField(
                             controller: _name,
                             decoration: const InputDecoration(
@@ -139,9 +134,7 @@ class _EditCommuPageState extends State<EditCommuPage>{
                               }
                             },
                           ),
-
                           const SizedBox(height: 20),
-
                           TextFormField(
                             controller: _shortdesc,
                             decoration: const InputDecoration(
@@ -162,9 +155,7 @@ class _EditCommuPageState extends State<EditCommuPage>{
                               }
                             },
                           ),
-
                           const SizedBox(height: 20),
-
                           TextFormField(
                             controller: _thumbnail,
                             decoration: const InputDecoration(
@@ -185,9 +176,7 @@ class _EditCommuPageState extends State<EditCommuPage>{
                               }
                             },
                           ),
-
                           const SizedBox(height: 20),
-
                           TextFormField(
                             maxLines: 10,
                             keyboardType: TextInputType.multiline,
@@ -195,7 +184,7 @@ class _EditCommuPageState extends State<EditCommuPage>{
                             decoration: const InputDecoration(
                               hintText: "Description",
                               hintStyle: TextStyle(color: Colors.grey),
-                              enabledBorder: UnderlineInputBorder(
+                              enabledBorder: OutlineInputBorder(
                                 borderSide: BorderSide(
                                   color: Colors.grey
                                 ),
@@ -210,82 +199,58 @@ class _EditCommuPageState extends State<EditCommuPage>{
                               }
                             },
                           ),
-
-                          const SizedBox(height: 20),
-
-                          SwitchListTile(
-                            title: const Text("Private"),
-                            activeColor: Theme.of(context).primaryColor,
-                            subtitle: const Text("If private is on, anyone who want to join this community must have to answer the questions from you first."),
-                            value: isPrivate!, 
-                            onChanged: (selected){
-                              setState(() {
-                                isPrivate = !isPrivate!;
-                              });
-                            }
+                        const SizedBox(height: 20),
+                        SwitchListTile(
+                          title: const Text("Private"),
+                          activeColor: Theme.of(context).primaryColor,
+                          subtitle: const Text("If private is on, anyone who want to join this community must have to answer the questions from you first."),
+                          value: isPrivate, 
+                          onChanged: (selected){
+                            setState(() {
+                              isPrivate = !isPrivate;
+                            });
+                          }
+                        ),
+                        const SizedBox(height: 20),
+                        Visibility(
+                          visible: isPrivate,
+                          child: Column(
+                            children: [
+                              Row(
+                                children: [
+                                  const Text("Question amount",
+                                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                                  ),
+                                  const SizedBox(width: 20),
+                                  DropdownButton(
+                                    //hint: const Text("Select Items : "),
+                                    value: valueChoose,
+                                    items: items.map((valueItem) {
+                                      return DropdownMenuItem(
+                                        value: valueItem,
+                                        child: Text(valueItem),
+                                      );
+                                    }).toList(), 
+                                    onChanged: (value) {
+                                      setState(() {
+                                        valueChoose = value.toString();
+                                        j = int.parse(valueChoose);
+                                      });
+                                    }
+                                  )
+                                ],
+                              ),
+                              Column(
+                                children: [
+                                  for(int i = 1; i <= j; i++)
+                                    TextForm(label: "Add Question $i"),
+                                ],
+                              ),
+                            ],
                           ),
-
+                        ),
                           const SizedBox(height: 20),
-
-                          Visibility(
-                            visible: isPrivate!,
-                            child: Column(
-                              children: [
-                                Row(
-                                  children: [
-                                    const Text("Question amount",
-                                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                                    ),
-                                    const SizedBox(width: 20),
-                                    DropdownButton(
-                                      //hint: const Text("Select Items : "),
-                                      value: valueChoose,
-                                      items: items.map((valueItem) {
-                                        return DropdownMenuItem(
-                                          value: valueItem,
-                                          child: Text(valueItem),
-                                        );
-                                      }).toList(), 
-                                      onChanged: (value) {
-                                        setState(() {
-                                          valueChoose = value.toString();
-                                          j = int.parse(valueChoose);
-                                        });
-                                      }
-                                    )
-                                  ],
-                                ),
-                                Column(
-                                  children: [
-                                    for(int i = 1; i <= j; i++)
-                                      TextFormField(
-                                        controller: null,
-                                        decoration: InputDecoration(
-                                          labelText: "Add Question $i",
-                                          labelStyle: const TextStyle(color: Colors.grey),
-                                          enabledBorder: const UnderlineInputBorder(
-                                            borderSide: BorderSide(
-                                              color: Colors.grey
-                                            ),
-                                          ),
-                                        ),
-                                        validator: (value) {
-                                          if (value == null || value.isEmpty) {
-                                            return "Please enter a question";
-                                          }
-                                          else {
-                                            return null;
-                                          }
-                                        },
-                                      ),
-                                  ],
-                                ),
-                              ],
-                            ),
-                          ),
-
-                          const SizedBox(height: 20),
-
+                          //Button
                           ElevatedButton(
                             style: ElevatedButton.styleFrom(
                               minimumSize: const Size(350, 50),
@@ -294,20 +259,23 @@ class _EditCommuPageState extends State<EditCommuPage>{
                               showDialog(
                                 context: context,
                                 builder: (context) => AlertDialog(
-                                  title: Text("Create"),
-                                  content: Text("Do you want to create this community?"),
+                                  title: Text("Edit Community"),
+                                  content: Text("Do you want to edit this community?"),
                                   actions: [
                                     FlatButton(
-                                      onPressed: (){}, 
+                                      onPressed: (){
+                                        Navigator.pop(context);
+                                      }, 
                                       child: Text("No")
                                     ),
                                     FlatButton(
                                       onPressed: () async {
                                         if(_formKey.currentState!.validate()) {
-                                          var success = await updateCommuDetail(commuDetail.id, _name.text, _shortdesc.text, _thumbnail.text, _desc.text);
+                                          var success = await updateCommuDetail(commuDetail!.id, _name.text, _shortdesc.text, _thumbnail.text, _desc.text);
                                           if (success) {
                                             Fluttertoast.showToast(msg: "Your community has been updated.");
-                                            Navigator.pop(context, commuDetail.id);
+                                            Navigator.pop(context);
+                                            Navigator.pop(context, commuDetail!.id);
                                           }
                                         }
                                       }, 
@@ -320,8 +288,6 @@ class _EditCommuPageState extends State<EditCommuPage>{
                             }, 
                             child: const Text("Edit Community")
                           ),
-
-                          const SizedBox(height: 30),
                         ],
                       ),
                     ),
@@ -330,7 +296,7 @@ class _EditCommuPageState extends State<EditCommuPage>{
               ),
             ],
           ),
-        )
+        ),
       ),
       endDrawer: const NavigationDrawerWidget(),
       bottomNavigationBar: const Navbar(currentIndex: 3),
@@ -362,4 +328,3 @@ class _EditCommuPageState extends State<EditCommuPage>{
     }
   }
 }
-

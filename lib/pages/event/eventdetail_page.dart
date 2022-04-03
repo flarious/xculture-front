@@ -92,14 +92,15 @@ class _EventDetailPageState extends State<EventDetailPage> {
                             itemBuilder: (context) => [
                               PopupMenuItem(
                                 child: const Text("Edit"),
-                                onTap: (){
+                                onTap: () async {
                                   if (AuthHelper.checkAuth() && snapshot.data!.host.id == AuthHelper.auth.currentUser!.uid) {
+                                    await Future.delayed(const Duration(milliseconds: 1));
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(
                                         builder: (context) => const EditEventPage(),
                                         settings: RouteSettings(
-                                          arguments: snapshot.data,),
+                                          arguments: snapshot.data!,),
                                       )
                                     ).then(refreshPage);
                                   }
@@ -322,7 +323,7 @@ class _EventDetailPageState extends State<EventDetailPage> {
     } else {
       Fluttertoast.showToast(msg: ServerResponse.fromJson(jsonDecode(response.body)).message);
       Navigator.pop(context);
-      return Event(id: "", name: "", body: "", interestedAmount: 0, thumbnail: "", location: "", date: DateTime.now().toString(), host: User(id: "", name: "", profilePic: "", bio: "", email: ""), members: []);
+      return Event(id: "", name: "", body: "", interestedAmount: 0, thumbnail: "", location: "", date: DateTime.now().toString(), host: User(id: "", name: "", profilePic: "", bio: "", email: "", tags: []), members: []);
     }
   }
 
