@@ -43,10 +43,129 @@ class _SettingsPageState extends State<SettingsPage> {
   }
   @override
   Widget build(BuildContext context) {
+    return SafeArea(
+      child: Scaffold(
+        body: SingleChildScrollView(
+          child: Stack(
+            children: [
+              // Thumbnail Image
+              Container(
+                margin: const EdgeInsets.only(right: 0, left: 0),
+                height: 180,
+                color: Color.fromRGBO(220, 71, 47, 1),
+                child: const Center(
+                  child: Text("Settings", 
+                    style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold, color: Colors.white),
+                  ),
+                ),
+              ),
+
+              // Iconbutton back
+              Container(
+                margin: const EdgeInsets.only(top: 20, left: 20),
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: Colors.grey.withOpacity(0.8),
+                    shape: BoxShape.circle,
+                  ),
+                  child: IconButton(
+                    visualDensity: VisualDensity.compact,
+                    icon: const Icon(Icons.arrow_back),
+                    iconSize: 30,
+                    color: Colors.white,
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                  ),
+                ),   
+              ),
+
+              // Content
+              Container(
+                // height: 200,
+                margin: const EdgeInsets.only(top: 140, left: 0, right: 0, bottom: 0),
+                child: Container(
+                  padding: const EdgeInsets.only(left: 20, right: 20, top: 20),
+                  width: MediaQuery.of(context).size.width,
+                  decoration: const BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(20),
+                      topRight: Radius.circular(20),
+                    ),
+                  ),
+                  child: Column(
+                    children: [
+                      Row(
+                        children: [
+                          Icon(
+                            Icons.person,
+                            color: Colors.red,
+                          ),
+                          SizedBox(
+                            width: 8,
+                          ),
+                          Text(
+                            "Account",
+                            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                          ),
+                        ],
+                      ),
+                      Divider(
+                        height: 15,
+                        thickness: 2,
+                      ),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      buildAccountOptionRow1(context, "Edit Profile"),
+                      buildAccountOptionRow2(context, "Change Password"),
+                      buildNotificationOptionRow("Recommended System", valNotify5, onChangeFunction5),
+                      SizedBox(
+                        height: 40,
+                      ),
+                      Row(
+                        children: [
+                          Icon(
+                            Icons.volume_up,
+                            color: Colors.red,
+                          ),
+                          SizedBox(
+                            width: 8,
+                          ),
+                          Text(
+                            "Notifications",
+                            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                          ),
+                        ],
+                      ),
+                      Divider(
+                        height: 15,
+                        thickness: 2,
+                      ),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      buildNotificationOptionRow("Comments/Replys", valNotify1,onChangeFunction1),
+                      buildNotificationOptionRow("Community", valNotify2,onChangeFunction2),
+                      buildNotificationOptionRow("Event", valNotify3,onChangeFunction3),
+                      buildNotificationOptionRow("Report", valNotify4, onChangeFunction4),
+                      SizedBox(
+                        height: 50,
+                      ),
+                    ],
+                  ),
+                )
+              )
+            ]
+          )
+        )
+      )
+    );
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.red,
-        elevation: 1,
         leading: IconButton(
           onPressed: () {
             Navigator.of(context).pop();
