@@ -656,8 +656,8 @@ class _ProfilePageState extends State<ProfilePage> with TickerProviderStateMixin
                       ),
                       Container(
                         margin: const EdgeInsets.only(top: 70, left: 0, right: 0, bottom: 0),
-                        child: const NormalProfileWidget(
-                          imagePath: "https://steamuserimages-a.akamaihd.net/ugc/869615759254530873/E55E7391CA55A2131421E856A144897064D32F82/?imw=512&&ima=fit&impolicy=Letterbox&imcolor=%23000000&letterbox=false",
+                        child: NormalProfileWidget(
+                          imagePath: snapshot.data!.profilePic,
                           // imagePath: user.imagePath,
                         )
                       ),
@@ -678,7 +678,7 @@ class _ProfilePageState extends State<ProfilePage> with TickerProviderStateMixin
 
     FutureOr refreshPage(dynamic value) {
     setState(() {
-      // _futureForum = getForums();
+      userDetail = getUserProfile();
       _futureUserEvent = getUserEvents(); 
       _futureUserForum = getUserForums();
      _futureUserCommu = getUserCommu();

@@ -229,13 +229,13 @@ class _NavigationDrawerWidgetState extends State<NavigationDrawerWidget> with Ti
                         child: ListView(
                           children: <Widget>[
                             buildHeader(
-                              urlImage: "https://steamuserimages-a.akamaihd.net/ugc/869615759254530873/E55E7391CA55A2131421E856A144897064D32F82/?imw=512&&ima=fit&impolicy=Letterbox&imcolor=%23000000&letterbox=false",
+                              urlImage: snapshot.data!.profilePic,
                               name: snapshot.data!.name,
                               email: snapshot.data!.email!,
                               onClicked: () => Navigator.of(context).push(MaterialPageRoute(
                                 builder: (context) => UserPage(
                                   name: snapshot.data!.name,
-                                  urlImage: "https://steamuserimages-a.akamaihd.net/ugc/869615759254530873/E55E7391CA55A2131421E856A144897064D32F82/?imw=512&&ima=fit&impolicy=Letterbox&imcolor=%23000000&letterbox=false",
+                                  urlImage: snapshot.data!.profilePic,
                                 ),
                               )),
                             ),
@@ -392,6 +392,7 @@ class _NavigationDrawerWidgetState extends State<NavigationDrawerWidget> with Ti
     FutureOr refreshPage(dynamic value) {
     setState(() {
       // _futureForum = getForums();
+      // userDetail = getUserProfile();
     });
   }
 
