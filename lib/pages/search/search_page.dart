@@ -89,7 +89,7 @@ class _SearchPageState extends State<SearchPage> {
                 child: Container(
                   padding: const EdgeInsets.only(left: 125, top: 30),
                   // padding: EdgeInsets.symmetric(vertical: 20.0),
-                  child: const Text("Search",
+                  child: const Text("Explore",
                     style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: 40),
                   ),
                 ),
@@ -206,7 +206,7 @@ class _SearchPageState extends State<SearchPage> {
                     height: 290,
                     child: Container(
                       height: 250,
-                      margin: const EdgeInsets.only(left: 20, right: 20),
+                      margin: const EdgeInsets.only(left: 5),
                       width: double.maxFinite,
                       child: FutureBuilder<List<Forum>>(
                         builder: (BuildContext context, AsyncSnapshot<List<Forum>> snapshot) {
@@ -337,7 +337,7 @@ class _SearchPageState extends State<SearchPage> {
                     ),
                   ),
                   Container(
-                    margin: const EdgeInsets.only(left: 20, right: 20),
+                    margin: const EdgeInsets.only(left: 5),
                     height: 250,
                     width: double.maxFinite,
                     child: FutureBuilder<List<Event>>(
@@ -463,7 +463,7 @@ class _SearchPageState extends State<SearchPage> {
                     ),
                   ),
                   Container(
-                    margin: const EdgeInsets.only(left: 20, right: 20),
+                    margin: const EdgeInsets.only(left: 5),
                     height: 250,
                     width: double.maxFinite,
                     child: FutureBuilder<List<Community>>(

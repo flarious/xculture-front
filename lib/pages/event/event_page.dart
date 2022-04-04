@@ -202,7 +202,7 @@ class _EventPageState extends State<EventPage> {
 
                   //Event Box
                   Container(
-                    margin: const EdgeInsets.only(left: 2, right: 2),
+                    // margin: const EdgeInsets.only(left: 0),
                     height: 150,
                     width: double.maxFinite,
                     child: FutureBuilder<List<Event>>(

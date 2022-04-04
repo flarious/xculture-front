@@ -228,7 +228,7 @@ class _ForumPageState extends State<ForumPage> {
                   child: Container(
                     height: 250,
                     // color: Colors.red,
-                    margin: const EdgeInsets.only(left: 10, right: 10, bottom: 10),
+                    margin: const EdgeInsets.only(left: 5, bottom: 10),
                     // margin: const EdgeInsets.only(bottom: 10),
                     width: double.maxFinite,
                     child: FutureBuilder<List<Forum>>(

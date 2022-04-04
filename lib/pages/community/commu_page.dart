@@ -195,7 +195,7 @@ class _CommuPageState extends State<CommuPage> {
                       ),
                     ),
                     Container(
-                      margin: const EdgeInsets.only(left: 20, right: 20),
+                      margin: const EdgeInsets.only(left: 5),
                       height: 250,
                       width: double.maxFinite,
                       child: FutureBuilder<List<Community>>(
