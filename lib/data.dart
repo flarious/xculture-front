@@ -376,6 +376,46 @@ class Event {
   }
 }
 
+class Room {
+  String id;
+  String name;
+
+  Room({
+    required this.id,
+    required this.name,
+  });
+
+  factory Room.fromJson(Map<String, dynamic> json) {
+    return Room(
+      id: json['id'], 
+      name: json['name']
+    );
+  }
+
+}
+
+class Message {
+  String id;
+  String message;
+  User sender;
+  String sentDate;
+  Message? repliedTo;
+
+  Message(this.id, this.message, this.sender, this.sentDate, { this.repliedTo });
+
+  factory Message.fromJson(Map<String, dynamic> json) {
+    return Message(json['id'], json['message'], getSenderFromJson(json['sender']), json['sent_date'], repliedTo: Message.fromJsonNoReply(json['repliedTo']));
+  }
+
+  factory Message.fromJsonNoReply(Map<String, dynamic> json) {
+    return Message(json['id'], json['message'], getSenderFromJson(json['sender']), json['sent_date']);
+  }
+
+  static User getSenderFromJson(user) {
+    return User.formJson(user);
+  }
+}
+
 class ServerResponse {
   final int status;
   final String message;

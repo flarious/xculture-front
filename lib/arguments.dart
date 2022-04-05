@@ -21,3 +21,13 @@ class EditReplyArguments {
     required this.reply,
   });
 }
+
+class ChatRoomArguments {
+  final String commuID;
+  final Room room;
+
+  ChatRoomArguments({
+    required this.commuID,
+    required this.room,
+  });
+}
