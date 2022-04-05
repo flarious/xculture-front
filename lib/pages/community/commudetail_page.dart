@@ -6,6 +6,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
 import 'package:xculturetestapi/data.dart';
 import 'package:xculturetestapi/helper/auth.dart';
+import 'package:xculturetestapi/pages/community/chatroom/room_page.dart';
 import 'package:xculturetestapi/pages/community/commuedit_page.dart';
 
 import '../../navbar.dart';
@@ -108,7 +109,7 @@ class _CommuDetailPageState extends State<CommuDetailPage> {
                             ),
                             PopupMenuItem(
                               child: const Text("Delete"),
-                              onTap: (){
+                              onTap: () {
                                 //delete
                               },
                             ),
@@ -206,76 +207,28 @@ class _CommuDetailPageState extends State<CommuDetailPage> {
                             /*(AuthHelper.checkAuth() && snapshot.data!.members.contains(AuthHelper.auth.currentUser!.uid) )*/ 
                             toggle ?
                             ElevatedButton(
-                              onPressed: (){
-                                showDialog(
-                                  context: context,
-                                  builder: (context) => AlertDialog(
-                                    title: Text("Join"),
-                                    content: Text("Do you want to join?"),
-                                    actions: [
-                                      FlatButton(
-                                        onPressed: (){}, 
-                                        child: Text("No")
-                                      ),
-                                      FlatButton(
-                                        onPressed: () async {
-                                          if(snapshot.data!.owner.id != AuthHelper.auth.currentUser!.uid) {
-                                            var success = await unjoinCommu(snapshot.data!.id);
-                                            if (success) {
-                                              Fluttertoast.showToast(msg: "Leaved");
-                                              Navigator.pop(context);
-                                            }
-                                            setState(() {
-                                              toggle = !toggle;
-                                            });
-                                          }
-                                          else {
-                                            Fluttertoast.showToast(msg: "Action not allowed");
-                                          }
-                                        }, 
-                                        child: Text("Yes", style: TextStyle(color: Colors.deepOrange)),
-                                      ),
-                                    ],
-                                    elevation: 24.0,
-                                  ),
+                              onPressed: () {
+                                Navigator.push(
+                                  context, 
+                                  MaterialPageRoute(
+                                    builder: (context) => const RoomPage(),
+                                    settings: RouteSettings(
+                                      arguments: snapshot.data!
+                                    )
+                                  )
                                 );
                               }, 
-                              child: const SizedBox(
-                                width: double.infinity,
-                                height: 50,
-                                child: Center(
-                                  child: Text("Leave community")
-                                ),
-                              ),
+                              child: const Text("Discuss Room")
                             ) : 
                             ElevatedButton(
-                              onPressed: (){
-                                showDialog(
-                                  context: context,
-                                  builder: (context) => AlertDialog(
-                                    title: Text("Join"),
-                                    content: Text("Do you want to join?"),
-                                    actions: [
-                                      FlatButton(
-                                        onPressed: (){}, 
-                                        child: Text("No")
-                                      ),
-                                      FlatButton(
-                                        onPressed: () async {
-                                          var success = await joinCommu(snapshot.data!.id);
-                                          if (success) {
-                                            Fluttertoast.showToast(msg: "Joined");
-                                          }
-                                          setState(() {
-                                            toggle = !toggle;
-                                          });
-                                        }, 
-                                        child: Text("Yes", style: TextStyle(color: Colors.deepOrange)),
-                                      ),
-                                    ],
-                                    elevation: 24.0,
-                                  ),
-                                );
+                              onPressed: () async {
+                                var success = await joinCommu(snapshot.data!.id);
+                                if (success) {
+                                  Fluttertoast.showToast(msg: "Joined");
+                                }
+                                setState(() {
+                                  toggle = !toggle;
+                                });
                               }, 
                               child: const SizedBox(
                                 width: double.infinity,
@@ -313,7 +266,6 @@ class _CommuDetailPageState extends State<CommuDetailPage> {
   }
 
   Future<Community> getCommu(commuID) async {
-    print(commuID);
     final response =
         await http.get(Uri.parse('http://10.0.2.2:3000/communities/$commuID'));
 
@@ -330,24 +282,6 @@ class _CommuDetailPageState extends State<CommuDetailPage> {
     final userToken = await AuthHelper.getToken();
     final response = await http.put(
       Uri.parse('http://10.0.2.2:3000/communities/$commuID/join'),
-      headers: <String, String> {
-        'Authorization' : 'bearer $userToken'
-      }
-    );
-
-    if (response.statusCode == 200) {
-      return true;
-    }
-    else {
-      Fluttertoast.showToast(msg: ServerResponse.fromJson(jsonDecode(response.body)).message);
-      return false;
-    }
-  }
-
-  Future<bool> unjoinCommu(commuID) async {
-    final userToken = await AuthHelper.getToken();
-    final response = await http.put(
-      Uri.parse('http://10.0.2.2:3000/communities/$commuID/unjoin'),
       headers: <String, String> {
         'Authorization' : 'bearer $userToken'
       }

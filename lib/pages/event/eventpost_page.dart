@@ -41,7 +41,6 @@ class _EventPostPageState extends State<EventPostPage>{
 
   @override
   Widget build(BuildContext context) {
-    // _name.text = "name";
     return Scaffold(
       // appBar: AppBar(
       //   centerTitle: true,
