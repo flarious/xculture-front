@@ -8,6 +8,7 @@ import 'package:xculturetestapi/arguments.dart';
 import 'package:xculturetestapi/data.dart';
 import 'package:http/http.dart' as http;
 import 'package:xculturetestapi/helper/auth.dart';
+import 'package:xculturetestapi/pages/community/chatroom/roomedit_page.dart';
 
 class ChatRoomPage extends StatefulWidget {
   const ChatRoomPage({ Key? key }) : super(key: key);
@@ -45,14 +46,54 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
                 itemBuilder: (context) => [
                   PopupMenuItem(
                     child: const Text("Edit"),
-                    onTap: (){
-                      //
+                    onTap: () async {
+                      // 
+                      await Future.delayed(const Duration(milliseconds: 1));
+                      await Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const EditRoomPage(),
+                          settings: RouteSettings(
+                            arguments: ChatRoomArguments(commuID: args.commuID, room: args.room)),
+                        )
+                      );
+                      setState(() {
+                        
+                      });
                     },
                   ),
                   PopupMenuItem(
                     child: const Text("Delete"),
                     onTap: (){
                       //delete
+                      showDialog(
+                        context: context,
+                        builder: (context) => AlertDialog(
+                          title: const Text("Delete"),
+                          content: const Text("Do you really want to delete this room?"),
+                          actions: [
+                            TextButton(
+                              onPressed: (){
+                                //No
+                                Navigator.pop(context);
+                              }, 
+                              child: const Text("No", style: TextStyle(color: Colors.grey)),
+                            ),
+                            TextButton(
+                              onPressed: () async {
+                                var success = await deleteRoom(args.room.id);
+                                if (success) {
+                                  Fluttertoast.showToast(msg: "Deleted");
+                                  Navigator.pop(context);
+                                  Navigator.pop(context, args.commuID);
+                                }
+                              }, 
+                              child: const Text("Yes", style: TextStyle(color: Colors.red)),
+                            ),
+                          ],
+                          elevation: 24.0,
+                        ),
+                      ); 
                     },
                   ),
                 ],
@@ -261,6 +302,24 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
     );
 
     if (response.statusCode == 201) {
+      return true;
+    }
+    else {
+      Fluttertoast.showToast(msg: ServerResponse.fromJson(jsonDecode(response.body)).message);
+      return false;
+    }
+  }
+
+  Future<bool> deleteRoom(roomId) async {
+    final userToken = await AuthHelper.getToken();
+    final response = await http.delete(
+      Uri.parse("http://10.0.2.2:3000/communities/$roomId"),
+      headers: <String, String> {
+        'Authorization' : 'bearer $userToken'
+      }
+    );
+
+    if (response.statusCode == 200) {
       return true;
     }
     else {

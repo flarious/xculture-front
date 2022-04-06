@@ -271,6 +271,7 @@ class _EventPostPageState extends State<EventPostPage>{
                                           if (success) {
                                             Fluttertoast.showToast(msg: "Your event has been created.");
                                             Navigator.pop(context);
+                                            Navigator.pop(context);
                                           }
                                         }
                                       }, 
