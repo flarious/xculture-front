@@ -11,6 +11,7 @@ import 'package:xculturetestapi/pages/community/commuedit_page.dart';
 
 import '../../navbar.dart';
 import '../../widgets/hamburger_widget.dart';
+import '../report/report_page.dart';
 
 class CommuDetailPage extends StatefulWidget {
   const CommuDetailPage({ Key? key }) : super(key: key);
@@ -91,8 +92,9 @@ class _CommuDetailPageState extends State<CommuDetailPage> {
                           itemBuilder: (context) => [
                             PopupMenuItem(
                               child: const Text("Edit"),
-                              onTap: (){
+                              onTap: () async {
                                 if (AuthHelper.checkAuth() && snapshot.data!.owner.id == AuthHelper.auth.currentUser!.uid) {
+                                  await Future.delayed(const Duration(milliseconds: 1));
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
@@ -109,15 +111,62 @@ class _CommuDetailPageState extends State<CommuDetailPage> {
                             ),
                             PopupMenuItem(
                               child: const Text("Delete"),
-                              onTap: () {
-                                //delete
-                              },
+                              onTap: () async {
+                                  //delete
+                                  if (AuthHelper.checkAuth() && snapshot.data!.owner.id == AuthHelper.auth.currentUser!.uid) {
+                                    showDialog(
+                                      context: context,
+                                      builder: (context) => AlertDialog(
+                                        title: const Text("Delete"),
+                                        content: const Text("Do you really want to delete this event?"),
+                                        actions: [
+                                          TextButton(
+                                            onPressed: (){
+                                              //No
+                                              Navigator.pop(context);
+                                            }, 
+                                            child: const Text("No", style: TextStyle(color: Colors.grey)),
+                                          ),
+                                          TextButton(
+                                            onPressed: () async {
+                                              if(snapshot.data!.owner.id != AuthHelper.auth.currentUser!.uid) {
+                                                var success = await deleteCommu(snapshot.data!.id);
+                                                if (success) {
+                                                  Fluttertoast.showToast(msg: "Deleted");
+                                                  Navigator.pop(context);
+                                                  Navigator.pop(context);
+                                                }
+                                              } 
+                                              else {
+                                                Fluttertoast.showToast(msg: "You are not the owner");
+                                              }
+                                            }, 
+                                            child: const Text("Yes", style: TextStyle(color: Colors.red)),
+                                          ),
+                                        ],
+                                        elevation: 24.0,
+                                      ),
+                                    ); 
+                                  }
+                                  else {
+                                    Fluttertoast.showToast(msg: "You are not the owner");
+                                  }
+                                },
                             ),
                             PopupMenuItem(
                               child: const Text("Report"),
-                              onTap: (){
-                                //report
-                              },
+                              onTap: () async {
+                                  await Future.delayed(const Duration(milliseconds: 1));
+                                  Navigator.push(
+                                    context, 
+                                    MaterialPageRoute(
+                                      builder: (context) => const ReportPage(),
+                                      settings: RouteSettings(
+                                        arguments: snapshot.data!.id,
+                                      ),
+                                    )
+                                  ).then(refreshPage);
+                                }
                             ),
                           ],
                           child: const Icon(
@@ -282,6 +331,24 @@ class _CommuDetailPageState extends State<CommuDetailPage> {
     final userToken = await AuthHelper.getToken();
     final response = await http.put(
       Uri.parse('http://10.0.2.2:3000/communities/$commuID/join'),
+      headers: <String, String> {
+        'Authorization' : 'bearer $userToken'
+      }
+    );
+
+    if (response.statusCode == 200) {
+      return true;
+    }
+    else {
+      Fluttertoast.showToast(msg: ServerResponse.fromJson(jsonDecode(response.body)).message);
+      return false;
+    }
+  }
+
+  Future<bool> deleteCommu(commuID) async {
+    final userToken = await AuthHelper.getToken();
+    final response = await http.delete(
+      Uri.parse("http://10.0.2.2:3000/communities/$commuID/delete"),
       headers: <String, String> {
         'Authorization' : 'bearer $userToken'
       }

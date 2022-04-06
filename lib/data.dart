@@ -416,6 +416,20 @@ class Message {
   }
 }
 
+class ReportCategory {
+  final int id;
+  final String category;
+
+  ReportCategory({
+    required this.id,
+    required this.category,
+  });
+
+  factory ReportCategory.fromJson(Map<String, dynamic> json) {
+    return ReportCategory(id: json['id'], category: json['category']);
+  }
+}
+
 class ServerResponse {
   final int status;
   final String message;

@@ -86,13 +86,14 @@ class _RoomPageState extends State<RoomPage> {
                         itemBuilder: (context) => [
                           PopupMenuItem(
                             child: const Text("Member"),
-                            onTap: (){
+                            onTap: () async {
+                              await Future.delayed(const Duration(milliseconds: 1));
                               Navigator.push(
                                 context, 
                                 MaterialPageRoute(
                                   builder: (context) => const MemberPage(),
                                   settings: RouteSettings(
-                                    arguments: commu
+                                    arguments: commu.members
                                   )
                                 )
                               );
