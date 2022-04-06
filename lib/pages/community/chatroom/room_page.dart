@@ -30,300 +30,302 @@ class _RoomPageState extends State<RoomPage> {
 
     final TextEditingController _roomName = TextEditingController();
 
-    return Scaffold(
-      backgroundColor: Colors.white,
-      body: SingleChildScrollView(
-        child: FutureBuilder<List<Room>>(
-          future: rooms,
-          builder: (context, AsyncSnapshot<List<Room>> snapshot) {
-            if (snapshot.hasData) {
-              return Stack(
-                children: [
-                  //Post Forum text
-                  Container(
-                    margin: const EdgeInsets.only(right: 0, left: 0),
-                    height: 180,
-                    color: Color.fromRGBO(220, 71, 47, 1),
-                    child: Center(
-                      child: Text("Rooms", 
-                        style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold, color: Colors.white),
-                      ),
-                    ),
-                  ),
-            
-                  //Back Icon
-                  Container(
-                    margin: const EdgeInsets.only(top: 40, left: 20),
-                    child: Container(
-                      decoration: BoxDecoration(
-                        color: Colors.grey.withOpacity(0.8),
-                        shape: BoxShape.circle,
-                      ),
-                      child: IconButton(
-                        visualDensity: VisualDensity.compact,
-                        icon: const Icon(Icons.arrow_back),
-                        iconSize: 30,
-                        color: Colors.white,
-                        onPressed: () {
-                          //Back
-                          Navigator.pop(context, commu.id);
-                        },
-                      ),
-                    ),   
-                  ),
-            
-                  // Iconbutton menu
-                  Container(
-                    alignment: Alignment.centerRight,
-                    margin: const EdgeInsets.only(top: 40, right: 20),
-                    child: Container(
-                      padding: const EdgeInsets.all(8),
-                      decoration: BoxDecoration(
-                        color: Colors.grey.withOpacity(0.8),
-                        shape: BoxShape.circle,
-                      ),
-                      child: PopupMenuButton(
-                        itemBuilder: (context) => [
-                          PopupMenuItem(
-                            child: const Text("Member"),
-                            onTap: () async {
-                              await Future.delayed(const Duration(milliseconds: 1));
-                              Navigator.push(
-                                context, 
-                                MaterialPageRoute(
-                                  builder: (context) => const MemberPage(),
-                                  settings: RouteSettings(
-                                    arguments: commu.members
-                                  )
-                                )
-                              );
-                            },
-                          ),
-                          PopupMenuItem(
-                            child: const Text("Leave"),
-                            onTap: () {
-                              showDialog(
-                                context: context,
-                                builder: (context) => AlertDialog(
-                                  title: Text("Leave"),
-                                  content: Text("Do you want to leave?"),
-                                  actions: [
-                                    FlatButton(
-                                      onPressed: (){
-                                        Navigator.pop(context, commu.id);
-                                      }, 
-                                      child: Text("No")
-                                    ),
-                                    FlatButton(
-                                      onPressed: () async {
-                                        if(commu.owner.id != AuthHelper.auth.currentUser!.uid) {
-                                          var success = await unjoinCommu(commu.id);
-                                          if (success) {
-                                            Fluttertoast.showToast(msg: "Leaved");
-                                            Navigator.pop(context);
-                                            Navigator.pop(context, commu.id);
-                                          }
-                                        }
-                                        else {
-                                          Fluttertoast.showToast(msg: "Action not allowed");
-                                        }
-                                      }, 
-                                      child: Text("Yes", style: TextStyle(color: Colors.deepOrange)),
-                                    ),
-                                  ],
-                                  elevation: 24.0,
-                                ),
-                              );
-                            },
-                          )
-                        ],
-                        child: const Icon(
-                          Icons.more_vert,
-                          color: Colors.white,
-                          size: 30,
-                        ), 
-                      ),
-                    ),
-                  ),
-            
-                  Container(
-                    margin: const EdgeInsets.only(top: 150, left: 0, right: 0, bottom: 0),
-                    child: Container(
-                      padding: const EdgeInsets.only(left: 20, right: 20, top: 20),
-                      width: MediaQuery.of(context).size.width,
-                      decoration: const BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(20),
-                          topRight: Radius.circular(20),
+    return SafeArea(
+      child: Scaffold(
+        backgroundColor: Colors.white,
+        body: SingleChildScrollView(
+          child: FutureBuilder<List<Room>>(
+            future: rooms,
+            builder: (context, AsyncSnapshot<List<Room>> snapshot) {
+              if (snapshot.hasData) {
+                return Stack(
+                  children: [
+                    //Post Forum text
+                    Container(
+                      margin: const EdgeInsets.only(right: 0, left: 0),
+                      height: 180,
+                      color: Color.fromRGBO(220, 71, 47, 1),
+                      child: Center(
+                        child: Text("Rooms", 
+                          style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold, color: Colors.white),
                         ),
                       ),
+                    ),
+              
+                    //Back Icon
+                    Container(
+                      margin: const EdgeInsets.only(top: 40, left: 20),
                       child: Container(
-                        padding: const EdgeInsets.all(10),
-                        child: Column(
-                          children: [
-                            ListView.builder(
-                              shrinkWrap: true,
-                              itemCount: snapshot.data!.length,
-                              itemBuilder: (context, index) {
-                                return Column(
-                                  children: [
-                                    InkWell(
-                                      child: ClipRRect(
-                                        borderRadius: BorderRadius.circular(20),
-                                        child: BackdropFilter(
-                                          filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-                                          child: Container(
-                                            height: 70,
-                                            width: double.maxFinite,
-                                            decoration: BoxDecoration(
-                                              gradient: LinearGradient(colors: [
-                                                Colors.lightBlue.withOpacity(0.2),
-                                                Colors.lightBlue.withOpacity(0.05),
-                                              ], begin: Alignment.topLeft, end: Alignment.bottomRight),
-                                              borderRadius: BorderRadius.circular(20)
-                                            ),
-                                            child: Row(
-                                              children: [
-                                                const SizedBox(width: 30),
-                                                Text("# ",
-                                                  style: TextStyle(fontSize: 20.0),
-                                                ),
-                                                Text(snapshot.data![index].name,
-                                                  style: TextStyle(fontSize: 20.0),
-                                                ),
-                                                Spacer(),
-                                                Padding(
-                                                  padding: EdgeInsets.symmetric(horizontal: 20),
-                                                  child: Icon(
-                                                    Icons.arrow_forward_ios,
-                                                  ),
-                                                ),
-                                              ]
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                      onTap: (){
-                                        Navigator.push(
-                                          context, 
-                                          MaterialPageRoute(
-                                            builder: (context) => const ChatRoomPage(),
-                                            settings: RouteSettings(
-                                              arguments: ChatRoomArguments(commuID: commu.id, room: snapshot.data![index])
-                                            )
-                                          )
-                                        );
-                                      },
-                                    ),
-                    
-                                    const SizedBox(height: 20),
-                                  ],
+                        decoration: BoxDecoration(
+                          color: Colors.grey.withOpacity(0.8),
+                          shape: BoxShape.circle,
+                        ),
+                        child: IconButton(
+                          visualDensity: VisualDensity.compact,
+                          icon: const Icon(Icons.arrow_back),
+                          iconSize: 30,
+                          color: Colors.white,
+                          onPressed: () {
+                            //Back
+                            Navigator.pop(context, commu.id);
+                          },
+                        ),
+                      ),   
+                    ),
+              
+                    // Iconbutton menu
+                    Container(
+                      alignment: Alignment.centerRight,
+                      margin: const EdgeInsets.only(top: 40, right: 20),
+                      child: Container(
+                        padding: const EdgeInsets.all(8),
+                        decoration: BoxDecoration(
+                          color: Colors.grey.withOpacity(0.8),
+                          shape: BoxShape.circle,
+                        ),
+                        child: PopupMenuButton(
+                          itemBuilder: (context) => [
+                            PopupMenuItem(
+                              child: const Text("Member"),
+                              onTap: () async {
+                                await Future.delayed(const Duration(milliseconds: 1));
+                                Navigator.push(
+                                  context, 
+                                  MaterialPageRoute(
+                                    builder: (context) => const MemberPage(),
+                                    settings: RouteSettings(
+                                      arguments: commu.members
+                                    )
+                                  )
                                 );
-                              }
+                              },
                             ),
-                          
-                            Visibility(
-                              visible: isPost,
-                              child: Padding(
-                                padding: const EdgeInsets.only(bottom: 20),
-                                child: Row(
-                                  children: [
-                                    Expanded(
-                                      child: Container(
-                                        height: 50,
-                                        decoration: BoxDecoration(
-                                          color: Colors.grey[200],
-                                          borderRadius: BorderRadius.circular(20)
-                                        ),
-                                        child: Align(
-                                          alignment: Alignment.centerLeft,
-                                          child: TextFormField(
-                                            controller: _roomName,
-                                            decoration: InputDecoration(
-                                              contentPadding: const EdgeInsets.only(left: 30),
-                                              hintText: "Enter room name",
-                                              border: InputBorder.none,
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                    Material(
-                                      color: Colors.white,
-                                      child: IconButton(
-                                        onPressed: () {
-                                          setState(() {
-                                            isPost = !isPost;
-                                          });
+                            PopupMenuItem(
+                              child: const Text("Leave"),
+                              onTap: () {
+                                showDialog(
+                                  context: context,
+                                  builder: (context) => AlertDialog(
+                                    title: Text("Leave"),
+                                    content: Text("Do you want to leave?"),
+                                    actions: [
+                                      FlatButton(
+                                        onPressed: (){
+                                          Navigator.pop(context, commu.id);
                                         }, 
-                                        icon: Icon(Icons.close),
-                                        color: Colors.red,
-                                        splashRadius: 20,
+                                        child: Text("No")
                                       ),
-                                    ),
-                                    Material(
-                                      color: Colors.white,
-                                      child: IconButton(
+                                      FlatButton(
                                         onPressed: () async {
-                                          if (_roomName.text != "") {
-                                            var success = await sendRoomDetail(commu.id, _roomName.text); 
+                                          if(commu.owner.id != AuthHelper.auth.currentUser!.uid) {
+                                            var success = await unjoinCommu(commu.id);
                                             if (success) {
-                                              Fluttertoast.showToast(msg: "Your community have been created.");
-                                              setState(() {
-                                                
-                                              });
+                                              Fluttertoast.showToast(msg: "Leaved");
+                                              Navigator.pop(context);
+                                              Navigator.pop(context, commu.id);
                                             }
                                           }
+                                          else {
+                                            Fluttertoast.showToast(msg: "Action not allowed");
+                                          }
                                         }, 
-                                        icon: Icon(Icons.done),
-                                        color: Colors.green,
-                                        splashRadius: 20,
+                                        child: Text("Yes", style: TextStyle(color: Colors.deepOrange)),
                                       ),
-                                    ),
-                                  ],
-                                ),
+                                    ],
+                                    elevation: 24.0,
+                                  ),
+                                );
+                              },
+                            )
+                          ],
+                          child: const Icon(
+                            Icons.more_vert,
+                            color: Colors.white,
+                            size: 30,
+                          ), 
+                        ),
+                      ),
+                    ),
+              
+                    Container(
+                      margin: const EdgeInsets.only(top: 150, left: 0, right: 0, bottom: 0),
+                      child: Container(
+                        padding: const EdgeInsets.only(left: 20, right: 20, top: 20),
+                        width: MediaQuery.of(context).size.width,
+                        decoration: const BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(20),
+                            topRight: Radius.circular(20),
+                          ),
+                        ),
+                        child: Container(
+                          padding: const EdgeInsets.all(10),
+                          child: Column(
+                            children: [
+                              ListView.builder(
+                                shrinkWrap: true,
+                                itemCount: snapshot.data!.length,
+                                itemBuilder: (context, index) {
+                                  return Column(
+                                    children: [
+                                      InkWell(
+                                        child: ClipRRect(
+                                          borderRadius: BorderRadius.circular(20),
+                                          child: BackdropFilter(
+                                            filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+                                            child: Container(
+                                              height: 70,
+                                              width: double.maxFinite,
+                                              decoration: BoxDecoration(
+                                                gradient: LinearGradient(colors: [
+                                                  Colors.lightBlue.withOpacity(0.2),
+                                                  Colors.lightBlue.withOpacity(0.05),
+                                                ], begin: Alignment.topLeft, end: Alignment.bottomRight),
+                                                borderRadius: BorderRadius.circular(20)
+                                              ),
+                                              child: Row(
+                                                children: [
+                                                  const SizedBox(width: 30),
+                                                  Text("# ",
+                                                    style: TextStyle(fontSize: 20.0),
+                                                  ),
+                                                  Text(snapshot.data![index].name,
+                                                    style: TextStyle(fontSize: 20.0),
+                                                  ),
+                                                  Spacer(),
+                                                  Padding(
+                                                    padding: EdgeInsets.symmetric(horizontal: 20),
+                                                    child: Icon(
+                                                      Icons.arrow_forward_ios,
+                                                    ),
+                                                  ),
+                                                ]
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                        onTap: (){
+                                          Navigator.push(
+                                            context, 
+                                            MaterialPageRoute(
+                                              builder: (context) => const ChatRoomPage(),
+                                              settings: RouteSettings(
+                                                arguments: ChatRoomArguments(commuID: commu.id, room: snapshot.data![index])
+                                              )
+                                            )
+                                          );
+                                        },
+                                      ),
+                      
+                                      const SizedBox(height: 20),
+                                    ],
+                                  );
+                                }
                               ),
-                            ),
                             
-                            InkWell(
-                              child: ClipRRect(
-                                borderRadius: BorderRadius.circular(20),
-                                child: BackdropFilter(
-                                  filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-                                  child: Container(
-                                    height: 50,
-                                    alignment: Alignment.center,
-                                    decoration: BoxDecoration(
-                                      color: Color.fromRGBO(220, 71, 47, 1),
-                                      borderRadius: BorderRadius.circular(20)
-                                    ),
-                                    child: Icon(
-                                      Icons.add_circle,
-                                      color: Colors.white,
-                                      size: 37,
-                                    ),
+                              Visibility(
+                                visible: isPost,
+                                child: Padding(
+                                  padding: const EdgeInsets.only(bottom: 20),
+                                  child: Row(
+                                    children: [
+                                      Expanded(
+                                        child: Container(
+                                          height: 50,
+                                          decoration: BoxDecoration(
+                                            color: Colors.grey[200],
+                                            borderRadius: BorderRadius.circular(20)
+                                          ),
+                                          child: Align(
+                                            alignment: Alignment.centerLeft,
+                                            child: TextFormField(
+                                              controller: _roomName,
+                                              decoration: InputDecoration(
+                                                contentPadding: const EdgeInsets.only(left: 30),
+                                                hintText: "Enter room name",
+                                                border: InputBorder.none,
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                      Material(
+                                        color: Colors.white,
+                                        child: IconButton(
+                                          onPressed: () {
+                                            setState(() {
+                                              isPost = !isPost;
+                                            });
+                                          }, 
+                                          icon: Icon(Icons.close),
+                                          color: Colors.red,
+                                          splashRadius: 20,
+                                        ),
+                                      ),
+                                      Material(
+                                        color: Colors.white,
+                                        child: IconButton(
+                                          onPressed: () async {
+                                            if (_roomName.text != "") {
+                                              var success = await sendRoomDetail(commu.id, _roomName.text); 
+                                              if (success) {
+                                                Fluttertoast.showToast(msg: "Your community have been created.");
+                                                setState(() {
+                                                  
+                                                });
+                                              }
+                                            }
+                                          }, 
+                                          icon: Icon(Icons.done),
+                                          color: Colors.green,
+                                          splashRadius: 20,
+                                        ),
+                                      ),
+                                    ],
                                   ),
                                 ),
                               ),
-                              onTap: (){
-                                setState(() {
-                                  isPost = !isPost;
-                                });
-                              },
-                            ),
-                          ],
+                              
+                              InkWell(
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(20),
+                                  child: BackdropFilter(
+                                    filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+                                    child: Container(
+                                      height: 50,
+                                      alignment: Alignment.center,
+                                      decoration: BoxDecoration(
+                                        color: Color.fromRGBO(220, 71, 47, 1),
+                                        borderRadius: BorderRadius.circular(20)
+                                      ),
+                                      child: Icon(
+                                        Icons.add_circle,
+                                        color: Colors.white,
+                                        size: 37,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                onTap: (){
+                                  setState(() {
+                                    isPost = !isPost;
+                                  });
+                                },
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                ],
-              );
-            }
-            else {
-              return const CircularProgressIndicator();
-            }
-          },
+                  ],
+                );
+              }
+              else {
+                return const CircularProgressIndicator();
+              }
+            },
+          ),
         ),
       ),
     );
