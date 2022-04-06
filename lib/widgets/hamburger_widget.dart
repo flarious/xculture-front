@@ -11,6 +11,7 @@ import 'package:xculturetestapi/pages/hamburger/profilepic_page.dart';
 import 'package:xculturetestapi/pages/hamburger/your_forum_page.dart';
 import 'package:xculturetestapi/pages/hamburger/your_community_page.dart';
 import 'package:xculturetestapi/pages/hamburger/your_event_page.dart';
+import 'package:xculturetestapi/pages/splash/splash_screen.dart';
 // import 'package:xculturetestapi/model/user.dart';
 import 'package:xculturetestapi/utils/user_info.dart';
 
@@ -384,7 +385,10 @@ class _NavigationDrawerWidgetState extends State<NavigationDrawerWidget> with Ti
       break;
       case 5:
         AuthHelper.signOut();     
-        Navigator.pop(context);     
+        // Navigator.pop(context);
+        Navigator.of(context).push(MaterialPageRoute(
+          builder: (context) => SplashScreen(),
+        ));     
     }
   } //selected page
 
