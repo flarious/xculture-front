@@ -40,7 +40,7 @@ class _EventDetailPageState extends State<EventDetailPage> {
               if (snapshot.hasData) {
                   toggle = (AuthHelper.checkAuth() && snapshot.data!.members.map((member) => member.id).contains(AuthHelper.auth.currentUser!.uid));
                   var dt = DateTime.parse(snapshot.data!.date).toLocal();
-                  String dateEvent = DateFormat('MMMM dd, yyyy').format(dt);
+                  String dateEvent = DateFormat('MMMM dd, yyyy – HH:mm a').format(dt);
                   
                   return Stack(
                     children: [
