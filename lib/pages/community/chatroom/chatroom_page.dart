@@ -120,7 +120,7 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
                                 padding: const EdgeInsets.all(5.0),
                                 child: CircleAvatar(
                                   radius: 15,
-                                  backgroundImage: AssetImage("assets/images/tomoe.jpg"),
+                                  backgroundImage: NetworkImage(message.sender.profilePic),
                                 ),
                               ),
                               Padding(
