@@ -116,6 +116,7 @@ class _EventDetailPageState extends State<EventDetailPage> {
                                 onTap: () async {
                                   //delete
                                   if (AuthHelper.checkAuth() && snapshot.data!.host.id == AuthHelper.auth.currentUser!.uid) {
+                                    await Future.delayed(const Duration(milliseconds: 1));
                                     showDialog(
                                       context: context,
                                       builder: (context) => AlertDialog(
@@ -131,7 +132,7 @@ class _EventDetailPageState extends State<EventDetailPage> {
                                           ),
                                           TextButton(
                                             onPressed: () async {
-                                              if(snapshot.data!.host.id != AuthHelper.auth.currentUser!.uid) {
+                                              if(snapshot.data!.host.id == AuthHelper.auth.currentUser!.uid) {
                                                 var success = await deleteEvent(snapshot.data!.id);
                                                 if (success) {
                                                   Fluttertoast.showToast(msg: "Deleted");
@@ -415,7 +416,7 @@ class _EventDetailPageState extends State<EventDetailPage> {
   Future<bool> deleteEvent(eventID) async {
     final userToken = await AuthHelper.getToken();
     final response = await http.delete(
-      Uri.parse("http://10.0.2.2:3000/events/$eventID/delete"),
+      Uri.parse("http://10.0.2.2:3000/events/$eventID"),
       headers: <String, String> {
         'Authorization' : 'bearer $userToken'
       }

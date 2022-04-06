@@ -787,6 +787,24 @@ class _ForumDetailPageState extends State<ForumDetailPage> {
     }
   }
 
+  Future<bool> deleteForum(forumID) async {
+    final userToken = await AuthHelper.getToken();
+    final response = await http.delete(
+      Uri.parse("http://10.0.2.2:3000/forums/$forumID"),
+      headers: <String, String> {
+        'Authorization' : 'bearer $userToken'
+      }
+    );
+
+    if (response.statusCode == 200) {
+      return true;
+    }
+    else {
+      Fluttertoast.showToast(msg: ServerResponse.fromJson(jsonDecode(response.body)).message);
+      return false;
+    }
+  }
+
   Future<bool> sendCommentDetail(forumID, content, incognito) async {
     final userToken = await AuthHelper.getToken();
 

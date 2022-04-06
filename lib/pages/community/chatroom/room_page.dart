@@ -89,7 +89,7 @@ class _RoomPageState extends State<RoomPage> {
                               child: const Text("Member"),
                               onTap: () async {
                                 await Future.delayed(const Duration(milliseconds: 1));
-                                Navigator.push(
+                                await Navigator.push(
                                   context, 
                                   MaterialPageRoute(
                                     builder: (context) => const MemberPage(),
@@ -98,11 +98,15 @@ class _RoomPageState extends State<RoomPage> {
                                     )
                                   )
                                 );
+                                setState(() {
+                                  
+                                });
                               },
                             ),
                             PopupMenuItem(
                               child: const Text("Leave"),
-                              onTap: () {
+                              onTap: () async {
+                                await Future.delayed(const Duration(milliseconds: 1));
                                 showDialog(
                                   context: context,
                                   builder: (context) => AlertDialog(
@@ -205,8 +209,8 @@ class _RoomPageState extends State<RoomPage> {
                                             ),
                                           ),
                                         ),
-                                        onTap: (){
-                                          Navigator.push(
+                                        onTap: () async {
+                                          await Navigator.push(
                                             context, 
                                             MaterialPageRoute(
                                               builder: (context) => const ChatRoomPage(),
@@ -215,6 +219,9 @@ class _RoomPageState extends State<RoomPage> {
                                               )
                                             )
                                           );
+                                          setState(() {
+                                            
+                                          });
                                         },
                                       ),
                       
