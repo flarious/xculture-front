@@ -18,86 +18,131 @@ class ChatRoomPage extends StatefulWidget {
 
 class _ChatRoomPageState extends State<ChatRoomPage> {
   Future<List<Message>>? _messages;
+  TextEditingController _text = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     final args = ModalRoute.of(context)!.settings.arguments as ChatRoomArguments;
     _messages = getRoomMessages(args.commuID, args.room.id);
+    
 
-    return Scaffold(
-      appBar: AppBar(
-        elevation: 5.0,
-        backgroundColor: const Color.fromRGBO(220, 71, 47, 1),
-        title: Text("# ${args.room.name}"),
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back),
-          onPressed: (){
-            Navigator.pop(context, args.commuID);
-          },
-        ),
-        actions: [
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 15.0),
-            child: PopupMenuButton(
-              itemBuilder: (context) => [
-                PopupMenuItem(
-                  child: const Text("Edit"),
-                  onTap: (){
-                    //
-                  },
-                ),
-                PopupMenuItem(
-                  child: const Text("Delete"),
-                  onTap: (){
-                    //delete
-                  },
-                ),
-              ],
-              child: const Icon(
-                Icons.more_vert,
-                color: Colors.white,
-                size: 30,
-              ), 
-            ),
+    return SafeArea(
+      child: Scaffold(
+        appBar: AppBar(
+          elevation: 5.0,
+          backgroundColor: const Color.fromRGBO(220, 71, 47, 1),
+          title: Text("# ${args.room.name}"),
+          leading: IconButton(
+            icon: Icon(Icons.arrow_back),
+            onPressed: (){
+              Navigator.pop(context, args.commuID);
+            },
           ),
-        ],
-      ),
-      body: FutureBuilder<List<Message>>(
-        future: _messages,
-        builder: (context, AsyncSnapshot<List<Message>> snapshot) {
-          if (snapshot.hasData) {
-            return Column(
-              children: [
-                Expanded(
-                  child: GroupedListView<Message, DateTime>(
-                    padding: const EdgeInsets.all(10),
-                    reverse: true,
-                    order: GroupedListOrder.DESC,
-                    //useStickyGroupSeparators: true,
-                    //floatingHeader: true,
-                    elements: snapshot.data!,
-                    groupBy: (message) => DateTime.parse(message.sentDate).toLocal(),
-                    groupHeaderBuilder: (Message message) => Center(
-                      child: Padding(
-                        padding: const EdgeInsets.all(8),
-                        child: Text(DateFormat.yMMMd().format(DateTime.parse(message.sentDate).toLocal())),
+          actions: [
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 15.0),
+              child: PopupMenuButton(
+                itemBuilder: (context) => [
+                  PopupMenuItem(
+                    child: const Text("Edit"),
+                    onTap: (){
+                      //
+                    },
+                  ),
+                  PopupMenuItem(
+                    child: const Text("Delete"),
+                    onTap: (){
+                      //delete
+                    },
+                  ),
+                ],
+                child: const Icon(
+                  Icons.more_vert,
+                  color: Colors.white,
+                  size: 30,
+                ), 
+              ),
+            ),
+          ],
+        ),
+        body: FutureBuilder<List<Message>>(
+          future: _messages,
+          builder: (context, AsyncSnapshot<List<Message>> snapshot) {
+            if (snapshot.hasData) {
+              return Column(
+                children: [
+                  Expanded(
+                    child: GroupedListView<Message, DateTime>(
+                      padding: const EdgeInsets.all(10),
+                      reverse: true,
+                      order: GroupedListOrder.DESC,
+                      //useStickyGroupSeparators: true,
+                      //floatingHeader: true,
+                      elements: snapshot.data!,
+                      groupBy: (message) { 
+                        var dt = DateTime.parse(message.sentDate).toLocal();
+                        return DateTime(dt.year, dt.month, dt.day);
+                      },
+                      groupHeaderBuilder: (Message message) => Center(
+                        child: Padding(
+                          padding: const EdgeInsets.all(8),
+                          child: Text(DateFormat.yMMMd().format(DateTime.parse(message.sentDate).toLocal())),
+                        ),
                       ),
-                    ),
-                    itemBuilder: (context, Message message) {
-                      return message.sender.id == AuthHelper.auth.currentUser!.uid ? Column(
-                        crossAxisAlignment: CrossAxisAlignment.end,
+                      itemBuilder: (context, Message message) {
+                        return message.sender.id == AuthHelper.auth.currentUser!.uid ? Column(
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                            children: [
+                              Card(
+                                elevation: 8,
+                                color: const Color.fromRGBO(220, 71, 47, 1),
+                                shape: const RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.only(topLeft: Radius.circular(20), bottomLeft: Radius.circular(20), bottomRight: Radius.circular(20)),
+                                ),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(15),
+                                  child: Text(message.message,
+                                    style: const TextStyle(color: Colors.white),
+                                  ),
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: RichText(
+                                  text: TextSpan(
+                                    text: DateFormat.Hm().format(DateTime.parse(message.sentDate).toLocal()),
+                                    style: DefaultTextStyle.of(context).style
+                                  ),
+                                ),
+                              ),
+                            ],
+                          )
+                        : Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
+                            Row(
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.all(5.0),
+                                  child: CircleAvatar(
+                                    radius: 15,
+                                    backgroundImage: NetworkImage(message.sender.profilePic),
+                                  ),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.all(5.0),
+                                  child: Text(message.sender.name),
+                                ),
+                              ],
+                            ),
                             Card(
                               elevation: 8,
-                              color: const Color.fromRGBO(220, 71, 47, 1),
                               shape: const RoundedRectangleBorder(
-                                borderRadius: BorderRadius.only(topLeft: Radius.circular(20), bottomLeft: Radius.circular(20), bottomRight: Radius.circular(20)),
+                                borderRadius: BorderRadius.only(topRight: Radius.circular(20), bottomLeft: Radius.circular(20), bottomRight: Radius.circular(20)),
                               ),
                               child: Padding(
                                 padding: const EdgeInsets.all(15),
-                                child: Text(message.message,
-                                  style: const TextStyle(color: Colors.white),
-                                ),
+                                child: Text(message.message),
                               ),
                             ),
                             Padding(
@@ -110,97 +155,78 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
                               ),
                             ),
                           ],
-                        )
-                      : Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets.all(5.0),
-                                child: CircleAvatar(
-                                  radius: 15,
-                                  backgroundImage: NetworkImage(message.sender.profilePic),
+                        );
+                      } 
+                    )
+                  ),
+            
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: Card(
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(50),
+                            ),
+                            child: TextField(
+                              controller: _text,
+                              decoration: InputDecoration(
+                                contentPadding: const EdgeInsets.all(15),
+                                hintText: "Type your message here....",
+                                border: InputBorder.none,
+                                suffixIcon: IconButton(
+                                  icon: const Icon(
+                                     Icons.send,
+                                     color: Colors.red,
+                                  ),
+                                  onPressed: () async {
+                                    if (_text.text != "") {
+                                      var success = await sendMessage(args.commuID, args.room.id, _text.text, 0);
+                                      if (success) {
+                                        setState(() {
+                                          _text.text = "";
+                                        });
+                                      }
+                                    }
+                                  },
                                 ),
+                                // suffixIcon: Container(
+                                //   padding: const EdgeInsets.all(15),
+                                //   decoration: BoxDecoration(
+                                //     borderRadius: BorderRadius.circular(50),
+                                //     color: Color.fromRGBO(220, 71, 47, 1),
+                                //   ),
+                                //   child: const Icon(
+                                //     Icons.send,
+                                //     color: Colors.white,
+                                //   ),
+                                // ),
                               ),
-                              Padding(
-                                padding: const EdgeInsets.all(5.0),
-                                child: Text(message.sender.name),
-                              ),
-                            ],
-                          ),
-                          Card(
-                            elevation: 8,
-                            shape: const RoundedRectangleBorder(
-                              borderRadius: BorderRadius.only(topRight: Radius.circular(20), bottomLeft: Radius.circular(20), bottomRight: Radius.circular(20)),
+                              onSubmitted: (text) async {
+                                if (text != "") {
+                                  var success = await sendMessage(args.commuID, args.room.id, text, 0);
+                                  if (success) {
+                                    setState(() {
+                                      _text.text = "";
+                                    });
+                                  }
+                                }
+                              },
                             ),
-                            child: Padding(
-                              padding: const EdgeInsets.all(15),
-                              child: Text(message.message),
-                            ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: RichText(
-                              text: TextSpan(
-                                text: DateFormat.Hm().format(DateTime.parse(message.sentDate).toLocal()),
-                                style: DefaultTextStyle.of(context).style
-                              ),
-                            ),
-                          ),
-                        ],
-                      );
-                    } 
-                  )
-                ),
-          
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: Card(
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(50),
-                          ),
-                          child: TextField(
-                            decoration: InputDecoration(
-                              contentPadding: const EdgeInsets.all(15),
-                              hintText: "Type your message here....",
-                              border: InputBorder.none,
-                              suffixIcon: Container(
-                                padding: const EdgeInsets.all(15),
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(50),
-                                  color: Color.fromRGBO(220, 71, 47, 1),
-                                ),
-                                child: const Icon(
-                                  Icons.send,
-                                  color: Colors.white,
-                                ),
-                              ),
-                            ),
-                            onSubmitted: (text) async {
-                              var success = await sendMessage(args.commuID, args.room.id, text, 0);
-                              if (success) {
-                                setState(() {
-                                  
-                                });
-                              }
-                            },
                           ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
-                ),
-              ]
-            );
-          }
-          else {
-            return const CircularProgressIndicator();
-          }
-        },
+                ]
+              );
+            }
+            else {
+              return const CircularProgressIndicator();
+            }
+          },
+        ),
       ),
     );
   }
