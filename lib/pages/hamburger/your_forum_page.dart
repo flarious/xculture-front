@@ -70,7 +70,7 @@ class _YourForumPageState extends State<YourForumPage> with TickerProviderStateM
                           child: Container(
                             padding: const EdgeInsets.only(left: 30, top: 70),
                             // padding: EdgeInsets.symmetric(vertical: 20.0),
-                            child: const Text("Your \n Forum",
+                            child: const Text("Your\nForum",
                               style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: 40),
                             ),
                           ),

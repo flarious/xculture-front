@@ -70,7 +70,7 @@ class _YourEventPageState extends State<YourEventPage> with TickerProviderStateM
                           child: Container(
                             padding: const EdgeInsets.only(left: 30, top: 70),
                             // padding: EdgeInsets.symmetric(vertical: 20.0),
-                            child: const Text("Your \n Event",
+                            child: const Text("Your\nEvent",
                               style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: 40),
                             ),
                           ),

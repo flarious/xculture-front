@@ -73,7 +73,7 @@ class _YourCommuPageState extends State<YourCommuPage> with TickerProviderStateM
                           child: Container(
                             padding: const EdgeInsets.only(left: 30, top: 70),
                             // padding: EdgeInsets.symmetric(vertical: 20.0),
-                            child: const Text("Your \n Community",
+                            child: const Text("Your\nCommunity",
                               style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: 40),
                             ),
                           ),
