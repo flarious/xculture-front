@@ -7,6 +7,7 @@ import 'package:xculturetestapi/data.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:xculturetestapi/helper/auth.dart';
 import 'package:xculturetestapi/pages/event/event_edit.dart';
+import 'package:xculturetestapi/pages/report/report_page.dart';
 
 import '../../navbar.dart';
 import '../../widgets/hamburger_widget.dart';
@@ -100,7 +101,8 @@ class _EventDetailPageState extends State<EventDetailPage> {
                                       MaterialPageRoute(
                                         builder: (context) => const EditEventPage(),
                                         settings: RouteSettings(
-                                          arguments: snapshot.data!,),
+                                          arguments: snapshot.data!,
+                                        ),
                                       )
                                     ).then(refreshPage);
                                   }
@@ -111,14 +113,61 @@ class _EventDetailPageState extends State<EventDetailPage> {
                               ),
                               PopupMenuItem(
                                 child: const Text("Delete"),
-                                onTap: (){
+                                onTap: () async {
                                   //delete
+                                  if (AuthHelper.checkAuth() && snapshot.data!.host.id == AuthHelper.auth.currentUser!.uid) {
+                                    showDialog(
+                                      context: context,
+                                      builder: (context) => AlertDialog(
+                                        title: const Text("Delete"),
+                                        content: const Text("Do you really want to delete this event?"),
+                                        actions: [
+                                          TextButton(
+                                            onPressed: (){
+                                              //No
+                                              Navigator.pop(context);
+                                            }, 
+                                            child: const Text("No", style: TextStyle(color: Colors.grey)),
+                                          ),
+                                          TextButton(
+                                            onPressed: () async {
+                                              if(snapshot.data!.host.id != AuthHelper.auth.currentUser!.uid) {
+                                                var success = await deleteEvent(snapshot.data!.id);
+                                                if (success) {
+                                                  Fluttertoast.showToast(msg: "Deleted");
+                                                  Navigator.pop(context);
+                                                  Navigator.pop(context);
+                                                }
+                                              } 
+                                              else {
+                                                Fluttertoast.showToast(msg: "You are not the owner");
+                                              }
+                                            }, 
+                                            child: const Text("Yes", style: TextStyle(color: Colors.red)),
+                                          ),
+                                        ],
+                                        elevation: 24.0,
+                                      ),
+                                    ); 
+                                  }
+                                  else {
+                                    Fluttertoast.showToast(msg: "You are not the owner");
+                                  }
                                 },
                               ),
                               PopupMenuItem(
                                 child: const Text("Report"),
-                                onTap: (){
-                                  //report
+                                onTap: () async {
+                                  await Future.delayed(const Duration(milliseconds: 1));
+                                  Navigator.push(
+                                    context, 
+                                    MaterialPageRoute(
+                                      builder: (context) => const ReportPage(),
+                                      settings: RouteSettings(
+                                        arguments: snapshot.data!.id,
+                                      ),
+                                    )
+                                  ).then(refreshPage);
                                 },
                               ),
                             ],
@@ -349,6 +398,24 @@ class _EventDetailPageState extends State<EventDetailPage> {
     final userToken = await AuthHelper.getToken();
     final response = await http.put(
       Uri.parse('http://10.0.2.2:3000/events/$eventID/unjoin'),
+      headers: <String, String> {
+        'Authorization' : 'bearer $userToken'
+      }
+    );
+
+    if (response.statusCode == 200) {
+      return true;
+    }
+    else {
+      Fluttertoast.showToast(msg: ServerResponse.fromJson(jsonDecode(response.body)).message);
+      return false;
+    }
+  }
+
+  Future<bool> deleteEvent(eventID) async {
+    final userToken = await AuthHelper.getToken();
+    final response = await http.delete(
+      Uri.parse("http://10.0.2.2:3000/events/$eventID/delete"),
       headers: <String, String> {
         'Authorization' : 'bearer $userToken'
       }
