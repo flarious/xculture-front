@@ -196,12 +196,33 @@ class _CommuDetailPageState extends State<CommuDetailPage> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
 
+                            // //Header
+                            // Padding(
+                            //   padding: EdgeInsets.symmetric(vertical: 5.0),
+                            //   child: Text(snapshot.data!.name,
+                            //     style: TextStyle(fontWeight: FontWeight.bold, fontSize: 25, color: Colors.red)
+                            //   ),
+                            // ),
+
                             //Header
-                            Padding(
-                              padding: EdgeInsets.symmetric(vertical: 5.0),
-                              child: Text(snapshot.data!.name,
-                                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 25, color: Colors.red)
-                              ),
+                            Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Expanded(
+                                  child: Padding(
+                                    padding: EdgeInsets.symmetric(vertical: 5.0),
+                                    child: Text(snapshot.data!.name,
+                                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 25, color: Colors.red)
+                                    ),
+                                  ),
+                                ),
+                                Chip(
+                                  label: Text("Private",
+                                    style: TextStyle(color: Colors.white),
+                                  ),
+                                  backgroundColor: Colors.red,
+                                ),
+                              ],
                             ),
 
                             //Catagory
@@ -256,40 +277,90 @@ class _CommuDetailPageState extends State<CommuDetailPage> {
 
                             /*(AuthHelper.checkAuth() && snapshot.data!.members.contains(AuthHelper.auth.currentUser!.uid) )*/ 
                             toggle ?
-                            ElevatedButton(
-                              onPressed: () async {
-                                await Navigator.push(
-                                  context, 
-                                  MaterialPageRoute(
-                                    builder: (context) => const RoomPage(),
-                                    settings: RouteSettings(
-                                      arguments: snapshot.data!
-                                    )
-                                  )
-                                );
-                                setState(() {
-                                  
-                                });
-                              }, 
-                              child: const Text("Discuss Room")
-                            ) : 
-                            ElevatedButton(
-                              onPressed: () async {
-                                var success = await joinCommu(snapshot.data!.id);
-                                if (success) {
-                                  Fluttertoast.showToast(msg: "Joined");
-                                }
-                                setState(() {
-                                  toggle = !toggle;
-                                });
-                              }, 
-                              child: const SizedBox(
-                                width: double.infinity,
-                                height: 50,
-                                child: Center(
-                                  child: Text("Join community")
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: ElevatedButton(
+                                    onPressed: () async {
+                                      await Navigator.push(
+                                        context, 
+                                        MaterialPageRoute(
+                                          builder: (context) => const RoomPage(),
+                                          settings: RouteSettings(
+                                            arguments: snapshot.data!
+                                          )
+                                        )
+                                      );
+                                      setState(() {
+                                        
+                                      });
+                                    }, 
+                                    child: const Text("Leave")
+                                  ),
                                 ),
-                              ),
+
+                                Padding(
+                                  padding: const EdgeInsets.only(left: 20),
+                                  child: Material(
+                                    child: Ink(
+                                      decoration: const ShapeDecoration(
+                                        color: Colors.orangeAccent,
+                                        shape: CircleBorder(),
+                                      ),
+                                      child: IconButton(
+                                        onPressed: null,
+                                        icon: Icon(Icons.question_answer),
+                                        iconSize: 35,
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ) : 
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: ElevatedButton(
+                                    onPressed: () async {
+                                      var success = await joinCommu(snapshot.data!.id);
+                                      if (success) {
+                                        Fluttertoast.showToast(msg: "Joined");
+                                      }
+                                      setState(() {
+                                        toggle = !toggle;
+                                      });
+                                    }, 
+                                    child: const SizedBox(
+                                      width: double.infinity,
+                                      height: 50,
+                                      child: Center(
+                                        child: Text("Join community")
+                                      ),
+                                    ),
+                                  ),
+                                ),
+
+                                Padding(
+                                  padding: const EdgeInsets.only(left: 20),
+                                  child: Material(
+                                    child: Ink(
+                                      decoration: const ShapeDecoration(
+                                        color: Colors.orangeAccent,
+                                        shape: CircleBorder(),
+                                      ),
+                                      child: IconButton(
+                                        onPressed: (){
+                                          //Discuss
+                                        }, 
+                                        icon: Icon(Icons.question_answer),
+                                        iconSize: 35,
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
                             ),
                             
                             const SizedBox(height: 20),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:xculturetestapi/constants.dart';
 
 class QuestionPage extends StatefulWidget {
   const QuestionPage({ Key? key }) : super(key: key);
@@ -72,20 +73,18 @@ class _QuestionPageState extends State<QuestionPage> {
                           //Question
                           Padding(
                             padding: const EdgeInsets.symmetric(vertical: 10.0),
-                            child: Text("1. Lorem Ipsum gayray Lorem Ipsum gayray Lorem Ipsum gayray Lorem Ipsum gayray",
+                            child: Text("Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
                               style: TextStyle(fontWeight: FontWeight.bold),
                             ),
                           ),
 
-                          //Description
+                          //Answer
                           TextFormField(
-                            maxLines: 5,
+                            maxLines: 3,
                             keyboardType: TextInputType.multiline,
                             decoration: InputDecoration(
                               hintText: "Answer there",
                               hintStyle: TextStyle(color: Colors.grey),
-                              // fillColor: Colors.grey.withOpacity(0.5),
-                              // filled: true,
                               enabledBorder: UnderlineInputBorder(
                                 borderSide: BorderSide(
                                   color: Colors.grey
@@ -102,37 +101,38 @@ class _QuestionPageState extends State<QuestionPage> {
                             },
                           ),
 
-                          // const SizedBox(height: 40),
+                          const SizedBox(height: 40),
 
-                          // //Question
-                          // Padding(
-                          //   padding: const EdgeInsets.symmetric(vertical: 5.0),
-                          //   child: Text("2. Lorem Ipsum gayray Lorem Ipsum gayray Lorem Ipsum gayray Lorem Ipsum gayray"),
-                          // ),
+                          //Question
+                          Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 10.0),
+                            child: Text("Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
+                              style: TextStyle(fontWeight: FontWeight.bold),
+                            ),
+                          ),
 
-                          // //Description
-                          // TextFormField(
-                          //   maxLines: 5,
-                          //   keyboardType: TextInputType.multiline,
-                      
-                          //   decoration: const InputDecoration(
-                          //     hintText: "Answer there",
-                          //     hintStyle: TextStyle(color: Colors.grey),
-                          //     enabledBorder: UnderlineInputBorder(
-                          //       borderSide: BorderSide(
-                          //         color: Colors.grey
-                          //       ),
-                          //     ),
-                          //   ),
-                          //   validator: (value) {
-                          //     if (value == null || value.isEmpty) {
-                          //       return "Please enter event's description";
-                          //     }
-                          //     else {
-                          //       return null;
-                          //     }
-                          //   },
-                          // ),
+                          //Answer
+                          TextFormField(
+                            maxLines: 3,
+                            keyboardType: TextInputType.multiline,
+                            decoration: InputDecoration(
+                              hintText: "Answer there",
+                              hintStyle: TextStyle(color: Colors.grey),
+                              enabledBorder: UnderlineInputBorder(
+                                borderSide: BorderSide(
+                                  color: Colors.grey
+                                ),
+                              ),
+                            ),
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return "Please enter event's description";
+                              }
+                              else {
+                                return null;
+                              }
+                            },
+                          ),
 
                           const SizedBox(height: 40),
 

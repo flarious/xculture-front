@@ -98,13 +98,15 @@ class _ForumDetailPageState extends State<ForumDetailPage> {
     
                   return Stack(
                       children: [
-                        Container(
-                          height: 10000, //set height by manual
-                        ),
+                        // Container(
+                        //   height: 10000, //set height by manual
+                        // ),
+
                         // Thumbnail Image
-                        Positioned(
-                          right: 0,
-                          left: 0,
+                        Container(
+                          margin: const EdgeInsets.only(right: 0, left: 0),
+                          // right: 0,
+                          // left: 0,
                           child: Container(
                             height: 300,
                             decoration: BoxDecoration(
@@ -116,9 +118,10 @@ class _ForumDetailPageState extends State<ForumDetailPage> {
                           )
                         ),
                         // Iconbutton back
-                        Positioned(
-                          top: 20,
-                          left: 20,
+                        Container(
+                          margin: const EdgeInsets.only(top: 40, left: 20),
+                          // top: 20,
+                          // left: 20,
                           child: Container(
                             decoration: const BoxDecoration(
                               color: Colors.grey,
@@ -135,9 +138,11 @@ class _ForumDetailPageState extends State<ForumDetailPage> {
                           ),   
                         ),
                         // Iconbutton menu
-                        Positioned(
-                          top: 20,
-                          right: 20,
+                        Container(
+                          alignment: Alignment.centerRight,
+                          margin: const EdgeInsets.only(top: 40, right: 20),
+                          // top: 20,
+                          // right: 20,
                           child: Container(
                             decoration: const BoxDecoration(
                               color: Colors.grey,
@@ -168,8 +173,9 @@ class _ForumDetailPageState extends State<ForumDetailPage> {
                           ),
                         ),
                         // Details/Contents
-                        Positioned(
-                          top: 280,
+                        Container(
+                          margin: const EdgeInsets.only(top: 280, left: 0, right: 0, bottom: 0),
+                          //top: 280,
                           child: Container(
                             padding: const EdgeInsets.only(left: 20, right: 20, top: 20),
                             width: MediaQuery.of(context).size.width,
@@ -183,47 +189,85 @@ class _ForumDetailPageState extends State<ForumDetailPage> {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                // Title with favorite button
-                                Padding(
-                                  padding: const EdgeInsets.symmetric(vertical: 5.0),
-                                  child: Table(
-                                    defaultVerticalAlignment: TableCellVerticalAlignment.top,
-                                    columnWidths: const {1: FractionColumnWidth(.1)},
-                                    children: [
-                                      TableRow(
-                                        children: [
-                                          Text(snapshot.data!.title,
-                                            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 23, color: Colors.red)
-                                          ),
-                                          IconButton(
-                                            visualDensity: VisualDensity.compact,
-                                            icon: favourite == false ? const Icon(Icons.favorite_border) : const Icon(Icons.favorite),
-                                            color: Colors.red,
-                                            iconSize: 30,
-                                            onPressed: () async {
-                                              if (favourite == false ) {
-                                                favourite = true;
-                                                var success = await forumFavorited(snapshot.data!.id);
-                                                if(success) {
-                                                  Fluttertoast.showToast(msg: "Favorited.");
-                                                }
-                                              } else {
-                                                favourite = false;
-                                                var success = await forumUnfavorited(snapshot.data!.id);
-                                                if(success) {
-                                                  Fluttertoast.showToast(msg: "Unfavorited.");
-                                                }
-                                              }   
-                                              setState(() { 
+
+                                // // Title with favorite button
+                                // Padding(
+                                //   padding: const EdgeInsets.symmetric(vertical: 5.0),
+                                //   child: Table(
+                                //     defaultVerticalAlignment: TableCellVerticalAlignment.top,
+                                //     columnWidths: const {1: FractionColumnWidth(.1)},
+                                //     children: [
+                                //       TableRow(
+                                //         children: [
+                                //           Text(snapshot.data!.title,
+                                //             style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 23, color: Colors.red)
+                                //           ),
+                                //           IconButton(
+                                //             visualDensity: VisualDensity.compact,
+                                //             icon: favourite == false ? const Icon(Icons.favorite_border) : const Icon(Icons.favorite),
+                                //             color: Colors.red,
+                                //             iconSize: 30,
+                                //             onPressed: () async {
+                                //               if (favourite == false ) {
+                                //                 favourite = true;
+                                //                 var success = await forumFavorited(snapshot.data!.id);
+                                //                 if(success) {
+                                //                   Fluttertoast.showToast(msg: "Favorited.");
+                                //                 }
+                                //               } else {
+                                //                 favourite = false;
+                                //                 var success = await forumUnfavorited(snapshot.data!.id);
+                                //                 if(success) {
+                                //                   Fluttertoast.showToast(msg: "Unfavorited.");
+                                //                 }
+                                //               }   
+                                //               setState(() { 
                                                                          
-                                              });
-                                            },
-                                          ),
-                                        ],
+                                //               });
+                                //             },
+                                //           ),
+                                //         ],
+                                //       ),
+                                //     ],
+                                //   ),
+                                // ),
+
+                                // Title with favorite button
+                                Row(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Expanded(
+                                      child: Padding(
+                                        padding: EdgeInsets.symmetric(vertical: 5.0),
+                                        child: Text(snapshot.data!.title,
+                                          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 25, color: Colors.red)
+                                        ),
                                       ),
-                                    ],
-                                  ),
+                                    ),
+                                    IconButton(
+                                      visualDensity: VisualDensity.compact,
+                                      icon: favourite == false ? const Icon(Icons.favorite_border) : const Icon(Icons.favorite),
+                                      color: Colors.red,
+                                      iconSize: 30,
+                                      onPressed: () async {
+                                        if (favourite == false ) {
+                                          favourite = true;
+                                          var success = await forumFavorited(snapshot.data!.id);
+                                          if(success) {
+                                            Fluttertoast.showToast(msg: "Favorited.");
+                                          }
+                                        } else {
+                                          favourite = false;
+                                          var success = await forumUnfavorited(snapshot.data!.id);
+                                          if(success) {
+                                            Fluttertoast.showToast(msg: "Unfavorited.");
+                                          }
+                                        }   
+                                      },
+                                    ),
+                                  ],
                                 ),
+
                                 // Subtitle
                                 Padding(
                                   padding: const EdgeInsets.symmetric(vertical: 5.0),
