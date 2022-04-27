@@ -3,6 +3,8 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 // import 'pages/event/eventpost_page.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:xculturetestapi/pages/community/commudetail_page.dart';
+import 'package:xculturetestapi/pages/community/private/question_page.dart';
 // import 'package:xculturetestapi/pages/community/commu_page.dart';
 // import 'package:xculturetestapi/pages/community/commudetail_page.dart';
 // import 'package:xculturetestapi/pages/community/commuedit_page.dart';
