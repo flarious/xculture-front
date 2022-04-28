@@ -308,6 +308,11 @@ class _CommuDetailPageState extends State<CommuDetailPage> {
                             ),
 
                             Visibility(
+                              visible: (isPrivate && userType == "member") || !isPrivate,
+                              child: const SizedBox(height: 20),
+                            ),
+
+                            Visibility(
                               visible: isPrivate && userType == "pending",
                               child: ElevatedButton(
                                 onPressed: () async {
