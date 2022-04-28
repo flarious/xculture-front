@@ -8,6 +8,7 @@ import 'package:xculturetestapi/data.dart';
 import 'package:xculturetestapi/helper/auth.dart';
 import 'package:xculturetestapi/pages/community/chatroom/room_page.dart';
 import 'package:xculturetestapi/pages/community/commuedit_page.dart';
+import 'package:xculturetestapi/pages/community/private/question_page.dart';
 
 import '../../navbar.dart';
 import '../../widgets/hamburger_widget.dart';
@@ -23,7 +24,9 @@ class CommuDetailPage extends StatefulWidget {
 class _CommuDetailPageState extends State<CommuDetailPage> {
   Future<Community>? commuDetail;
 
-  bool toggle = false;
+  bool isJoin = false;
+  bool isPrivate = false;
+  String userType = "";
 
   @override
   Widget build(BuildContext context) {
@@ -37,7 +40,9 @@ class _CommuDetailPageState extends State<CommuDetailPage> {
             future: commuDetail,
             builder: (BuildContext context, AsyncSnapshot<Community> snapshot) {
               if(snapshot.hasData) {
-                toggle = (AuthHelper.checkAuth() && snapshot.data!.members.map((member) => member.id).contains(AuthHelper.auth.currentUser!.uid));
+                isJoin = (AuthHelper.checkAuth() && snapshot.data!.members.any((member) => member.member.id == AuthHelper.auth.currentUser!.uid));
+                userType = isJoin ? snapshot.data!.members.firstWhere((member) => member.member.id == AuthHelper.auth.currentUser!.uid).type! : ""; 
+                isPrivate = snapshot.data!.type == "private" ? true : false;
                 var dt = DateTime.parse(snapshot.data!.date).toLocal();
                 String dateCommu = DateFormat('MMMM dd, yyyy – HH:mm a').format(dt);
                 
@@ -217,7 +222,7 @@ class _CommuDetailPageState extends State<CommuDetailPage> {
                                   ),
                                 ),
                                 Chip(
-                                  label: Text("Private",
+                                  label: Text(snapshot.data!.type,
                                     style: TextStyle(color: Colors.white),
                                   ),
                                   backgroundColor: Colors.red,
@@ -275,17 +280,59 @@ class _CommuDetailPageState extends State<CommuDetailPage> {
 
                             const SizedBox(height: 20),
 
-                            /*(AuthHelper.checkAuth() && snapshot.data!.members.contains(AuthHelper.auth.currentUser!.uid) )*/ 
-                            toggle ?
-                            Row(
-                              children: [
-                                Expanded(
-                                  child: ElevatedButton(
-                                    onPressed: () async {
+                            Visibility(
+                              visible: (isPrivate && userType == "member") || !isPrivate,
+                              child: ElevatedButton(
+                                onPressed: () async {
+                                  await Navigator.push(
+                                    context, 
+                                    MaterialPageRoute(
+                                      builder: (context) => const RoomPage(),
+                                      settings: RouteSettings(
+                                        arguments: snapshot.data!
+                                      )
+                                    )
+                                  );
+                                  setState(() {
+                                    
+                                  });
+                                }, 
+                                child: const SizedBox(
+                                  width: double.infinity,
+                                  height: 50,
+                                  child: Center(
+                                    child: Text("Discuss Room")
+                                  ),
+                                ),
+                              ),
+                            ),
+
+                            Visibility(
+                              visible: isPrivate && userType == "pending",
+                              child: ElevatedButton(
+                                onPressed: () async {
+
+                                }, 
+                                child: const SizedBox(
+                                  width: double.infinity,
+                                  height: 50,
+                                  child: Center(
+                                    child: Text("Pending")
+                                  ),
+                                ),
+                              ),
+                            ),
+
+                            Visibility(
+                              visible: !isJoin,
+                              child: ElevatedButton(
+                                onPressed: () async {
+                                  if (isPrivate) {
+                                    if (AuthHelper.checkAuth()) {
                                       await Navigator.push(
                                         context, 
                                         MaterialPageRoute(
-                                          builder: (context) => const RoomPage(),
+                                          builder: (context) => const QuestionPage(),
                                           settings: RouteSettings(
                                             arguments: snapshot.data!
                                           )
@@ -294,75 +341,32 @@ class _CommuDetailPageState extends State<CommuDetailPage> {
                                       setState(() {
                                         
                                       });
-                                    }, 
-                                    child: const Text("Leave")
+                                    }
+                                    else {
+                                      Fluttertoast.showToast(msg: "You need to sign in to join this community");
+                                    }
+                                  }
+                                  else {
+                                    var success = await joinCommu(snapshot.data!.id);
+                                    if (success) {
+                                      Fluttertoast.showToast(msg: "Joined");
+                                    }
+                                    setState(() {
+                                      isJoin = !isJoin;
+                                    });
+                                  }
+                                  
+                                }, 
+                                child: const SizedBox(
+                                  width: double.infinity,
+                                  height: 50,
+                                  child: Center(
+                                    child: Text("Join community")
                                   ),
                                 ),
-
-                                Padding(
-                                  padding: const EdgeInsets.only(left: 20),
-                                  child: Material(
-                                    child: Ink(
-                                      decoration: const ShapeDecoration(
-                                        color: Colors.orangeAccent,
-                                        shape: CircleBorder(),
-                                      ),
-                                      child: IconButton(
-                                        onPressed: null,
-                                        icon: Icon(Icons.question_answer),
-                                        iconSize: 35,
-                                        color: Colors.white,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ) : 
-                            Row(
-                              children: [
-                                Expanded(
-                                  child: ElevatedButton(
-                                    onPressed: () async {
-                                      var success = await joinCommu(snapshot.data!.id);
-                                      if (success) {
-                                        Fluttertoast.showToast(msg: "Joined");
-                                      }
-                                      setState(() {
-                                        toggle = !toggle;
-                                      });
-                                    }, 
-                                    child: const SizedBox(
-                                      width: double.infinity,
-                                      height: 50,
-                                      child: Center(
-                                        child: Text("Join community")
-                                      ),
-                                    ),
-                                  ),
-                                ),
-
-                                Padding(
-                                  padding: const EdgeInsets.only(left: 20),
-                                  child: Material(
-                                    child: Ink(
-                                      decoration: const ShapeDecoration(
-                                        color: Colors.orangeAccent,
-                                        shape: CircleBorder(),
-                                      ),
-                                      child: IconButton(
-                                        onPressed: (){
-                                          //Discuss
-                                        }, 
-                                        icon: Icon(Icons.question_answer),
-                                        iconSize: 35,
-                                        color: Colors.white,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ],
+                              ),
                             ),
-                            
+
                             const SizedBox(height: 20),
                           ],
                         ),
@@ -398,7 +402,7 @@ class _CommuDetailPageState extends State<CommuDetailPage> {
     } else {
       Fluttertoast.showToast(msg: ServerResponse.fromJson(jsonDecode(response.body)).message);
       Navigator.pop(context);
-      return Community(id: "", name: "", shortdesc: "", desc: "", thumbnail: "", memberAmount: 0, date: DateTime.now().toString(), owner: User(id: "", name: "", profilePic: "", bio: "", email: "", tags: []), members: []);
+      return Community(id: "", name: "", shortdesc: "", desc: "", thumbnail: "", memberAmount: 0, date: DateTime.now().toString(), owner: User(id: "", name: "", profilePic: "", bio: "", email: "", tags: []), members: [], type: "", questions: []);
     }
   }
 

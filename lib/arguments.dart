@@ -31,3 +31,13 @@ class ChatRoomArguments {
     required this.room,
   });
 }
+
+class FilterArguments {
+  final Community commu;
+  final int member;
+
+  FilterArguments({
+    required this.commu,
+    required this.member,
+  });
+}

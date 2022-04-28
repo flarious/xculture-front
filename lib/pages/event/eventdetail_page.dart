@@ -38,7 +38,7 @@ class _EventDetailPageState extends State<EventDetailPage> {
             future: eventDetail,
             builder: (BuildContext context, AsyncSnapshot<Event> snapshot) {
               if (snapshot.hasData) {
-                  toggle = (AuthHelper.checkAuth() && snapshot.data!.members.map((member) => member.id).contains(AuthHelper.auth.currentUser!.uid));
+                  toggle = (AuthHelper.checkAuth() && snapshot.data!.members.map((member) => member.member.id).contains(AuthHelper.auth.currentUser!.uid));
                   var dt = DateTime.parse(snapshot.data!.date).toLocal();
                   String dateEvent = DateFormat('MMMM dd, yyyy – HH:mm a').format(dt);
                   

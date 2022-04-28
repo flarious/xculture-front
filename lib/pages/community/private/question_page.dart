@@ -1,5 +1,11 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:xculturetestapi/constants.dart';
+import 'package:xculturetestapi/data.dart';
+import 'package:xculturetestapi/helper/auth.dart';
+import 'package:http/http.dart' as http;
 
 class QuestionPage extends StatefulWidget {
   const QuestionPage({ Key? key }) : super(key: key);
@@ -9,8 +15,26 @@ class QuestionPage extends StatefulWidget {
 }
 
 class _QuestionPageState extends State<QuestionPage> {
+  List<TextEditingController> _answers = [];
+
+  final _formKey = GlobalKey<FormState>();
+
   @override
   Widget build(BuildContext context) {
+    final commuDetail = ModalRoute.of(context)!.settings.arguments as Community;
+    if (_answers.length != commuDetail.questions.length) {
+      if (_answers.length < commuDetail.questions.length) {
+        for (int i = _answers.length; i < commuDetail.questions.length; i++) {
+          _answers.add(TextEditingController());
+        }
+      }
+      else if (_answers.length > commuDetail.questions.length) {
+        for (int i = _answers.length; i > commuDetail.questions.length; i--) {
+          _answers.removeLast();
+        }
+      }
+    }
+
     return SafeArea(
       child: Scaffold(
         backgroundColor: Colors.white,
@@ -45,6 +69,7 @@ class _QuestionPageState extends State<QuestionPage> {
                     color: Colors.white,
                     onPressed: () {
                       //Back
+                      Navigator.pop(context, commuDetail);
                     },
                   ),
                 ),   
@@ -64,96 +89,89 @@ class _QuestionPageState extends State<QuestionPage> {
                     ),
                   ),
                   child: Form(
-                    //key: _formKey,
+                    key: _formKey,
                     child: Padding(
                       padding: const EdgeInsets.all(20),
                       child: Column(
                         children: [
 
-                          //Question
-                          Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 10.0),
-                            child: Text("Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
-                              style: TextStyle(fontWeight: FontWeight.bold),
-                            ),
+                          ListView.builder(
+                            shrinkWrap: true,
+                            itemCount: commuDetail.questions.length,
+                            itemBuilder: (context, index) {
+                              return Column(
+                                children: [
+                                  //Question
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(vertical: 10.0),
+                                    child: Text(commuDetail.questions[index].question,
+                                      style: TextStyle(fontWeight: FontWeight.bold),
+                                    ),
+                                  ),
+
+                                  //Answer
+                                  TextFormField(
+                                    maxLines: 3,
+                                    keyboardType: TextInputType.multiline,
+                                    controller: _answers[index],
+                                    decoration: InputDecoration(
+                                      hintText: "Answer here",
+                                      hintStyle: TextStyle(color: Colors.grey),
+                                      enabledBorder: UnderlineInputBorder(
+                                        borderSide: BorderSide(
+                                          color: Colors.grey
+                                        ),
+                                      ),
+                                    ),
+                                    validator: (value) {
+                                      if (value == null || value.isEmpty) {
+                                        return "Please answer community's question";
+                                      }
+                                      else {
+                                        return null;
+                                      }
+                                    },
+                                  ),
+
+                                  const SizedBox(height: 40),
+                                ],
+                              );
+                            }
                           ),
-
-                          //Answer
-                          TextFormField(
-                            maxLines: 3,
-                            keyboardType: TextInputType.multiline,
-                            decoration: InputDecoration(
-                              hintText: "Answer there",
-                              hintStyle: TextStyle(color: Colors.grey),
-                              enabledBorder: UnderlineInputBorder(
-                                borderSide: BorderSide(
-                                  color: Colors.grey
-                                ),
-                              ),
-                            ),
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return "Please enter event's description";
-                              }
-                              else {
-                                return null;
-                              }
-                            },
-                          ),
-
-                          const SizedBox(height: 40),
-
-                          //Question
-                          Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 10.0),
-                            child: Text("Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
-                              style: TextStyle(fontWeight: FontWeight.bold),
-                            ),
-                          ),
-
-                          //Answer
-                          TextFormField(
-                            maxLines: 3,
-                            keyboardType: TextInputType.multiline,
-                            decoration: InputDecoration(
-                              hintText: "Answer there",
-                              hintStyle: TextStyle(color: Colors.grey),
-                              enabledBorder: UnderlineInputBorder(
-                                borderSide: BorderSide(
-                                  color: Colors.grey
-                                ),
-                              ),
-                            ),
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return "Please enter event's description";
-                              }
-                              else {
-                                return null;
-                              }
-                            },
-                          ),
-
-                          const SizedBox(height: 40),
-
                           ElevatedButton(
                             style: ElevatedButton.styleFrom(
                               minimumSize: const Size(350, 50),
                             ),
-                            onPressed: (){
+                            onPressed: () {
                               showDialog(
                                 context: context,
                                 builder: (context) => AlertDialog(
-                                  title: Text("Answer"),
-                                  content: Text("Are you sure to send this answer?"),
+                                  title: Text("Answer Question"),
+                                  content: Text("Do you want to send these answer to ask for permission to join the community?"),
                                   actions: [
                                     FlatButton(
-                                      onPressed: (){}, 
+                                      onPressed: (){
+                                        Navigator.pop(context);
+                                      }, 
                                       child: Text("No")
                                     ),
                                     FlatButton(
-                                      onPressed: (){
-                                        //yes
+                                      onPressed: () async {
+                                        if(_formKey.currentState!.validate()) {
+                                          var success = await sendAnswers(commuDetail.id, commuDetail.questions, _answers);
+                                          var success2 = await joinCommu(commuDetail.id);
+                                          if (success && success2) {
+                                            Fluttertoast.showToast(msg: "Your answers have been sent.");
+                                            Navigator.pop(context);
+                                            Navigator.pop(context);
+                                          }
+                                          else {
+                                            Navigator.pop(context);
+                                          }
+                                        }
+                                        else {
+                                          Navigator.pop(context);
+                                        }
                                       }, 
                                       child: Text("Yes", style: TextStyle(color: Colors.red)),
                                     ),
@@ -163,9 +181,7 @@ class _QuestionPageState extends State<QuestionPage> {
                               );
                             }, 
                             child: const Text("Send Answer")
-                          ),
-                          
-                          const SizedBox(height: 30),
+                          )
                         ]
                       ),
                     ),
@@ -177,5 +193,50 @@ class _QuestionPageState extends State<QuestionPage> {
         ),
       ),
     );
+  }
+
+  Future<bool> sendAnswers(String commuId, List<Question> _questions, List<TextEditingController> _answers) async {
+    List<int> questions = [for (int i = 0; i < _questions.length; i++) _questions[i].id];
+    List<String> answers = [for (int i = 0; i < _answers.length; i++) _answers[i].text];
+
+    final userToken = await AuthHelper.getToken();
+
+    final response = await http.post(
+      Uri.parse('http://10.0.2.2:3000/communities/$commuId/answers'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+        'Authorization': 'bearer $userToken',
+      },
+      body: jsonEncode(<String, dynamic>{
+        'questions': questions,
+        'answers': answers
+      }),
+    );
+
+    if (response.statusCode == 201) {
+      return true;
+    }
+    else {
+      Fluttertoast.showToast(msg: ServerResponse.fromJson(jsonDecode(response.body)).message);
+      return false;
+    }
+  }
+
+  Future<bool> joinCommu(commuID) async {
+    final userToken = await AuthHelper.getToken();
+    final response = await http.put(
+      Uri.parse('http://10.0.2.2:3000/communities/$commuID/join'),
+      headers: <String, String> {
+        'Authorization' : 'bearer $userToken'
+      }
+    );
+
+    if (response.statusCode == 200) {
+      return true;
+    }
+    else {
+      Fluttertoast.showToast(msg: ServerResponse.fromJson(jsonDecode(response.body)).message);
+      return false;
+    }
   }
 }
