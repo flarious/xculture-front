@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 // import 'pages/event/eventpost_page.dart';
 import 'package:firebase_core/firebase_core.dart';

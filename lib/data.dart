@@ -1,5 +1,3 @@
-import 'package:flutter/material.dart';
-
 class Forum {
   final String id;
   final String title;
@@ -291,7 +289,9 @@ class Community {
   final int memberAmount;
   final User owner;
   final String date;
-  final List<User> members;
+  final String type;
+  final List<Member> members;
+  final List<Question> questions;
 
   Community({
     required this.id,
@@ -302,7 +302,9 @@ class Community {
     required this.memberAmount,
     required this.date,
     required this.owner,
+    required this.type,
     required this.members,
+    required this.questions,
   });
 
   factory Community.fromJson(Map<String, dynamic> json) {
@@ -315,17 +317,78 @@ class Community {
       memberAmount: json['member_amount'], 
       date: json['date'], 
       owner: User.formJson(json['owner']), 
-      members: getMembersFromJson(json['members'])
+      type: json['type'],
+      members: getMembersFromJson(json['members']),
+      questions: getQuestionsFromJson(json['questions']),
     );
   }
 
-  static List<User> getMembersFromJson(members) {
-    List<User> list = [];
+  static List<Question> getQuestionsFromJson(questions) {
+    List<Question> list = [];
+    if (questions != null) {
+      questions.forEach( (question) => list.add(Question.fromJson(question)));
+    }
+    list.sort((a, b) => a.id.compareTo(b.id));
+    return list;
+  } 
+
+  static List<Member> getMembersFromJson(members) {
+    List<Member> list = [];
     if(members != null) {
-      members.forEach( (member) => list.add(User.fromMemberJson(member)));
+      members.forEach( (member) => list.add(Member.fromJson(member)));
       list.sort((a, b) => a.id.compareTo(b.id));
     }
     return list;
+  }
+}
+
+class Member {
+  final int id;
+  final String? type;
+  final User member;
+
+  Member({
+    required this.id,
+    required this.type,
+    required this.member
+  });
+
+  factory Member.fromJson(Map<String, dynamic> json) {
+    return Member(id: json["id"], type: json["type"], member: User.formJson(json["member"]));
+  }
+}
+
+class Question {
+  final int id;
+  final String question;
+
+  Question({
+    required this.id,
+    required this.question
+  });
+
+  factory Question.fromJson(Map<String, dynamic> json) {
+    return Question(id: json['id'], question: json['question']);
+  }
+}
+
+class Answer {
+  final int id;
+  final String answer;
+  final String date;
+  final User respondent;
+  final int questionId;
+
+  Answer({
+    required this.id,
+    required this.answer,
+    required this.date,
+    required this.respondent,
+    required this.questionId,
+  });
+
+  factory Answer.fromJson(Map<String, dynamic> json) {
+    return Answer(id: json['id'], answer: json['answer'], date: json['date'], respondent: User.formJson(json['respondent']), questionId: json['question']['id']);
   }
 }
 
@@ -338,7 +401,7 @@ class Event {
   final int interestedAmount;
   final String date;
   final User host;
-  final List<User> members;
+  final List<Member> members;
 
   Event({
     required this.id,
@@ -366,10 +429,10 @@ class Event {
     );
   } 
 
-  static List<User> getMembersFromJson(members) {
-    List<User> list = [];
+  static List<Member> getMembersFromJson(members) {
+    List<Member> list = [];
     if(members != null) {
-      members.forEach( (member) => list.add(User.fromMemberJson(member)));
+      members.forEach( (member) => list.add(Member.fromJson(member)));
       list.sort((a, b) => a.id.compareTo(b.id));
     }
     return list;

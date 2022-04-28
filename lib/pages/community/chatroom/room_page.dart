@@ -94,7 +94,7 @@ class _RoomPageState extends State<RoomPage> {
                                   MaterialPageRoute(
                                     builder: (context) => const MemberPage(),
                                     settings: RouteSettings(
-                                      arguments: commu.members
+                                      arguments: commu
                                     )
                                   )
                                 );

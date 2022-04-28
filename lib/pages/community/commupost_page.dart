@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:flutter/material.dart';
 import 'package:xculturetestapi/widgets/textform_widget.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -19,18 +21,32 @@ class _CommuPostPageState extends State<CommuPostPage> {
 
   List<String> items = ["1","2","3","4","5","6","7","8","9","10"];
   String valueChoose = "1";
-  int j = 1;
+  int questionAmount = 1;
 
   final TextEditingController _name = TextEditingController();
   final TextEditingController _shortdesc = TextEditingController();
   final TextEditingController _thumbnail = TextEditingController();
   final TextEditingController _desc = TextEditingController();
+  List<TextEditingController> _questions = [];
   bool isPrivate = false;
 
   final _formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
+    if (_questions.length != questionAmount) {
+      if (_questions.length < questionAmount) {
+        for (int i = _questions.length; i < questionAmount; i++) {
+          _questions.add(TextEditingController());
+        }
+      }
+      else if (_questions.length > questionAmount) {
+        for (int i = _questions.length; i > questionAmount; i--) {
+          _questions.removeLast();
+        }
+      }
+    }
+
     return Scaffold(
       // appBar: AppBar(
       //   centerTitle: true,
@@ -219,7 +235,7 @@ class _CommuPostPageState extends State<CommuPostPage> {
                                     onChanged: (value) {
                                       setState(() {
                                         valueChoose = value.toString();
-                                        j = int.parse(valueChoose);
+                                        questionAmount = int.parse(valueChoose);
                                       });
                                     }
                                   )
@@ -227,8 +243,27 @@ class _CommuPostPageState extends State<CommuPostPage> {
                               ),
                               Column(
                                 children: [
-                                  for(int i = 1; i <= j; i++)
-                                    TextForm(label: "Add Question $i"),
+                                  for(int i = 0; i < questionAmount; i++)
+                                    TextFormField(
+                                      controller: _questions[i],
+                                      decoration: InputDecoration(
+                                        labelText: "Question ${i + 1}",
+                                        labelStyle: const TextStyle(color: Colors.grey),
+                                        enabledBorder: const UnderlineInputBorder(
+                                          borderSide: BorderSide(
+                                            color: Colors.grey
+                                          ),
+                                        ),
+                                      ),
+                                      validator: (value) {
+                                        if (value == null || value.isEmpty) {
+                                          return "Please enter community's question";
+                                        }
+                                        else {
+                                          return null;
+                                        }
+                                      },
+                                    )
                                 ],
                               ),
                             ],
@@ -256,7 +291,7 @@ class _CommuPostPageState extends State<CommuPostPage> {
                                     FlatButton(
                                       onPressed: () async {
                                         if(_formKey.currentState!.validate()) {
-                                          var success = await sendCommuDetail(_name.text, _shortdesc.text, _desc.text, _thumbnail.text);
+                                          var success = await sendCommuDetail(_name.text, _shortdesc.text, _desc.text, _thumbnail.text, isPrivate, _questions);
                                           if (success) {
                                             Fluttertoast.showToast(msg: "Your community have been created.");
                                             Navigator.pop(context);
@@ -288,7 +323,10 @@ class _CommuPostPageState extends State<CommuPostPage> {
     );
   }
 
-  Future<bool> sendCommuDetail(String name, String shortdesc, String desc, String thumbnail) async {
+  Future<bool> sendCommuDetail(String name, String shortdesc, String desc, String thumbnail, bool isPrivate, List<TextEditingController> _questions) async {
+    final type = isPrivate ? "private" : "public";
+    List<String> questions = isPrivate ? [for (int i = 0; i < _questions.length; i++) _questions[i].text] : [];
+
     final userToken = await AuthHelper.getToken();
 
     final response = await http.post(
@@ -302,6 +340,8 @@ class _CommuPostPageState extends State<CommuPostPage> {
         'short_description': shortdesc,
         'description': desc,
         'thumbnail': thumbnail,
+        'type': type,
+        'questions': questions
       }),
     );
     if (response.statusCode == 201) {
