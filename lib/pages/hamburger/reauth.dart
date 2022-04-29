@@ -117,6 +117,7 @@ class _ReAuthPageState extends State<ReAuthPage>{
                           const SizedBox(height: 20),
                           TextFormField(
                             controller: _password,
+                            obscureText: true,
                             decoration: const InputDecoration(
                               labelText: "Password",
                               labelStyle: TextStyle(color: Colors.grey),

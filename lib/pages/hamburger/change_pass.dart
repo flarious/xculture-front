@@ -142,6 +142,7 @@ class _ChangePasswordPageState extends State<ChangePasswordPage>{
                         children: [
                           TextFormField(
                             controller: _newPass,
+                            obscureText: true,
                             decoration: const InputDecoration(
                               labelText: "New password",
                               labelStyle: TextStyle(color: Colors.grey),
@@ -163,6 +164,7 @@ class _ChangePasswordPageState extends State<ChangePasswordPage>{
                           const SizedBox(height: 20),
                           TextFormField(
                             controller: _newConfirmPass,
+                            obscureText: true,
                             decoration: const InputDecoration(
                               labelText: "Confirm password",
                               labelStyle: TextStyle(color: Colors.grey),
