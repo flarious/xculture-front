@@ -3,7 +3,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:xculturetestapi/helper/auth.dart';
 import 'package:xculturetestapi/model/password.dart';
-import 'package:xculturetestapi/pages/hamburger/setting.dart';
+import 'package:xculturetestapi/pages/hamburger/change_pass.dart';
 import 'package:xculturetestapi/utils/password_info.dart';
 import 'package:xculturetestapi/widgets/chagepassfield_widget.dart';
 import 'package:xculturetestapi/widgets/profile_widget.dart';
@@ -11,75 +11,22 @@ import 'package:xculturetestapi/widgets/textfield_widget.dart';
 //import 'package:xculturetestapi/widgets/uploadprofile_widget.dart';
 import 'package:xculturetestapi/widgets/uploadprofilepic_widget.dart';
 
-class ChangePasswordPage extends StatefulWidget{
-  const ChangePasswordPage({Key? key}) : super(key: key);
+class ReAuthPage extends StatefulWidget{
+  const ReAuthPage({Key? key}) : super(key: key);
 
   @override
-  _ChangePasswordPageState createState() => _ChangePasswordPageState();
+  _ReAuthPageState createState() => _ReAuthPageState();
 }
 
-class _ChangePasswordPageState extends State<ChangePasswordPage>{
-  // UserPassword userpassword = UserPasswordInfo.passwordTest;
-
-  final TextEditingController _newPass = TextEditingController();
-  final TextEditingController _newConfirmPass = TextEditingController();
+class _ReAuthPageState extends State<ReAuthPage>{
+  final TextEditingController _email = TextEditingController();
+  final TextEditingController _password = TextEditingController();
 
   final _formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
-    /*
     return Scaffold(
-      appBar: AppBar(
-      title: Text('Change Password'),
-      centerTitle: true,
-      backgroundColor: Colors.red,
-    ),
-    body: ListView(
-      shrinkWrap: true,
-      padding: EdgeInsets.symmetric(horizontal: 32),
-      physics: BouncingScrollPhysics(),
-      children: [
-        const SizedBox(height: 40),
-        ChangePassTextFiledWidget(
-          label: 'Current Password', 
-          text: userpassword.Password, 
-          onChanged: (password){}
-        ),
-        const SizedBox(height: 20),
-        ChangePassTextFiledWidget(
-          label: 'New Password', 
-          text: userpassword.NewPassword, 
-          // maxLines:5,
-          onChanged: (newpassword){},
-        ),
-        const SizedBox(height: 20),
-        ChangePassTextFiledWidget(
-          label: 'Confirm New Password', 
-          text: userpassword.ConfirmNewPassword, 
-          // maxLines:5,
-          onChanged: (confirmnewpassword){},
-        ),
-        const SizedBox(height:20),
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                minimumSize: const Size(350, 50),
-              ),
-              onPressed: () async {}, 
-                child: const Text("Save Changes")
-              ),        
-      ],
-    ),
-  );
-  */
-    return Scaffold(
-      // appBar: AppBar(
-      //   centerTitle: true,
-      //   title: const Text(
-      //     "Post Forum",
-      //     style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: 25),
-      //   ),
-      // ),
       body: WillPopScope(
         onWillPop: () async {
           Navigator.pop(context);
@@ -95,7 +42,7 @@ class _ChangePasswordPageState extends State<ChangePasswordPage>{
                 height: 180,
                 color: Color.fromRGBO(220, 71, 47, 1),
                 child: const Center(
-                  child: Text("Change Password", 
+                  child: Text("Re-authentication", 
                     style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold, color: Colors.white),
                   ),
                 ),
@@ -140,10 +87,17 @@ class _ChangePasswordPageState extends State<ChangePasswordPage>{
                       padding: const EdgeInsets.all(20),
                       child: Column(
                         children: [
+                          //Description
+                          const Padding(
+                            padding: EdgeInsets.symmetric(vertical: 5.0),
+                            child: Text("You need to sign in again before changing the password",
+                              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                            ),
+                          ),
                           TextFormField(
-                            controller: _newPass,
+                            controller: _email,
                             decoration: const InputDecoration(
-                              labelText: "New password",
+                              labelText: "Email",
                               labelStyle: TextStyle(color: Colors.grey),
                               enabledBorder: UnderlineInputBorder(
                                 borderSide: BorderSide(
@@ -153,7 +107,7 @@ class _ChangePasswordPageState extends State<ChangePasswordPage>{
                             ),
                             validator: (value) {
                               if (value == null || value.isEmpty) {
-                                return "Please enter new password";
+                                return "Please enter your email";
                               }
                               else {
                                 return null;
@@ -162,9 +116,9 @@ class _ChangePasswordPageState extends State<ChangePasswordPage>{
                           ),
                           const SizedBox(height: 20),
                           TextFormField(
-                            controller: _newConfirmPass,
+                            controller: _password,
                             decoration: const InputDecoration(
-                              labelText: "Confirm password",
+                              labelText: "Password",
                               labelStyle: TextStyle(color: Colors.grey),
                               enabledBorder: UnderlineInputBorder(
                                 borderSide: BorderSide(
@@ -174,10 +128,7 @@ class _ChangePasswordPageState extends State<ChangePasswordPage>{
                             ),
                             validator: (value) {
                               if (value == null || value.isEmpty) {
-                                return "Please comfirm your new password";
-                              }
-                              else if (value != _newPass.text) {
-                                return "Please make sure the passwords match";
+                                return "Please enter your password";
                               }
                               else {
                                 return null;
@@ -193,45 +144,20 @@ class _ChangePasswordPageState extends State<ChangePasswordPage>{
                                 style: ElevatedButton.styleFrom(
                                   minimumSize: const Size(100, 50),
                                 ),
-                                onPressed: () {
-                                  showDialog(
-                                    context: context,
-                                    builder: (context) => AlertDialog(
-                                      title: Text("Change Password"),
-                                      content: Text("Do you want to change your account's password?"),
-                                      actions: [
-                                        FlatButton(
-                                          onPressed: (){
-                                            Navigator.pop(context);
-                                          }, 
-                                          child: Text("No")
-                                        ),
-                                        FlatButton(
-                                          onPressed: () async {
-                                            if (_formKey.currentState!.validate()) {
-                                              var success =  await AuthHelper.changePass(_newPass.text);
-                                              if(success) {
-                                                Fluttertoast.showToast(msg: "Your password has been changed.");
-                                                Navigator.pop(context);
-                                                Navigator.pop(context);
-                                                Navigator.pop(context);
-                                              }
-                                              else {
-                                                Navigator.pop(context);
-                                              }
-                                            }
-                                            else {
-                                              Navigator.pop(context);
-                                            }
-                                          }, 
-                                          child: Text("Yes", style: TextStyle(color: Colors.red)),
-                                        ),
-                                      ],
-                                      elevation: 24.0,
-                                    ),
-                                  );
-                                }, 
-                                child: const Text("Save Changes")
+                                onPressed: () async {
+                                  if (_formKey.currentState!.validate()) {
+                                    var success =  await AuthHelper.reauth(_email.text, _password.text);
+                                    if(success) {
+                                      Navigator.push(
+                                        context, 
+                                        MaterialPageRoute(
+                                          builder: (context) => const ChangePasswordPage()
+                                        )
+                                      );
+                                    }
+                                  }
+                                },
+                                child: const Text("Next")
                               ),      
                             ],
                           )

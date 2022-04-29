@@ -72,4 +72,28 @@ class AuthHelper {
       return false;
     }
   }
+
+  static Future<bool> reauth(email, password) async {
+    try {
+      final cred = EmailAuthProvider.credential(email: email, password: password);
+
+      await auth.currentUser!.reauthenticateWithCredential(cred);
+    
+      return true;
+    } catch (e) {
+      Fluttertoast.showToast(msg: "Incorrect Email or Password");
+      return false;
+    }
+  }
+
+  static Future<bool> changePass(newPass) async {
+    try {
+      await auth.currentUser!.updatePassword(newPass);
+
+      return true;
+    } catch (e) {
+      Fluttertoast.showToast(msg: "Not logged in");
+      return false;
+    }
+  }
 }
