@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:xculturetestapi/pages/hamburger/change_pass.dart';
 import 'package:xculturetestapi/pages/hamburger/edit_profile_page.dart';
 import 'package:xculturetestapi/pages/hamburger/profile_page.dart';
+import 'package:xculturetestapi/pages/hamburger/reauth.dart';
 
 
 class SettingsPage extends StatefulWidget {
@@ -330,7 +331,7 @@ class _SettingsPageState extends State<SettingsPage> {
     return GestureDetector(
       onTap: () {
         Navigator.of(context).push(
-          MaterialPageRoute(builder:(context)=> ChangePasswordPage()), 
+          MaterialPageRoute(builder:(context)=> const ReAuthPage()), 
         );
       },
       child: Padding(
