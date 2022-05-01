@@ -263,6 +263,9 @@ class _ForumDetailPageState extends State<ForumDetailPage> {
                                             Fluttertoast.showToast(msg: "Unfavorited.");
                                           }
                                         }   
+                                        setState(() { 
+                                                                         
+                                        });
                                       },
                                     ),
                                   ],
