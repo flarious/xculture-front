@@ -43,7 +43,6 @@ class _ForumDetailPageState extends State<ForumDetailPage> {
   bool isReply = false;
   bool isShowReply = false;
   bool isFirstVisited = true;
-  final _formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
@@ -84,7 +83,7 @@ class _ForumDetailPageState extends State<ForumDetailPage> {
                       _isShowReply.add(isShowReply);
                       _contentReplies.add(_contentReply);
                       incognitoReplies.add(incognitoReply);
-                      _formKeyReplies.add(_formKey);
+                      _formKeyReplies.add(GlobalKey<FormState>());
                       _favRepliesTotal.add(_favRepliesPerComment);
                     }
                     
@@ -413,9 +412,6 @@ class _ForumDetailPageState extends State<ForumDetailPage> {
                                                       refreshPage(snapshot.data!.id);
                                                     }
                                                   }
-                                                setState(()  {
-                                                  
-                                                });
                                               }, 
                                               child: const SizedBox(
                                                 width: 100,
@@ -622,9 +618,6 @@ class _ForumDetailPageState extends State<ForumDetailPage> {
                                                                   refreshPage(snapshot.data!.id);
                                                                 }
                                                               }
-                                                            setState(() {
-                                                              
-                                                            });
                                                           }, 
                                                           icon: const Icon(Icons.reply),
                                                           iconSize: 25,
