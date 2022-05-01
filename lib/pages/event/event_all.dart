@@ -150,7 +150,7 @@ class _EventAllPageState extends State<EventAllPage> {
                 return ListView.builder(
                   itemCount: snapshot.data?.length,
                   itemBuilder: (context, index) {
-                    var dt = DateTime.parse(snapshot.data![index].date).toLocal();
+                    var dt = DateTime.parse(snapshot.data![index].eventDate).toLocal();
                     String dateEvent = DateFormat('MMMM dd, yyyy').format(dt);
                     var contained = isContain(snapshot.data![index], searchString);
                     return contained ? InkWell(

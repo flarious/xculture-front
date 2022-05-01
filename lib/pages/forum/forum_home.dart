@@ -21,7 +21,9 @@ class ForumPage extends StatefulWidget {
 }
 
 class _ForumPageState extends State<ForumPage> {
-  Future<List<Forum>>? _futureForum;
+  Future<List<Forum>>? trendingForum;
+  Future<List<Forum>>? newestForum;
+
 
   // Change color (prefix icon)
   FocusNode fieldnode = FocusNode();
@@ -33,7 +35,8 @@ class _ForumPageState extends State<ForumPage> {
   @override
   void initState() {
     super.initState();
-    _futureForum = getForums();
+    trendingForum = getForums();
+    newestForum = getForums();
   }
 
   @override
@@ -71,7 +74,8 @@ class _ForumPageState extends State<ForumPage> {
 
   FutureOr refreshPage(dynamic value) {
     setState(() {
-      _futureForum = getForums();
+      trendingForum = getForums();
+      newestForum = getForums();
     });
   }
 
@@ -214,7 +218,7 @@ class _ForumPageState extends State<ForumPage> {
                           MaterialPageRoute(
                             builder: (context) => ForumAllPage(value: searchString),
                             settings: RouteSettings(
-                              arguments: _futureForum,
+                              arguments: trendingForum,
                             ),
                           )
                         ).then(refreshPage);
@@ -232,6 +236,7 @@ class _ForumPageState extends State<ForumPage> {
                     // margin: const EdgeInsets.only(bottom: 10),
                     width: double.maxFinite,
                     child: FutureBuilder<List<Forum>>(
+                      future: trendingForum,
                       builder: (BuildContext context, AsyncSnapshot<List<Forum>> snapshot) {
                         if (snapshot.hasData) {
                           snapshot.data!.sort((b, a) => (a.viewed + a.favorited).compareTo((b.viewed + b.favorited)));
@@ -326,7 +331,6 @@ class _ForumPageState extends State<ForumPage> {
                           return const CircularProgressIndicator();
                         }
                       },
-                      future: _futureForum,
                     )
                   ),
                 ),
@@ -341,30 +345,132 @@ class _ForumPageState extends State<ForumPage> {
                       const Spacer(),
                       TextButton(
                         onPressed: () {
-                        /*
+                        
                         // Navigator.pushNamed(context, 'forumAllPage', arguments: _futureForum).then(refreshPage);
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => const ForumAllPage(),
+                            builder: (context) => ForumAllPage(value: '',),
                             settings: RouteSettings(
-                              arguments: _futureForum,
+                              arguments: newestForum,
                             ),
                           )
                         ).then(refreshPage);
-                        */
+
                       }, 
                       child: const Text("See all")),
                     ],
                   ),
                 ),
-      
+                Container(
+                  height: 290,
+                  child: Container(
+                    height: 250,
+                    // color: Colors.red,
+                    margin: const EdgeInsets.only(left: 5, bottom: 10),
+                    // margin: const EdgeInsets.only(bottom: 10),
+                    width: double.maxFinite,
+                    child: FutureBuilder<List<Forum>>(
+                      future: newestForum,
+                      builder: (BuildContext context, AsyncSnapshot<List<Forum>> snapshot) {
+                        if (snapshot.hasData) {
+                          snapshot.data!.sort((b, a) => (a.createDate).compareTo((b.createDate)));
+                          return ListView.builder(
+                            itemCount: (snapshot.data!.length <= 5) ? snapshot.data!.length : 5,
+                            scrollDirection: Axis.horizontal,
+                            itemBuilder: (BuildContext context, int index) {
+                              var contained = searchForum(snapshot.data![index], searchString);
+                              return contained ? InkWell(
+                                child: Container(
+                                  margin: const EdgeInsets.all(10),
+                                  width: 300,
+                                  // height: 100,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(20),
+                                    color: Colors.lightBlue[100],
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.grey.withOpacity(0.7),
+                                        blurRadius: 5.0,
+                                        offset: const Offset(0.0, 5.0),
+                                      ),
+                                    ],
+                                  ),
+                                  child: Stack(
+                                    children: [
+                                      Container(
+                                        height: 120,
+                                        width: 300,
+                                        decoration: BoxDecoration(
+                                          borderRadius: const BorderRadius.only(
+                                            topLeft: Radius.circular(20),
+                                            topRight: Radius.circular(20),
+                                          ),
+                                          image: DecorationImage(
+                                            fit: BoxFit.fill,
+                                            image: NetworkImage(snapshot.data![index].thumbnail) // Forum Image
+                                          ),
+                                        ),
+                                      ),
+                                      Container(
+                                        height: 200,
+                                        margin: const EdgeInsets.only(top: 140, left: 20, right: 0, bottom: 20),
+                                        child: Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            Text(snapshot.data![index].title,
+                                              overflow: TextOverflow.ellipsis,
+                                              style: const TextStyle(
+                                                fontSize: 20.0,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                            Text(snapshot.data![index].subtitle,
+                                              overflow: TextOverflow.ellipsis,
+                                              style: const TextStyle(
+                                                fontSize: 15.0,
+                                                color: Colors.black,
+                                              ),
+                                            ),
+                                            Row(
+                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                              children: snapshot.data![index].tags.take(2).map((tag) => Padding(
+                                                padding: const EdgeInsets.only(right: 10),
+                                                child: Chip(
+                                                  label: Text(tag.name),
+                                                ),
+                                              )).toList(),
+                                            ),
+                                          ],
+                                        ),
+                                      )
+                                    ],
+                                  ),
+                                ),
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => const ForumDetailPage(),
+                                      settings: RouteSettings(
+                                        arguments: snapshot.data![index],
+                                      ),
+                                    )
+                                  ).then(refreshPage);
+                                },
+                              ) : Container();
+                            }
+                          );
+                        }
+                        else {
+                          return const CircularProgressIndicator();
+                        }
+                      }
+                    )
+                  ),
+                ),
               ],
             ),
-      
-      
-      
-      
           ],
         ),
       ), 

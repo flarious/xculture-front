@@ -349,7 +349,7 @@ class _SearchPageState extends State<SearchPage> {
                             scrollDirection: Axis.horizontal,
                             itemBuilder: (BuildContext context, int index) {
                               var contained = searchEvent(snapshot.data![index], searchString);
-                              var dt = DateTime.parse(snapshot.data![index].date).toLocal();
+                              var dt = DateTime.parse(snapshot.data![index].eventDate).toLocal();
                               String dateEvent = DateFormat('MMMM dd, yyyy').format(dt);
                               return contained ? InkWell(
                                 child: Container(

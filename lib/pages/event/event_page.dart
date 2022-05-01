@@ -24,7 +24,8 @@ class EventPage extends StatefulWidget {
 
 class _EventPageState extends State<EventPage> {
 
-  Future<List<Event>>? _futureEvent;
+  Future<List<Event>>? trendingEvent;
+  Future<List<Event>>? newestEvent;
 
   // TextEditing For Search
   String searchString = "";
@@ -37,7 +38,8 @@ class _EventPageState extends State<EventPage> {
   void initState() {
     super.initState();
 
-    _futureEvent = getEvents();
+    trendingEvent = getEvents();
+    newestEvent = getEvents();
   }
 
   @override
@@ -190,7 +192,7 @@ class _EventPageState extends State<EventPage> {
                             MaterialPageRoute(
                               builder: (context) => EventAllPage(value: searchString),
                               settings: RouteSettings(
-                                arguments: _futureEvent,
+                                arguments: trendingEvent,
                               ),
                             )
                           ).then(refreshPage);
@@ -206,14 +208,15 @@ class _EventPageState extends State<EventPage> {
                     height: 150,
                     width: double.maxFinite,
                     child: FutureBuilder<List<Event>>(
-                      future: _futureEvent,
+                      future: trendingEvent,
                       builder: (BuildContext context, AsyncSnapshot<List<Event>> snapshot) { 
                         if(snapshot.hasData) {
+                          snapshot.data!.sort((b, a) => (a.interestedAmount).compareTo((b.interestedAmount)));
                           return ListView.builder(
                             itemCount: (snapshot.data!.length <= 5) ? snapshot.data!.length : 5, // number of item to display
                             scrollDirection: Axis.horizontal,
                             itemBuilder: (BuildContext context, int index) {
-                              var dt = DateTime.parse(snapshot.data![index].date).toLocal();
+                              var dt = DateTime.parse(snapshot.data![index].eventDate).toLocal();
                               String dateEvent = DateFormat('MMMM dd, yyyy').format(dt);
                               var contained = searchEvent(snapshot.data![index], searchString);
                               return contained ? InkWell(
@@ -322,18 +325,127 @@ class _EventPageState extends State<EventPage> {
                         const Spacer(),
                         TextButton(
                           onPressed: () {
-                          // Navigator.push(
-                          //   context,
-                          //   MaterialPageRoute(
-                          //     builder: (context) => EventAllPage(value: '',),
-                          //     settings: RouteSettings(
-                          //       arguments: _futureEvent,
-                          //     ),
-                          //   )
-                          // ).then(refreshPage);
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => EventAllPage(value: '',),
+                              settings: RouteSettings(
+                                arguments: newestEvent,
+                              ),
+                            )
+                          ).then(refreshPage);
                         }, 
                         child: const Text("See all")),
                       ],
+                    ),
+                  ),
+                  Container(
+                    // margin: const EdgeInsets.only(left: 0),
+                    height: 150,
+                    width: double.maxFinite,
+                    child: FutureBuilder<List<Event>>(
+                      future: newestEvent,
+                      builder: (BuildContext context, AsyncSnapshot<List<Event>> snapshot) { 
+                        if(snapshot.hasData) {
+                          snapshot.data!.sort((b, a) => (a.createDate).compareTo((b.createDate)));
+                          return ListView.builder(
+                            itemCount: (snapshot.data!.length <= 5) ? snapshot.data!.length : 5, // number of item to display
+                            scrollDirection: Axis.horizontal,
+                            itemBuilder: (BuildContext context, int index) {
+                              var dt = DateTime.parse(snapshot.data![index].eventDate).toLocal();
+                              String dateEvent = DateFormat('MMMM dd, yyyy').format(dt);
+                              var contained = searchEvent(snapshot.data![index], searchString);
+                              return contained ? InkWell(
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(20),
+                                  child: BackdropFilter(
+                                    filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+                                    child: Container(
+                                      margin: const EdgeInsets.all(10),
+                                      width: 350,
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(20),
+                                        gradient: LinearGradient(colors: [
+                                          Colors.lightBlue.withOpacity(0.2),
+                                          Colors.lightBlue.withOpacity(0.05),
+                                        ], begin: Alignment.topLeft, end: Alignment.bottomRight),
+                                        border: Border.all(
+                                          color: Colors.lightBlue.withOpacity(0.08),
+                                        ),
+                                      ),
+                                      child: Stack(
+                                        children: [
+
+                                          //Cover Photo
+                                          Positioned(
+                                            top: 0,
+                                            left: 0,
+                                            child: Container(
+                                              height: 130,
+                                              width: 100,
+                                              decoration: BoxDecoration(
+                                                borderRadius: const BorderRadius.only(
+                                                  topLeft: Radius.circular(20),
+                                                  bottomLeft: Radius.circular(20),
+                                                ),
+                                                image: DecorationImage(
+                                                  fit: BoxFit.fitHeight,
+                                                  image: NetworkImage(snapshot.data![index].thumbnail) // Event Image
+                                                ),
+                                              ),
+                                            )
+                                          ),
+
+                                          //Text
+                                          Container(
+                                            margin: const EdgeInsets.only(top: 0, left: 120, right: 0, bottom: 0),
+                                            padding: const EdgeInsets.all(10),
+                                            child: Column(
+                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                              children: [
+                                                Text(
+                                                  snapshot.data![index].name,
+                                                  style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                                                  overflow: TextOverflow.ellipsis, // Event name
+                                                ),
+                                                Text(
+                                                  dateEvent,
+                                                  style: const TextStyle(fontSize: 15), // Event date
+                                                  overflow: TextOverflow.ellipsis,
+                                                ),
+                                                Text(
+                                                  snapshot.data![index].location,
+                                                  style: const TextStyle(fontSize: 15),
+                                                  overflow: TextOverflow.ellipsis, // Event loca
+                                                ),
+                                              ],
+                                            )
+                                          )
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ),
+
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => const EventDetailPage(),
+                                      settings: RouteSettings(
+                                        arguments: snapshot.data![index],
+                                      ),
+                                    )
+                                  ).then(refreshPage);
+                                },
+                              ) : Container();
+                            }
+                          );
+                        }
+                        else {
+                          return const CircularProgressIndicator();
+                        }
+                      }
                     ),
                   ),
                 ],
@@ -366,7 +478,8 @@ class _EventPageState extends State<EventPage> {
 
   FutureOr refreshPage(dynamic value) {
     setState(() {
-      _futureEvent = getEvents();
+      trendingEvent = getEvents();
+      newestEvent = getEvents();
     });
   }
 

@@ -186,7 +186,7 @@ class _YourEventPageState extends State<YourEventPage> with TickerProviderStateM
                                               itemCount: (snapshot.data!.length <= 5) ? snapshot.data!.length : 5,
                                               scrollDirection: Axis.vertical,
                                               itemBuilder: (BuildContext context, int index) {
-                                                var dt = DateTime.parse(snapshot.data![index].date).toLocal();
+                                                var dt = DateTime.parse(snapshot.data![index].eventDate).toLocal();
                                                 String dateEvent = DateFormat('MMMM dd, yyyy').format(dt);
                                                 var contained = searchEvent(snapshot.data![index], searchString);
                                                 return contained ? InkWell(
@@ -281,7 +281,7 @@ class _YourEventPageState extends State<YourEventPage> with TickerProviderStateM
                                               itemCount: (snapshot.data!.length <= 5) ? snapshot.data!.length : 5,
                                               scrollDirection: Axis.vertical,
                                               itemBuilder: (BuildContext context, int index) {
-                                                var dt = DateTime.parse(snapshot.data![index].date).toLocal();
+                                                var dt = DateTime.parse(snapshot.data![index].eventDate).toLocal();
                                                 String dateEvent = DateFormat('MMMM dd, yyyy').format(dt);
                                                 var contained = searchEvent(snapshot.data![index], searchString);
                                                 return contained ? InkWell(
