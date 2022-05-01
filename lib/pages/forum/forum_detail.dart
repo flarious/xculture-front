@@ -43,7 +43,6 @@ class _ForumDetailPageState extends State<ForumDetailPage> {
   bool isReply = false;
   bool isShowReply = false;
   bool isFirstVisited = true;
-  final _formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
@@ -84,7 +83,7 @@ class _ForumDetailPageState extends State<ForumDetailPage> {
                       _isShowReply.add(isShowReply);
                       _contentReplies.add(_contentReply);
                       incognitoReplies.add(incognitoReply);
-                      _formKeyReplies.add(_formKey);
+                      _formKeyReplies.add(GlobalKey<FormState>());
                       _favRepliesTotal.add(_favRepliesPerComment);
                     }
                     
@@ -263,6 +262,9 @@ class _ForumDetailPageState extends State<ForumDetailPage> {
                                             Fluttertoast.showToast(msg: "Unfavorited.");
                                           }
                                         }   
+                                        setState(() { 
+                                                                         
+                                        });
                                       },
                                     ),
                                   ],
@@ -410,9 +412,6 @@ class _ForumDetailPageState extends State<ForumDetailPage> {
                                                       refreshPage(snapshot.data!.id);
                                                     }
                                                   }
-                                                setState(()  {
-                                                  
-                                                });
                                               }, 
                                               child: const SizedBox(
                                                 width: 100,
@@ -619,9 +618,6 @@ class _ForumDetailPageState extends State<ForumDetailPage> {
                                                                   refreshPage(snapshot.data!.id);
                                                                 }
                                                               }
-                                                            setState(() {
-                                                              
-                                                            });
                                                           }, 
                                                           icon: const Icon(Icons.reply),
                                                           iconSize: 25,
@@ -776,7 +772,7 @@ class _ForumDetailPageState extends State<ForumDetailPage> {
       Fluttertoast.showToast(msg: ServerResponse.fromJson(jsonDecode(response.body)).message);
       Navigator.pop(context);
       return Forum(id: "", title: "", subtitle: "", content: "", thumbnail: "", author: User(id: "", name: "", profilePic: "", bio: "", email: "", tags: []), 
-      incognito: false, viewed: 0, favorited: 0, date: DateTime.now().toString(), updateDate: DateTime.now().toString(), comments: [], tags: [], favoritedBy: []);
+      incognito: false, viewed: 0, favorited: 0, createDate: DateTime.now().toString(), updateDate: DateTime.now().toString(), comments: [], tags: [], favoritedBy: []);
     }
   }
   

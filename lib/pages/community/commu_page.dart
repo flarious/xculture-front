@@ -21,7 +21,8 @@ class CommuPage extends StatefulWidget {
 }
 
 class _CommuPageState extends State<CommuPage> {
-  Future<List<Community>>? _futureCommu;
+  Future<List<Community>>? trendingCommu;
+  Future<List<Community>>? newestCommu;
 
   // Change color (prefix icon)
   FocusNode fieldnode = FocusNode();
@@ -34,7 +35,8 @@ class _CommuPageState extends State<CommuPage> {
   void initState() {
     super.initState();
 
-    _futureCommu = getCommus();
+    trendingCommu = getCommus();
+    newestCommu = getCommus();
   }
 
   @override
@@ -178,14 +180,14 @@ class _CommuPageState extends State<CommuPage> {
                           ),
                           const Spacer(),
                           TextButton(
-                            onPressed: () {
+                            onPressed: () async {
                             // Navigator.pushNamed(context, 'forumAllPage', arguments: _futureForum).then(refreshPage);
-                            Navigator.push(
+                            await Navigator.push(
                               context,
                               MaterialPageRoute(
                                 builder: (context) => CommuAllPage(value: searchString),
                                 settings: RouteSettings(
-                                  arguments: _futureCommu,
+                                  arguments: trendingCommu,
                                 ),
                               )
                             ).then(refreshPage);
@@ -199,9 +201,11 @@ class _CommuPageState extends State<CommuPage> {
                       height: 250,
                       width: double.maxFinite,
                       child: FutureBuilder<List<Community>>(
-                        future: _futureCommu,
+                        future: trendingCommu,
                         builder: (BuildContext context, AsyncSnapshot<List<Community>> snapshot) { 
+                          
                           if(snapshot.hasData) {
+                            snapshot.data!.sort((b, a) => (a.memberAmount).compareTo((b.memberAmount)));
                             return ListView.builder(
                               itemCount: (snapshot.data!.length <= 5) ? snapshot.data!.length : 5, // number of item to display
                               scrollDirection: Axis.horizontal,
@@ -268,8 +272,8 @@ class _CommuPageState extends State<CommuPage> {
                                       ],
                                     ),
                                   ),
-                                  onTap: () {
-                                    Navigator.push(
+                                  onTap: () async {
+                                    await Navigator.push(
                                       context,
                                       MaterialPageRoute(
                                         builder: (context) => const CommuDetailPage(),
@@ -300,18 +304,114 @@ class _CommuPageState extends State<CommuPage> {
                           const Spacer(),
                           TextButton(
                             onPressed: () {
-                            // Navigator.push(
-                            //   context,
-                            //   MaterialPageRoute(
-                            //     builder: (context) => CommuAllPage(value: '',),
-                            //     settings: RouteSettings(
-                            //       arguments: _futureCommu,
-                            //     ),
-                            //   )
-                            // ).then(refreshPage);
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => CommuAllPage(value: '',),
+                                settings: RouteSettings(
+                                  arguments: newestCommu,
+                                ),
+                              )
+                            ).then(refreshPage);
                           }, 
                           child: const Text("See all")),
                         ],
+                      ),
+                    ),
+                    Container(
+                      margin: const EdgeInsets.only(left: 5),
+                      height: 250,
+                      width: double.maxFinite,
+                      child: FutureBuilder<List<Community>>(
+                        future: newestCommu,
+                        builder: (BuildContext context, AsyncSnapshot<List<Community>> snapshot) { 
+                          if(snapshot.hasData) {
+                            snapshot.data!.sort((b, a) => (a.createDate).compareTo((b.createDate)));
+                            return ListView.builder(
+                              itemCount: (snapshot.data!.length <= 5) ? snapshot.data!.length : 5, // number of item to display
+                              scrollDirection: Axis.horizontal,
+                              itemBuilder: (BuildContext context, int index) {
+                                var contained = searchCommunity(snapshot.data![index], searchString);
+                                return contained ? InkWell(
+                                  child: Container(
+                                    margin: const EdgeInsets.all(10),
+                                    width: 300,
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(20),
+                                      color: Colors.lightBlue[100],
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: Colors.grey.withOpacity(0.7),
+                                          blurRadius: 5.0,
+                                          offset: const Offset(0.0, 5.0),
+                                        ),
+                                      ],
+                                    ),
+                                    child: Stack(
+                                      children: [
+                                        Positioned(
+                                          top: 0,
+                                          child: Container(
+                                            height: 120,
+                                            width: 300,
+                                            decoration: BoxDecoration(
+                                              borderRadius: const BorderRadius.only(
+                                                topLeft: Radius.circular(20),
+                                                topRight: Radius.circular(20),
+                                              ),
+                                              image: DecorationImage(
+                                                fit: BoxFit.fill,
+                                                image: NetworkImage(snapshot.data![index].thumbnail) // Community Image
+                                              ),
+                                            ),
+                                          )
+                                        ),
+                                        Container(
+                                          margin: const EdgeInsets.only(top: 140, left: 20, right: 0, bottom: 0),
+                                          /* top: 140,
+                                          left: 20, */
+                                          child: Column(
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            children: [
+                                              Text(
+                                                snapshot.data![index].name,
+                                                style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+                                                overflow: TextOverflow.ellipsis, // Community Title
+                                              ),
+                                              Text(
+                                                snapshot.data![index].shortdesc,
+                                                style: const TextStyle(fontSize: 15), // Community Subtitle
+                                                overflow: TextOverflow.ellipsis,
+                                              ),
+                                              Text(
+                                                "Members : ${snapshot.data![index].memberAmount.toString()}",
+                                                style: const TextStyle(fontSize: 15), // Community Subtitle
+                                              ),
+                                            ],
+                                          )
+                                        )
+                                      ],
+                                    ),
+                                  ),
+                                  onTap: () async {
+                                    await Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => const CommuDetailPage(),
+                                        settings: RouteSettings(
+                                          arguments: snapshot.data![index],
+                                        ),
+                                      )
+                                    ).then(refreshPage);
+                                  },
+                                ) : Container();
+                              }
+                            );
+                          }
+                          else {
+                            return const CircularProgressIndicator();
+                          }
+                        }
                       ),
                     ),
                   ],
@@ -322,14 +422,17 @@ class _CommuPageState extends State<CommuPage> {
         ),
         
         floatingActionButton: FloatingActionButton(
-          onPressed: () {
+          onPressed: () async {
             if (AuthHelper.checkAuth()) {
-              Navigator.push(
+              await Navigator.push(
                 context,
                 MaterialPageRoute(
                   builder: (context) => const CommuPostPage(),
                 )
-              ).then(refreshPage);
+              );
+              setState(() {
+                
+              });
             }
             else {
               Fluttertoast.showToast(msg: "You are not signed in");
@@ -343,11 +446,14 @@ class _CommuPageState extends State<CommuPage> {
     
   }
 
+  
   FutureOr refreshPage(dynamic value) {
     setState(() {
-      _futureCommu = getCommus();
+      trendingCommu = getCommus();
+      newestCommu = getCommus();
     });
   }
+  
 
   Future<List<Community>> getCommus() async {
     final response = await http.get(Uri.parse('http://10.0.2.2:3000/communities'));

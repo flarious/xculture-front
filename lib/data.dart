@@ -8,7 +8,7 @@ class Forum {
   final bool incognito;
   final int viewed;
   final int favorited;
-  final String date;
+  final String createDate;
   final String updateDate;
   final List<Comment> comments; 
   final List<Tag> tags;
@@ -24,7 +24,7 @@ class Forum {
     required this.incognito,
     required this.viewed,
     required this.favorited,
-    required this.date,
+    required this.createDate,
     required this.updateDate,
     required this.comments,
     required this.tags,
@@ -42,7 +42,7 @@ class Forum {
       incognito: json['incognito'],
       viewed: json['viewed'],
       favorited: json['favorite_amount'],
-      date: json['date'],
+      createDate: json['create_date'],
       updateDate: json['update_date'],
       comments: getCommentsFromJson(json['comments']),
       tags: getTagsFromJson(json['tags']),
@@ -89,7 +89,7 @@ class Comment {
   final bool incognito;
   final int replied;
   final int favorited;
-  final String date;
+  final String createDate;
   final String updateDate;
   final List<Reply> replies;
   final List<String> favoritedBy;
@@ -101,7 +101,7 @@ class Comment {
     required this.incognito,
     required this.replied,
     required this.favorited,
-    required this.date,
+    required this.createDate,
     required this.updateDate,
     required this.replies,
     required this.favoritedBy,
@@ -115,7 +115,7 @@ class Comment {
       incognito: json["incognito"],
       replied: json["reply_amount"],
       favorited: json["liked"],
-      date: json["date"],
+      createDate: json["create_date"],
       updateDate: json["update_date"],
       replies: getRepliesFromJson(json["replies"]),
       favoritedBy: getFavoritedByFromJson(json["favoritedBy"])
@@ -152,7 +152,7 @@ class Reply {
   final User author;
   final bool incognito;
   final int favorited;
-  final String date;
+  final String createDate;
   final String updateDate;
   final List<String> favoritedBy;
 
@@ -162,7 +162,7 @@ class Reply {
     required this.author,
     required this.incognito,
     required this.favorited,
-    required this.date,
+    required this.createDate,
     required this.updateDate,
     required this.favoritedBy,
   });
@@ -174,7 +174,7 @@ class Reply {
       author: getAuthorFromJson(json["author"]),
       incognito: json["incognito"],
       favorited: json["liked_reply"],
-      date: json["date"],
+      createDate: json["create_date"],
       updateDate: json["update_date"],
       favoritedBy: getFavoritedByFromJson(json["favoritedBy"])
     );
@@ -288,7 +288,8 @@ class Community {
   final String thumbnail;
   final int memberAmount;
   final User owner;
-  final String date;
+  final String createDate;
+  final String updateDate;
   final String type;
   final List<Member> members;
   final List<Question> questions;
@@ -300,7 +301,8 @@ class Community {
     required this.desc,
     required this.thumbnail,
     required this.memberAmount,
-    required this.date,
+    required this.createDate,
+    required this.updateDate,
     required this.owner,
     required this.type,
     required this.members,
@@ -315,7 +317,8 @@ class Community {
       desc: json['desc'], 
       thumbnail: json['thumbnail'], 
       memberAmount: json['member_amount'], 
-      date: json['date'], 
+      createDate: json['create_date'],
+      updateDate: json['update_date'], 
       owner: User.formJson(json['owner']), 
       type: json['type'],
       members: getMembersFromJson(json['members']),
@@ -399,7 +402,9 @@ class Event {
   final String thumbnail;
   final String location;
   final int interestedAmount;
-  final String date;
+  final String createDate;
+  final String updateDate;
+  final String eventDate;
   final User host;
   final List<Member> members;
 
@@ -410,7 +415,9 @@ class Event {
     required this.thumbnail,
     required this.location,
     required this.interestedAmount,
-    required this.date,
+    required this.createDate,
+    required this.updateDate,
+    required this.eventDate,
     required this.host,
     required this.members
   });
@@ -423,7 +430,9 @@ class Event {
       thumbnail: json['thumbnail'], 
       location: json['location'], 
       interestedAmount: json['interested_amount'], 
-      date: json['date'], 
+      createDate: json['create_date'],
+      updateDate: json['update_date'],
+      eventDate: json['event_date'], 
       host: User.formJson(json['host']), 
       members: getMembersFromJson(json['members']),
     );

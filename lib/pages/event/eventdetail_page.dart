@@ -39,7 +39,7 @@ class _EventDetailPageState extends State<EventDetailPage> {
             builder: (BuildContext context, AsyncSnapshot<Event> snapshot) {
               if (snapshot.hasData) {
                   toggle = (AuthHelper.checkAuth() && snapshot.data!.members.map((member) => member.member.id).contains(AuthHelper.auth.currentUser!.uid));
-                  var dt = DateTime.parse(snapshot.data!.date).toLocal();
+                  var dt = DateTime.parse(snapshot.data!.eventDate).toLocal();
                   String dateEvent = DateFormat('MMMM dd, yyyy – HH:mm a').format(dt);
                   
                   return Stack(
@@ -373,7 +373,7 @@ class _EventDetailPageState extends State<EventDetailPage> {
     } else {
       Fluttertoast.showToast(msg: ServerResponse.fromJson(jsonDecode(response.body)).message);
       Navigator.pop(context);
-      return Event(id: "", name: "", body: "", interestedAmount: 0, thumbnail: "", location: "", date: DateTime.now().toString(), host: User(id: "", name: "", profilePic: "", bio: "", email: "", tags: []), members: []);
+      return Event(id: "", name: "", body: "", interestedAmount: 0, thumbnail: "", location: "", createDate: DateTime.now().toString(), updateDate: DateTime.now().toString(), eventDate: DateTime.now().toString(), host: User(id: "", name: "", profilePic: "", bio: "", email: "", tags: []), members: []);
     }
   }
 

@@ -39,7 +39,7 @@ class _EditEventPageState extends State<EditEventPage>{
       _thumbnail.text = eventDetail!.thumbnail;
       _name.text = eventDetail!.name;
       _desc.text = eventDetail!.body;
-      _dateTime = DateTime.parse(eventDetail!.date);
+      _dateTime = DateTime.parse(eventDetail!.eventDate);
     }
     return Scaffold(
       // appBar: AppBar(

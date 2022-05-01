@@ -43,7 +43,7 @@ class _CommuDetailPageState extends State<CommuDetailPage> {
                 isJoin = (AuthHelper.checkAuth() && snapshot.data!.members.any((member) => member.member.id == AuthHelper.auth.currentUser!.uid));
                 userType = isJoin ? snapshot.data!.members.firstWhere((member) => member.member.id == AuthHelper.auth.currentUser!.uid).type! : ""; 
                 isPrivate = snapshot.data!.type == "private" ? true : false;
-                var dt = DateTime.parse(snapshot.data!.date).toLocal();
+                var dt = DateTime.parse(snapshot.data!.updateDate).toLocal();
                 String dateCommu = DateFormat('MMMM dd, yyyy – HH:mm a').format(dt);
                 
                 return Stack(
@@ -407,7 +407,7 @@ class _CommuDetailPageState extends State<CommuDetailPage> {
     } else {
       Fluttertoast.showToast(msg: ServerResponse.fromJson(jsonDecode(response.body)).message);
       Navigator.pop(context);
-      return Community(id: "", name: "", shortdesc: "", desc: "", thumbnail: "", memberAmount: 0, date: DateTime.now().toString(), owner: User(id: "", name: "", profilePic: "", bio: "", email: "", tags: []), members: [], type: "", questions: []);
+      return Community(id: "", name: "", shortdesc: "", desc: "", thumbnail: "", memberAmount: 0, createDate: DateTime.now().toString(), updateDate: DateTime.now().toString(), owner: User(id: "", name: "", profilePic: "", bio: "", email: "", tags: []), members: [], type: "", questions: []);
     }
   }
 
