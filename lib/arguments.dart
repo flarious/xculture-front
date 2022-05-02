@@ -23,11 +23,11 @@ class EditReplyArguments {
 }
 
 class ChatRoomArguments {
-  final String commuID;
+  final Community commu;
   final Room room;
 
   ChatRoomArguments({
-    required this.commuID,
+    required this.commu,
     required this.room,
   });
 }

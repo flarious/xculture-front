@@ -24,7 +24,7 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
   @override
   Widget build(BuildContext context) {
     final args = ModalRoute.of(context)!.settings.arguments as ChatRoomArguments;
-    _messages = getRoomMessages(args.commuID, args.room.id);
+    _messages = getRoomMessages(args.commu.id, args.room.id);
     
 
     return SafeArea(
@@ -36,7 +36,7 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
           leading: IconButton(
             icon: Icon(Icons.arrow_back),
             onPressed: (){
-              Navigator.pop(context, args.commuID);
+              Navigator.pop(context, args.commu.id);
             },
           ),
           actions: [
@@ -54,18 +54,19 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
                         MaterialPageRoute(
                           builder: (context) => const EditRoomPage(),
                           settings: RouteSettings(
-                            arguments: ChatRoomArguments(commuID: args.commuID, room: args.room)),
+                            arguments: ChatRoomArguments(commu: args.commu, room: args.room)),
                         )
                       );
                       setState(() {
-                        
+
                       });
                     },
                   ),
                   PopupMenuItem(
                     child: const Text("Delete"),
-                    onTap: (){
+                    onTap: () async {
                       //delete
+                      await Future.delayed(const Duration(milliseconds: 1));
                       showDialog(
                         context: context,
                         builder: (context) => AlertDialog(
@@ -81,11 +82,11 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
                             ),
                             TextButton(
                               onPressed: () async {
-                                var success = await deleteRoom(args.room.id);
+                                var success = await deleteRoom(args.commu.id, args.room.id);
                                 if (success) {
                                   Fluttertoast.showToast(msg: "Deleted");
                                   Navigator.pop(context);
-                                  Navigator.pop(context, args.commuID);
+                                  Navigator.pop(context, args.commu.id);
                                 }
                               }, 
                               child: const Text("Yes", style: TextStyle(color: Colors.red)),
@@ -131,7 +132,7 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
                         ),
                       ),
                       itemBuilder: (context, Message message) {
-                        return message.sender.id == AuthHelper.auth.currentUser!.uid ? Column(
+                        return (AuthHelper.checkAuth() && message.sender.id == AuthHelper.auth.currentUser!.uid) ? Column(
                           crossAxisAlignment: CrossAxisAlignment.end,
                             children: [
                               Card(
@@ -223,12 +224,21 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
                                   ),
                                   onPressed: () async {
                                     if (_text.text != "") {
-                                      var success = await sendMessage(args.commuID, args.room.id, _text.text, 0);
-                                      if (success) {
-                                        setState(() {
-                                          _text.text = "";
-                                        });
+                                      if (AuthHelper.checkAuth() && args.commu.members.any((member) => member.member.id == AuthHelper.auth.currentUser!.uid)) {
+                                        var success = await sendMessage(args.commu.id, args.room.id, _text.text, 0);
+                                        if (success) {
+                                          setState(() {
+                                            _text.text = "";
+                                          });
+                                        }
                                       }
+                                      else {
+                                        Fluttertoast.showToast(msg: "Only members can send a message");
+                                      }
+                                      
+                                    }
+                                    else {
+                                      Fluttertoast.showToast(msg: "You can't send an empty message");
                                     }
                                   },
                                 ),
@@ -246,12 +256,21 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
                               ),
                               onSubmitted: (text) async {
                                 if (text != "") {
-                                  var success = await sendMessage(args.commuID, args.room.id, text, 0);
-                                  if (success) {
-                                    setState(() {
-                                      _text.text = "";
-                                    });
+                                  if (AuthHelper.checkAuth() && args.commu.members.any((member) => member.member.id == AuthHelper.auth.currentUser!.uid)) {
+                                    var success = await sendMessage(args.commu.id, args.room.id, text, 0);
+                                    if (success) {
+                                      setState(() {
+                                        _text.text = "";
+                                      });
+                                    }
                                   }
+                                  else {
+                                    Fluttertoast.showToast(msg: "Only members can send a message");
+                                  }
+                                  
+                                }
+                                else {
+                                  Fluttertoast.showToast(msg: "You can't send an empty message");
                                 }
                               },
                             ),
@@ -310,10 +329,10 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
     }
   }
 
-  Future<bool> deleteRoom(roomId) async {
+  Future<bool> deleteRoom(commuId, roomId) async {
     final userToken = await AuthHelper.getToken();
     final response = await http.delete(
-      Uri.parse("http://10.0.2.2:3000/communities/$roomId"),
+      Uri.parse("http://10.0.2.2:3000/communities/$commuId/rooms/$roomId"),
       headers: <String, String> {
         'Authorization' : 'bearer $userToken'
       }

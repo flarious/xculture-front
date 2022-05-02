@@ -133,11 +133,12 @@ class _EditRoomPageState extends State<EditRoomPage> {
                                     FlatButton(
                                       onPressed: () async {
                                         if(_formKey.currentState!.validate()) {
-                                            var success = await updateRoomDetail(args.commuID, roomDetail!.id, _name.text);
+                                            var success = await updateRoomDetail(args.commu.id, roomDetail!.id, _name.text);
                                             if (success) {
                                               Fluttertoast.showToast(msg: "The room has been edited.");
                                               Navigator.pop(context);
                                               Navigator.pop(context, args);
+                                              Navigator.pop(context, args.commu.id);
                                             }
                                           }
                                       }, 
@@ -152,7 +153,7 @@ class _EditRoomPageState extends State<EditRoomPage> {
                               width: double.infinity,
                               height: 50,
                               child: Center(
-                                child: Text("Create Room")
+                                child: Text("Edit Room")
                               ),
                             ),
                           ),
