@@ -191,10 +191,8 @@ class _RoomPageState extends State<RoomPage> {
                                               child: Row(
                                                 children: [
                                                   const SizedBox(width: 30),
-                                                  Text("# ",
-                                                    style: TextStyle(fontSize: 20.0),
-                                                  ),
-                                                  Text(snapshot.data![index].name,
+                                                  Text("# ${snapshot.data![index].name}",
+                                                    overflow: TextOverflow.ellipsis,
                                                     style: TextStyle(fontSize: 20.0),
                                                   ),
                                                   Spacer(),
@@ -215,7 +213,7 @@ class _RoomPageState extends State<RoomPage> {
                                             MaterialPageRoute(
                                               builder: (context) => const ChatRoomPage(),
                                               settings: RouteSettings(
-                                                arguments: ChatRoomArguments(commuID: commu.id, room: snapshot.data![index])
+                                                arguments: ChatRoomArguments(commu: commu, room: snapshot.data![index])
                                               )
                                             )
                                           );
@@ -275,13 +273,22 @@ class _RoomPageState extends State<RoomPage> {
                                         child: IconButton(
                                           onPressed: () async {
                                             if (_roomName.text != "") {
-                                              var success = await sendRoomDetail(commu.id, _roomName.text); 
-                                              if (success) {
-                                                Fluttertoast.showToast(msg: "Your community have been created.");
-                                                setState(() {
-                                                  
-                                                });
+                                              if (AuthHelper.checkAuth() && commu.members.any((member) => member.member.id == AuthHelper.auth.currentUser!.uid)) {
+                                                var success = await sendRoomDetail(commu.id, _roomName.text); 
+                                                if (success) {
+                                                  Fluttertoast.showToast(msg: "Your community have been created.");
+                                                  setState(() {
+                                                    
+                                                  });
+                                                }
                                               }
+                                              else {
+                                                Fluttertoast.showToast(msg: "Only members can create room");
+                                              }
+                                              
+                                            } 
+                                            else {
+                                              Fluttertoast.showToast(msg: "You need a name to create a room");
                                             }
                                           }, 
                                           icon: Icon(Icons.done),
