@@ -50,6 +50,7 @@ class _ForumPageState extends State<ForumPage> {
       //   ),
       //   actions: <Widget>[Container()],
       // ),
+      backgroundColor: Colors.white,
       body: showTopFiveForum(),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
@@ -84,7 +85,8 @@ class _ForumPageState extends State<ForumPage> {
       child: SingleChildScrollView(
         child: Stack(
           children: [
-            // Thumbnail Image
+
+            // Forum
             Container(
               margin: const EdgeInsets.only(right: 0, left: 0),
               child: Container(
@@ -116,7 +118,6 @@ class _ForumPageState extends State<ForumPage> {
                         searchString = value; 
                       });
                   },
-                  
                   controller: searchController,
                   decoration: InputDecoration(
                     hintText: "Search Forum..",
@@ -138,14 +139,12 @@ class _ForumPageState extends State<ForumPage> {
                       ),
                       borderRadius: BorderRadius.circular(10),
                     ),
-                    
                     // prefixIcon: const Icon(Icons.search, color: Colors.grey),
                     prefixIcon: Icon(Icons.search,
                           color: fieldnode.hasFocus 
                           ? Theme.of(context).primaryColor
                           : Colors.grey),
                   ),
-                  
                 ),
                 decoration: BoxDecoration(
                   border: Border.all(color: Colors.grey.shade300),
@@ -162,32 +161,10 @@ class _ForumPageState extends State<ForumPage> {
               ),
             ),
       
-            // Iconbutton back
-            // Container(
-            //   margin: const EdgeInsets.only(top: 20, left: 20),
-            //   child: Container(
-            //     decoration: BoxDecoration(
-            //       color: Colors.grey.withOpacity(0.8),
-            //       shape: BoxShape.circle,
-            //     ),
-            //     child: IconButton(
-            //       visualDensity: VisualDensity.compact,
-            //       icon: const Icon(Icons.arrow_back),
-            //       iconSize: 30,
-            //       color: Colors.white,
-            //       onPressed: () {
-            //         Navigator.pop(context);
-            //       },
-            //     ),
-            //   ),   
-            // ),
-      
             // Content
             Container(          
               margin: const EdgeInsets.only(top: 160, left: 0, right: 0, bottom: 0),
               child: Container(
-                height: 150,
-                padding: const EdgeInsets.only(left: 20, right: 20, top: 20),
                 width: MediaQuery.of(context).size.width,
                 decoration: const BoxDecoration(
                   color: Colors.white,
@@ -196,286 +173,838 @@ class _ForumPageState extends State<ForumPage> {
                     topRight: Radius.circular(20),
                   ),
                 ),
-              )
+                child: Column(
+                  children: [
+
+                    Padding(
+                      padding: const EdgeInsets.all(10.0),
+                      child: Row(
+                        children: [
+                          const Text("Trending Forum",
+                            style: TextStyle(fontWeight: FontWeight.bold, color: Colors.red, fontSize: 22),
+                          ),
+                          const Spacer(),
+                          TextButton(
+                            onPressed: () {
+                            // Navigator.pushNamed(context, 'forumAllPage', arguments: _futureForum).then(refreshPage);
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => ForumAllPage(value: searchString),
+                                settings: RouteSettings(
+                                  arguments: trendingForum,
+                                ),
+                              )
+                            ).then(refreshPage);
+                          }, 
+                          child: const Text("See all")),
+                        ],
+                      ),
+                    ),
+
+                    SizedBox(
+                      height: 300,
+                      child: FutureBuilder<List<Forum>>(
+                        future: trendingForum,
+                        builder: (BuildContext context, AsyncSnapshot<List<Forum>> snapshot){
+                          if (snapshot.hasData) {
+                            snapshot.data!.sort((b, a) => (a.viewed + a.favorited).compareTo((b.viewed + b.favorited)));
+                            return ListView.separated(
+                              itemCount: (snapshot.data!.length <= 5) ? snapshot.data!.length : 5,
+                              scrollDirection: Axis.horizontal,
+                              separatorBuilder: (BuildContext context, int index) { 
+                                return const SizedBox(width: 15); 
+                              },
+                              itemBuilder: (BuildContext context, int index) {
+                                var contained = searchForum(snapshot.data![index], searchString);
+                                return contained ? Card(
+                                    //elevation: 4.0,
+                                    clipBehavior: Clip.antiAlias,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(20)
+                                    ),
+                                    child: InkWell(
+                                      child: SizedBox(
+                                        width: 300,
+                                        child: Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            Stack(
+                                              children: [
+                                                Ink.image(
+                                                  image: NetworkImage(snapshot.data![index].thumbnail),
+                                                  height: 150,
+                                                  fit: BoxFit.cover,
+                                                ),
+                                              ],
+                                            ),
+                                            Padding(
+                                              padding: const EdgeInsets.all(10.0),
+                                              child: Text(snapshot.data![index].title,
+                                                overflow: TextOverflow.ellipsis,
+                                                style: const TextStyle(
+                                                  fontSize: 20.0,
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                              ),
+                                            ),
+                                            Padding(
+                                              padding: const EdgeInsets.symmetric(horizontal: 10),
+                                              child: Text(snapshot.data![index].subtitle,
+                                                overflow: TextOverflow.ellipsis,
+                                                style: const TextStyle(
+                                                  fontSize: 15.0,
+                                                  color: Colors.black,
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                      onTap: () {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) => const ForumDetailPage(),
+                                            settings: RouteSettings(
+                                              arguments: snapshot.data![index],
+                                            ),
+                                          )
+                                        ).then(refreshPage);
+                                      },
+                                    ), 
+                                  ): Container();
+                              },
+                            );
+                          }
+                          else {
+                              return const CircularProgressIndicator();
+                          }
+                        },
+                        // child: ListView(
+                        //   scrollDirection: Axis.horizontal,
+                        //   children: [
+                        //     Container(
+                        //       width: 300,
+                        //       height: 400,
+                        //       color: Colors.blue,
+                        //       child: Column(
+                        //         children: [
+                                  
+                        //         ],
+                        //       ),
+                        //     ),
+                        //     const SizedBox(width: 12),
+                        //   ],
+                        // ),
+                      ),
+                    ),
+
+                    Padding(
+                      padding: const EdgeInsets.all(10.0),
+                      child: Row(
+                        children: [
+                          const Text("Newest Forum",
+                            style: TextStyle(fontWeight: FontWeight.bold, color: Colors.red, fontSize: 22),
+                          ),
+                          const Spacer(),
+                          TextButton(
+                            onPressed: () {
+                            // Navigator.pushNamed(context, 'forumAllPage', arguments: _futureForum).then(refreshPage);
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => ForumAllPage(value: '',),
+                                settings: RouteSettings(
+                                  arguments: newestForum,
+                                ),
+                              )
+                            ).then(refreshPage);
+                          }, 
+                          child: const Text("See all")),
+                        ],
+                      ),
+                    ),
+
+                    SizedBox(
+                      height: 300,
+                      child: FutureBuilder<List<Forum>>(
+                        future: newestForum,
+                        builder: (BuildContext context, AsyncSnapshot<List<Forum>> snapshot){
+                          if (snapshot.hasData) {
+                            snapshot.data!.sort((b, a) => (a.createDate).compareTo((b.createDate)));
+                            return ListView.separated(
+                              itemCount: (snapshot.data!.length <= 5) ? snapshot.data!.length : 5,
+                              scrollDirection: Axis.horizontal,
+                              separatorBuilder: (BuildContext context, int index) { 
+                                return const SizedBox(width: 15); 
+                              },
+                              itemBuilder: (BuildContext context, int index) {
+                                var contained = searchForum(snapshot.data![index], searchString);
+                                return contained ? Card(
+                                    //elevation: 4.0,
+                                    clipBehavior: Clip.antiAlias,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(20)
+                                    ),
+                                    child: InkWell(
+                                      child: SizedBox(
+                                        width: 300,
+                                        child: Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            Stack(
+                                              children: [
+                                                Ink.image(
+                                                  image: NetworkImage(snapshot.data![index].thumbnail),
+                                                  height: 150,
+                                                  fit: BoxFit.cover,
+                                                ),
+                                              ],
+                                            ),
+                                            Padding(
+                                              padding: const EdgeInsets.all(10.0),
+                                              child: Text(snapshot.data![index].title,
+                                                overflow: TextOverflow.ellipsis,
+                                                style: const TextStyle(
+                                                  fontSize: 20.0,
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                              ),
+                                            ),
+                                            Padding(
+                                              padding: const EdgeInsets.symmetric(horizontal: 10),
+                                              child: Text(snapshot.data![index].subtitle,
+                                                overflow: TextOverflow.ellipsis,
+                                                style: const TextStyle(
+                                                  fontSize: 15.0,
+                                                  color: Colors.black,
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                      onTap: () {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) => const ForumDetailPage(),
+                                            settings: RouteSettings(
+                                              arguments: snapshot.data![index],
+                                            ),
+                                          )
+                                        ).then(refreshPage);
+                                      },
+                                    ), 
+                                  ): Container();
+                              },
+                            );
+                          }
+                          else {
+                              return const CircularProgressIndicator();
+                          }
+                        },
+                        // child: ListView(
+                        //   scrollDirection: Axis.horizontal,
+                        //   children: [
+                        //     Container(
+                        //       width: 300,
+                        //       height: 400,
+                        //       color: Colors.blue,
+                        //       child: Column(
+                        //         children: [
+                                  
+                        //         ],
+                        //       ),
+                        //     ),
+                        //     const SizedBox(width: 12),
+                        //   ],
+                        // ),
+                      ),
+                    ),
+                    const SizedBox(height: 20),
+                  ],
+                ),
+                // child: Column(
+                //   children: [
+                //     Row(
+                //       children: [
+                //         const Text("Trending Forum",
+                //           style: TextStyle(fontWeight: FontWeight.bold, color: Colors.red, fontSize: 22),
+                //         ),
+                //         const Spacer(),
+                //         TextButton(
+                //           onPressed: () {
+                //           // Navigator.pushNamed(context, 'forumAllPage', arguments: _futureForum).then(refreshPage);
+                //           Navigator.push(
+                //             context,
+                //             MaterialPageRoute(
+                //               builder: (context) => ForumAllPage(value: searchString),
+                //               settings: RouteSettings(
+                //                 arguments: trendingForum,
+                //               ),
+                //             )
+                //           ).then(refreshPage);
+                //         }, 
+                //         child: const Text("See all")),
+                //       ],
+                //     ),
+
+                //     Container(
+                //       width: double.maxFinite,
+                //       height: 250,
+                //       // color: Colors.red,
+                //       margin: const EdgeInsets.only(left: 5, bottom: 10),
+                //       // margin: const EdgeInsets.only(bottom: 10),
+                //       child: FutureBuilder<List<Forum>>(
+                //         future: trendingForum,
+                //         builder: (BuildContext context, AsyncSnapshot<List<Forum>> snapshot) {
+                //           if (snapshot.hasData) {
+                //             snapshot.data!.sort((b, a) => (a.viewed + a.favorited).compareTo((b.viewed + b.favorited)));
+                //             return ListView.builder(
+                //               itemCount: (snapshot.data!.length <= 5) ? snapshot.data!.length : 5,
+                //               scrollDirection: Axis.horizontal,
+                //               itemBuilder: (BuildContext context, int index) {
+                //                 var contained = searchForum(snapshot.data![index], searchString);
+                //                 return contained ? InkWell(
+                //                   // child: Container(
+                //                   //   margin: const EdgeInsets.all(10),
+                //                   //   width: 300,
+                //                   //   //height: 100,
+                //                   //   decoration: BoxDecoration(
+                //                   //     borderRadius: BorderRadius.circular(20),
+                //                   //     color: Colors.white,
+                //                   //     boxShadow: [
+                //                   //       BoxShadow(
+                //                   //         color: Colors.grey.withOpacity(0.7),
+                //                   //         blurRadius: 5.0,
+                //                   //         offset: const Offset(0.0, 5.0),
+                //                   //       ),
+                //                   //     ],
+                //                   //   ),
+                //                   //   child: Stack(
+                //                   //     children: [
+                //                   //       Container(
+                //                   //         height: 120,
+                //                   //         width: 300,
+                //                   //         decoration: BoxDecoration(
+                //                   //           borderRadius: const BorderRadius.only(
+                //                   //             topLeft: Radius.circular(20),
+                //                   //             topRight: Radius.circular(20),
+                //                   //           ),
+                //                   //           image: DecorationImage(
+                //                   //             fit: BoxFit.fill,
+                //                   //             image: NetworkImage(snapshot.data![index].thumbnail) // Forum Image
+                //                   //           ),
+                //                   //         ),
+                //                   //       ),
+                //                   //       Container(
+                //                   //         height: 200,
+                //                   //         margin: const EdgeInsets.only(top: 140, left: 20, right: 0, bottom: 20),
+                //                   //         child: Column(
+                //                   //           crossAxisAlignment: CrossAxisAlignment.start,
+                //                   //           children: [
+                //                   //             Text(snapshot.data![index].title,
+                //                   //               overflow: TextOverflow.ellipsis,
+                //                   //               style: const TextStyle(
+                //                   //                 fontSize: 20.0,
+                //                   //                 fontWeight: FontWeight.bold,
+                //                   //               ),
+                //                   //             ),
+                //                   //             Text(snapshot.data![index].subtitle,
+                //                   //               overflow: TextOverflow.ellipsis,
+                //                   //               style: const TextStyle(
+                //                   //                 fontSize: 15.0,
+                //                   //                 color: Colors.black,
+                //                   //               ),
+                //                   //             ),
+                //                   //             Row(
+                //                   //               crossAxisAlignment: CrossAxisAlignment.start,
+                //                   //               children: snapshot.data![index].tags.take(2).map((tag) => Padding(
+                //                   //                 padding: const EdgeInsets.only(right: 10),
+                //                   //                 child: Chip(
+                //                   //                   label: Text(tag.name),
+                //                   //                 ),
+                //                   //               )).toList(),
+                //                   //             ),
+                //                   //           ],
+                //                   //         ),
+                //                   //       )
+                //                   //     ],
+                //                   //   ),
+                //                   // ),
+                //                   child: Card(
+                //                     elevation: 4.0,
+                //                     shape: RoundedRectangleBorder(
+                //                       borderRadius: BorderRadius.circular(20)
+                //                     ),
+                //                     child: SizedBox(
+                //                       height: 250,
+                //                       width: 250,
+                //                       child: Stack(
+                //                         children: [
+                //                           Ink.image(
+                //                             image: NetworkImage(snapshot.data![index].thumbnail),
+                //                             height: 150,
+                //                             fit: BoxFit.cover,
+                //                           ),
+                //                           Text("hi")
+                //                         ],
+                //                       ),
+                //                     ), 
+                //                   ),
+                //                   onTap: () {
+                //                     Navigator.push(
+                //                       context,
+                //                       MaterialPageRoute(
+                //                         builder: (context) => const ForumDetailPage(),
+                //                         settings: RouteSettings(
+                //                           arguments: snapshot.data![index],
+                //                         ),
+                //                       )
+                //                     ).then(refreshPage);
+                //                   },
+                //                 ) : Container();
+                //               }
+                //             );
+                //           }
+                //           else {
+                //             return const CircularProgressIndicator();
+                //           }
+                //         },
+                //       )
+                //     ),
+                //     Container(
+                //       margin: const EdgeInsets.only(left: 20, right: 20),
+                //       // margin: const EdgeInsets.all(20),
+                //       child: Row(
+                //         children: [
+                //           const Text("Newest Forum",
+                //             style: TextStyle(fontWeight: FontWeight.bold, color: Colors.red, fontSize: 22),
+                //           ),
+                //           const Spacer(),
+                //           TextButton(
+                //             onPressed: () {
+                            
+                //             // Navigator.pushNamed(context, 'forumAllPage', arguments: _futureForum).then(refreshPage);
+                //             Navigator.push(
+                //               context,
+                //               MaterialPageRoute(
+                //                 builder: (context) => ForumAllPage(value: '',),
+                //                 settings: RouteSettings(
+                //                   arguments: newestForum,
+                //                 ),
+                //               )
+                //             ).then(refreshPage);
+
+                //           }, 
+                //           child: const Text("See all")),
+                //         ],
+                //       ),
+                //     ),
+                //     Container(
+                //       height: 290,
+                //       child: Container(
+                //         height: 250,
+                //         // color: Colors.red,
+                //         margin: const EdgeInsets.only(left: 5, bottom: 10),
+                //         // margin: const EdgeInsets.only(bottom: 10),
+                //         width: double.maxFinite,
+                //         child: FutureBuilder<List<Forum>>(
+                //           future: newestForum,
+                //           builder: (BuildContext context, AsyncSnapshot<List<Forum>> snapshot) {
+                //             if (snapshot.hasData) {
+                //               snapshot.data!.sort((b, a) => (a.createDate).compareTo((b.createDate)));
+                //               return ListView.builder(
+                //                 itemCount: (snapshot.data!.length <= 5) ? snapshot.data!.length : 5,
+                //                 scrollDirection: Axis.horizontal,
+                //                 itemBuilder: (BuildContext context, int index) {
+                //                   var contained = searchForum(snapshot.data![index], searchString);
+                //                   return contained ? InkWell(
+                //                     child: Container(
+                //                       margin: const EdgeInsets.all(10),
+                //                       width: 300,
+                //                       // height: 100,
+                //                       decoration: BoxDecoration(
+                //                         borderRadius: BorderRadius.circular(20),
+                //                         color: Colors.lightBlue[100],
+                //                         boxShadow: [
+                //                           BoxShadow(
+                //                             color: Colors.grey.withOpacity(0.7),
+                //                             blurRadius: 5.0,
+                //                             offset: const Offset(0.0, 5.0),
+                //                           ),
+                //                         ],
+                //                       ),
+                //                       child: Stack(
+                //                         children: [
+                //                           Container(
+                //                             height: 120,
+                //                             width: 300,
+                //                             decoration: BoxDecoration(
+                //                               borderRadius: const BorderRadius.only(
+                //                                 topLeft: Radius.circular(20),
+                //                                 topRight: Radius.circular(20),
+                //                               ),
+                //                               image: DecorationImage(
+                //                                 fit: BoxFit.fill,
+                //                                 image: NetworkImage(snapshot.data![index].thumbnail) // Forum Image
+                //                               ),
+                //                             ),
+                //                           ),
+                //                           Container(
+                //                             height: 200,
+                //                             margin: const EdgeInsets.only(top: 140, left: 20, right: 0, bottom: 20),
+                //                             child: Column(
+                //                               crossAxisAlignment: CrossAxisAlignment.start,
+                //                               children: [
+                //                                 Text(snapshot.data![index].title,
+                //                                   overflow: TextOverflow.ellipsis,
+                //                                   style: const TextStyle(
+                //                                     fontSize: 20.0,
+                //                                     fontWeight: FontWeight.bold,
+                //                                   ),
+                //                                 ),
+                //                                 Text(snapshot.data![index].subtitle,
+                //                                   overflow: TextOverflow.ellipsis,
+                //                                   style: const TextStyle(
+                //                                     fontSize: 15.0,
+                //                                     color: Colors.black,
+                //                                   ),
+                //                                 ),
+                //                                 Row(
+                //                                   crossAxisAlignment: CrossAxisAlignment.start,
+                //                                   children: snapshot.data![index].tags.take(2).map((tag) => Padding(
+                //                                     padding: const EdgeInsets.only(right: 10),
+                //                                     child: Chip(
+                //                                       label: Text(tag.name),
+                //                                     ),
+                //                                   )).toList(),
+                //                                 ),
+                //                               ],
+                //                             ),
+                //                           )
+                //                         ],
+                //                       ),
+                //                     ),
+                //                     onTap: () {
+                //                       Navigator.push(
+                //                         context,
+                //                         MaterialPageRoute(
+                //                           builder: (context) => const ForumDetailPage(),
+                //                           settings: RouteSettings(
+                //                             arguments: snapshot.data![index],
+                //                           ),
+                //                         )
+                //                       ).then(refreshPage);
+                //                     },
+                //                   ) : Container();
+                //                 }
+                //               );
+                //             }
+                //             else {
+                //               return const CircularProgressIndicator();
+                //             }
+                //           }
+                //         )
+                //       ),
+                //     ),
+                //   ],
+                // ),
+              ),
             ),
       
-            Column(
-              children: [
-                Container(
-                  margin: const EdgeInsets.only(top: 170, left: 20, right: 20, bottom: 0),
-                  // margin: const EdgeInsets.all(10),
-                  child: Row(
-                    children: [
-                      const Text("Trending Forum",
-                        style: TextStyle(fontWeight: FontWeight.bold, color: Colors.red, fontSize: 22),
-                      ),
-                      const Spacer(),
-                      TextButton(
-                        onPressed: () {
-                        // Navigator.pushNamed(context, 'forumAllPage', arguments: _futureForum).then(refreshPage);
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => ForumAllPage(value: searchString),
-                            settings: RouteSettings(
-                              arguments: trendingForum,
-                            ),
-                          )
-                        ).then(refreshPage);
-                      }, 
-                      child: const Text("See all")),
-                    ],
-                  ),
-                ),
-                Container(
-                  height: 290,
-                  child: Container(
-                    height: 250,
-                    // color: Colors.red,
-                    margin: const EdgeInsets.only(left: 5, bottom: 10),
-                    // margin: const EdgeInsets.only(bottom: 10),
-                    width: double.maxFinite,
-                    child: FutureBuilder<List<Forum>>(
-                      future: trendingForum,
-                      builder: (BuildContext context, AsyncSnapshot<List<Forum>> snapshot) {
-                        if (snapshot.hasData) {
-                          snapshot.data!.sort((b, a) => (a.viewed + a.favorited).compareTo((b.viewed + b.favorited)));
-                          return ListView.builder(
-                            itemCount: (snapshot.data!.length <= 5) ? snapshot.data!.length : 5,
-                            scrollDirection: Axis.horizontal,
-                            itemBuilder: (BuildContext context, int index) {
-                              var contained = searchForum(snapshot.data![index], searchString);
-                              return contained ? InkWell(
-                                child: Container(
-                                  margin: const EdgeInsets.all(10),
-                                  width: 300,
-                                  // height: 100,
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(20),
-                                    color: Colors.lightBlue[100],
-                                    boxShadow: [
-                                      BoxShadow(
-                                        color: Colors.grey.withOpacity(0.7),
-                                        blurRadius: 5.0,
-                                        offset: const Offset(0.0, 5.0),
-                                      ),
-                                    ],
-                                  ),
-                                  child: Stack(
-                                    children: [
-                                      Container(
-                                        height: 120,
-                                        width: 300,
-                                        decoration: BoxDecoration(
-                                          borderRadius: const BorderRadius.only(
-                                            topLeft: Radius.circular(20),
-                                            topRight: Radius.circular(20),
-                                          ),
-                                          image: DecorationImage(
-                                            fit: BoxFit.fill,
-                                            image: NetworkImage(snapshot.data![index].thumbnail) // Forum Image
-                                          ),
-                                        ),
-                                      ),
-                                      Container(
-                                        height: 200,
-                                        margin: const EdgeInsets.only(top: 140, left: 20, right: 0, bottom: 20),
-                                        child: Column(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                          children: [
-                                            Text(snapshot.data![index].title,
-                                              overflow: TextOverflow.ellipsis,
-                                              style: const TextStyle(
-                                                fontSize: 20.0,
-                                                fontWeight: FontWeight.bold,
-                                              ),
-                                            ),
-                                            Text(snapshot.data![index].subtitle,
-                                              overflow: TextOverflow.ellipsis,
-                                              style: const TextStyle(
-                                                fontSize: 15.0,
-                                                color: Colors.black,
-                                              ),
-                                            ),
-                                            Row(
-                                              crossAxisAlignment: CrossAxisAlignment.start,
-                                              children: snapshot.data![index].tags.take(2).map((tag) => Padding(
-                                                padding: const EdgeInsets.only(right: 10),
-                                                child: Chip(
-                                                  label: Text(tag.name),
-                                                ),
-                                              )).toList(),
-                                            ),
-                                          ],
-                                        ),
-                                      )
-                                    ],
-                                  ),
-                                ),
-                                onTap: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => const ForumDetailPage(),
-                                      settings: RouteSettings(
-                                        arguments: snapshot.data![index],
-                                      ),
-                                    )
-                                  ).then(refreshPage);
-                                },
-                              ) : Container();
-                            }
-                          );
-                        }
-                        else {
-                          return const CircularProgressIndicator();
-                        }
-                      },
-                    )
-                  ),
-                ),
-                Container(
-                  margin: const EdgeInsets.only(left: 20, right: 20),
-                  // margin: const EdgeInsets.all(20),
-                  child: Row(
-                    children: [
-                      const Text("Newest Forum",
-                        style: TextStyle(fontWeight: FontWeight.bold, color: Colors.red, fontSize: 22),
-                      ),
-                      const Spacer(),
-                      TextButton(
-                        onPressed: () {
-                        
-                        // Navigator.pushNamed(context, 'forumAllPage', arguments: _futureForum).then(refreshPage);
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => ForumAllPage(value: '',),
-                            settings: RouteSettings(
-                              arguments: newestForum,
-                            ),
-                          )
-                        ).then(refreshPage);
+            // Column(
+            //   children: [
+            //     Row(
+            //       children: [
+            //         const Text("Trending Forum",
+            //           style: TextStyle(fontWeight: FontWeight.bold, color: Colors.red, fontSize: 22),
+            //         ),
+            //         const Spacer(),
+            //         TextButton(
+            //           onPressed: () {
+            //           // Navigator.pushNamed(context, 'forumAllPage', arguments: _futureForum).then(refreshPage);
+            //           Navigator.push(
+            //             context,
+            //             MaterialPageRoute(
+            //               builder: (context) => ForumAllPage(value: searchString),
+            //               settings: RouteSettings(
+            //                 arguments: trendingForum,
+            //               ),
+            //             )
+            //           ).then(refreshPage);
+            //         }, 
+            //         child: const Text("See all")),
+            //       ],
+            //     ),
 
-                      }, 
-                      child: const Text("See all")),
-                    ],
-                  ),
-                ),
-                Container(
-                  height: 290,
-                  child: Container(
-                    height: 250,
-                    // color: Colors.red,
-                    margin: const EdgeInsets.only(left: 5, bottom: 10),
-                    // margin: const EdgeInsets.only(bottom: 10),
-                    width: double.maxFinite,
-                    child: FutureBuilder<List<Forum>>(
-                      future: newestForum,
-                      builder: (BuildContext context, AsyncSnapshot<List<Forum>> snapshot) {
-                        if (snapshot.hasData) {
-                          snapshot.data!.sort((b, a) => (a.createDate).compareTo((b.createDate)));
-                          return ListView.builder(
-                            itemCount: (snapshot.data!.length <= 5) ? snapshot.data!.length : 5,
-                            scrollDirection: Axis.horizontal,
-                            itemBuilder: (BuildContext context, int index) {
-                              var contained = searchForum(snapshot.data![index], searchString);
-                              return contained ? InkWell(
-                                child: Container(
-                                  margin: const EdgeInsets.all(10),
-                                  width: 300,
-                                  // height: 100,
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(20),
-                                    color: Colors.lightBlue[100],
-                                    boxShadow: [
-                                      BoxShadow(
-                                        color: Colors.grey.withOpacity(0.7),
-                                        blurRadius: 5.0,
-                                        offset: const Offset(0.0, 5.0),
-                                      ),
-                                    ],
-                                  ),
-                                  child: Stack(
-                                    children: [
-                                      Container(
-                                        height: 120,
-                                        width: 300,
-                                        decoration: BoxDecoration(
-                                          borderRadius: const BorderRadius.only(
-                                            topLeft: Radius.circular(20),
-                                            topRight: Radius.circular(20),
-                                          ),
-                                          image: DecorationImage(
-                                            fit: BoxFit.fill,
-                                            image: NetworkImage(snapshot.data![index].thumbnail) // Forum Image
-                                          ),
-                                        ),
-                                      ),
-                                      Container(
-                                        height: 200,
-                                        margin: const EdgeInsets.only(top: 140, left: 20, right: 0, bottom: 20),
-                                        child: Column(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                          children: [
-                                            Text(snapshot.data![index].title,
-                                              overflow: TextOverflow.ellipsis,
-                                              style: const TextStyle(
-                                                fontSize: 20.0,
-                                                fontWeight: FontWeight.bold,
-                                              ),
-                                            ),
-                                            Text(snapshot.data![index].subtitle,
-                                              overflow: TextOverflow.ellipsis,
-                                              style: const TextStyle(
-                                                fontSize: 15.0,
-                                                color: Colors.black,
-                                              ),
-                                            ),
-                                            Row(
-                                              crossAxisAlignment: CrossAxisAlignment.start,
-                                              children: snapshot.data![index].tags.take(2).map((tag) => Padding(
-                                                padding: const EdgeInsets.only(right: 10),
-                                                child: Chip(
-                                                  label: Text(tag.name),
-                                                ),
-                                              )).toList(),
-                                            ),
-                                          ],
-                                        ),
-                                      )
-                                    ],
-                                  ),
-                                ),
-                                onTap: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => const ForumDetailPage(),
-                                      settings: RouteSettings(
-                                        arguments: snapshot.data![index],
-                                      ),
-                                    )
-                                  ).then(refreshPage);
-                                },
-                              ) : Container();
-                            }
-                          );
-                        }
-                        else {
-                          return const CircularProgressIndicator();
-                        }
-                      }
-                    )
-                  ),
-                ),
-              ],
-            ),
+            //     Container(
+            //       width: double.maxFinite,
+            //       height: 250,
+            //       // color: Colors.red,
+            //       margin: const EdgeInsets.only(left: 5, bottom: 10),
+            //       // margin: const EdgeInsets.only(bottom: 10),
+            //       child: FutureBuilder<List<Forum>>(
+            //         future: trendingForum,
+            //         builder: (BuildContext context, AsyncSnapshot<List<Forum>> snapshot) {
+            //           if (snapshot.hasData) {
+            //             snapshot.data!.sort((b, a) => (a.viewed + a.favorited).compareTo((b.viewed + b.favorited)));
+            //             return ListView.builder(
+            //               itemCount: (snapshot.data!.length <= 5) ? snapshot.data!.length : 5,
+            //               scrollDirection: Axis.horizontal,
+            //               itemBuilder: (BuildContext context, int index) {
+            //                 var contained = searchForum(snapshot.data![index], searchString);
+            //                 return contained ? InkWell(
+            //                   // child: Container(
+            //                   //   margin: const EdgeInsets.all(10),
+            //                   //   width: 300,
+            //                   //   //height: 100,
+            //                   //   decoration: BoxDecoration(
+            //                   //     borderRadius: BorderRadius.circular(20),
+            //                   //     color: Colors.white,
+            //                   //     boxShadow: [
+            //                   //       BoxShadow(
+            //                   //         color: Colors.grey.withOpacity(0.7),
+            //                   //         blurRadius: 5.0,
+            //                   //         offset: const Offset(0.0, 5.0),
+            //                   //       ),
+            //                   //     ],
+            //                   //   ),
+            //                   //   child: Stack(
+            //                   //     children: [
+            //                   //       Container(
+            //                   //         height: 120,
+            //                   //         width: 300,
+            //                   //         decoration: BoxDecoration(
+            //                   //           borderRadius: const BorderRadius.only(
+            //                   //             topLeft: Radius.circular(20),
+            //                   //             topRight: Radius.circular(20),
+            //                   //           ),
+            //                   //           image: DecorationImage(
+            //                   //             fit: BoxFit.fill,
+            //                   //             image: NetworkImage(snapshot.data![index].thumbnail) // Forum Image
+            //                   //           ),
+            //                   //         ),
+            //                   //       ),
+            //                   //       Container(
+            //                   //         height: 200,
+            //                   //         margin: const EdgeInsets.only(top: 140, left: 20, right: 0, bottom: 20),
+            //                   //         child: Column(
+            //                   //           crossAxisAlignment: CrossAxisAlignment.start,
+            //                   //           children: [
+            //                   //             Text(snapshot.data![index].title,
+            //                   //               overflow: TextOverflow.ellipsis,
+            //                   //               style: const TextStyle(
+            //                   //                 fontSize: 20.0,
+            //                   //                 fontWeight: FontWeight.bold,
+            //                   //               ),
+            //                   //             ),
+            //                   //             Text(snapshot.data![index].subtitle,
+            //                   //               overflow: TextOverflow.ellipsis,
+            //                   //               style: const TextStyle(
+            //                   //                 fontSize: 15.0,
+            //                   //                 color: Colors.black,
+            //                   //               ),
+            //                   //             ),
+            //                   //             Row(
+            //                   //               crossAxisAlignment: CrossAxisAlignment.start,
+            //                   //               children: snapshot.data![index].tags.take(2).map((tag) => Padding(
+            //                   //                 padding: const EdgeInsets.only(right: 10),
+            //                   //                 child: Chip(
+            //                   //                   label: Text(tag.name),
+            //                   //                 ),
+            //                   //               )).toList(),
+            //                   //             ),
+            //                   //           ],
+            //                   //         ),
+            //                   //       )
+            //                   //     ],
+            //                   //   ),
+            //                   // ),
+            //                   child: Card(
+            //                     elevation: 4.0,
+            //                     shape: RoundedRectangleBorder(
+            //                       borderRadius: BorderRadius.circular(20)
+            //                     ),
+            //                     child: SizedBox(
+            //                       height: 250,
+            //                       width: 250,
+            //                       child: Stack(
+            //                         children: [
+            //                           Ink.image(
+            //                             image: NetworkImage(snapshot.data![index].thumbnail),
+            //                             height: 150,
+            //                             fit: BoxFit.cover,
+            //                           ),
+            //                           Text("hi")
+            //                         ],
+            //                       ),
+            //                     ), 
+            //                   ),
+            //                   onTap: () {
+            //                     Navigator.push(
+            //                       context,
+            //                       MaterialPageRoute(
+            //                         builder: (context) => const ForumDetailPage(),
+            //                         settings: RouteSettings(
+            //                           arguments: snapshot.data![index],
+            //                         ),
+            //                       )
+            //                     ).then(refreshPage);
+            //                   },
+            //                 ) : Container();
+            //               }
+            //             );
+            //           }
+            //           else {
+            //             return const CircularProgressIndicator();
+            //           }
+            //         },
+            //       )
+            //     ),
+            //     Container(
+            //       margin: const EdgeInsets.only(left: 20, right: 20),
+            //       // margin: const EdgeInsets.all(20),
+            //       child: Row(
+            //         children: [
+            //           const Text("Newest Forum",
+            //             style: TextStyle(fontWeight: FontWeight.bold, color: Colors.red, fontSize: 22),
+            //           ),
+            //           const Spacer(),
+            //           TextButton(
+            //             onPressed: () {
+                        
+            //             // Navigator.pushNamed(context, 'forumAllPage', arguments: _futureForum).then(refreshPage);
+            //             Navigator.push(
+            //               context,
+            //               MaterialPageRoute(
+            //                 builder: (context) => ForumAllPage(value: '',),
+            //                 settings: RouteSettings(
+            //                   arguments: newestForum,
+            //                 ),
+            //               )
+            //             ).then(refreshPage);
+
+            //           }, 
+            //           child: const Text("See all")),
+            //         ],
+            //       ),
+            //     ),
+            //     Container(
+            //       height: 290,
+            //       child: Container(
+            //         height: 250,
+            //         // color: Colors.red,
+            //         margin: const EdgeInsets.only(left: 5, bottom: 10),
+            //         // margin: const EdgeInsets.only(bottom: 10),
+            //         width: double.maxFinite,
+            //         child: FutureBuilder<List<Forum>>(
+            //           future: newestForum,
+            //           builder: (BuildContext context, AsyncSnapshot<List<Forum>> snapshot) {
+            //             if (snapshot.hasData) {
+            //               snapshot.data!.sort((b, a) => (a.createDate).compareTo((b.createDate)));
+            //               return ListView.builder(
+            //                 itemCount: (snapshot.data!.length <= 5) ? snapshot.data!.length : 5,
+            //                 scrollDirection: Axis.horizontal,
+            //                 itemBuilder: (BuildContext context, int index) {
+            //                   var contained = searchForum(snapshot.data![index], searchString);
+            //                   return contained ? InkWell(
+            //                     child: Container(
+            //                       margin: const EdgeInsets.all(10),
+            //                       width: 300,
+            //                       // height: 100,
+            //                       decoration: BoxDecoration(
+            //                         borderRadius: BorderRadius.circular(20),
+            //                         color: Colors.lightBlue[100],
+            //                         boxShadow: [
+            //                           BoxShadow(
+            //                             color: Colors.grey.withOpacity(0.7),
+            //                             blurRadius: 5.0,
+            //                             offset: const Offset(0.0, 5.0),
+            //                           ),
+            //                         ],
+            //                       ),
+            //                       child: Stack(
+            //                         children: [
+            //                           Container(
+            //                             height: 120,
+            //                             width: 300,
+            //                             decoration: BoxDecoration(
+            //                               borderRadius: const BorderRadius.only(
+            //                                 topLeft: Radius.circular(20),
+            //                                 topRight: Radius.circular(20),
+            //                               ),
+            //                               image: DecorationImage(
+            //                                 fit: BoxFit.fill,
+            //                                 image: NetworkImage(snapshot.data![index].thumbnail) // Forum Image
+            //                               ),
+            //                             ),
+            //                           ),
+            //                           Container(
+            //                             height: 200,
+            //                             margin: const EdgeInsets.only(top: 140, left: 20, right: 0, bottom: 20),
+            //                             child: Column(
+            //                               crossAxisAlignment: CrossAxisAlignment.start,
+            //                               children: [
+            //                                 Text(snapshot.data![index].title,
+            //                                   overflow: TextOverflow.ellipsis,
+            //                                   style: const TextStyle(
+            //                                     fontSize: 20.0,
+            //                                     fontWeight: FontWeight.bold,
+            //                                   ),
+            //                                 ),
+            //                                 Text(snapshot.data![index].subtitle,
+            //                                   overflow: TextOverflow.ellipsis,
+            //                                   style: const TextStyle(
+            //                                     fontSize: 15.0,
+            //                                     color: Colors.black,
+            //                                   ),
+            //                                 ),
+            //                                 Row(
+            //                                   crossAxisAlignment: CrossAxisAlignment.start,
+            //                                   children: snapshot.data![index].tags.take(2).map((tag) => Padding(
+            //                                     padding: const EdgeInsets.only(right: 10),
+            //                                     child: Chip(
+            //                                       label: Text(tag.name),
+            //                                     ),
+            //                                   )).toList(),
+            //                                 ),
+            //                               ],
+            //                             ),
+            //                           )
+            //                         ],
+            //                       ),
+            //                     ),
+            //                     onTap: () {
+            //                       Navigator.push(
+            //                         context,
+            //                         MaterialPageRoute(
+            //                           builder: (context) => const ForumDetailPage(),
+            //                           settings: RouteSettings(
+            //                             arguments: snapshot.data![index],
+            //                           ),
+            //                         )
+            //                       ).then(refreshPage);
+            //                     },
+            //                   ) : Container();
+            //                 }
+            //               );
+            //             }
+            //             else {
+            //               return const CircularProgressIndicator();
+            //             }
+            //           }
+            //         )
+            //       ),
+            //     ),
+            //   ],
+            // ),
           ],
         ),
       ), 
-    );                              
-    
+    );
   }
 
   Future<List<Forum>> getForums() async {
