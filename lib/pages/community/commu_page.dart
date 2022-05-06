@@ -41,138 +41,138 @@ class _CommuPageState extends State<CommuPage> {
 
   @override
   Widget build(BuildContext context) {
-    return  Scaffold(
-        // appBar: AppBar(
-        //   centerTitle: true,
-        //   title: const Text(
-        //     "Community",
-        //     style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: 25),
-        //   ),
-        //   actions: <Widget>[Container()],
-        // ),
-        body: SafeArea(
-          child: SingleChildScrollView(
-            child: Stack(
-              children: [
-                // Thumbnail Image
-                Container(
-                  margin: const EdgeInsets.only(right: 0, left: 0),
-                  child: Container(
-                    height: 300,
-                    width: 500,
-                    color: Colors.red,
-                    child: Container(
-                      padding: const EdgeInsets.only(left: 75, top: 30),
-                      // padding: EdgeInsets.symmetric(vertical: 20.0),
-                      child: const Text("Community",
-                        style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: 40),
-                      ),
-                    ),
+    return Scaffold(
+      backgroundColor: Colors.white,
+      body: showTopFiveCommunity(),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () async {
+          if (AuthHelper.checkAuth()) {
+            await Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const CommuPostPage(),
+              )
+            );
+            setState(() {
+              
+            });
+          }
+          else {
+            Fluttertoast.showToast(msg: "You are not signed in");
+          }
+        },
+        child: const Icon(Icons.group_add_outlined)
+      ),
+      endDrawer: const NavigationDrawerWidget(),
+      bottomNavigationBar: const Navbar(currentIndex: 3),
+    );
+  }
+
+  FutureOr refreshPage(dynamic value) {
+    setState(() {
+      trendingCommu = getCommus();
+      newestCommu = getCommus();
+    });
+  }
+
+  Widget showTopFiveCommunity() {
+    return SafeArea(
+      child: SingleChildScrollView(
+        child: Stack(
+          children: [
+
+            // Forum
+            Container(
+              margin: const EdgeInsets.only(right: 0, left: 0),
+              child: Container(
+                height: 300,
+                width: 500,
+                color: Colors.red,
+                child: Container(
+                  padding: const EdgeInsets.only(left: 65, top: 30),
+                  // padding: EdgeInsets.symmetric(vertical: 20.0),
+                  child: const Text("Communities",
+                    style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: 40),
                   ),
                 ),
-                Center(
-                  child: Container (                                  
-                    height: 40,
-                    width: 350,
-                    // margin: const EdgeInsets.only(top: 50, left: 20, right: 20, bottom: 0),
-                    margin: const EdgeInsets.only(top: 100),
-                    alignment: Alignment.centerLeft,
-                    padding: const EdgeInsets.symmetric(horizontal: 10),
-                    child: TextFormField(
-                      focusNode: fieldnode,
-                      onChanged: (value) {
-                          setState((){
-                            searchString = value; 
-                          });
-                      },
-                      
-                      controller: searchController,
-                      decoration: InputDecoration(
-                        hintText: "Search Community..",
-                        hintStyle: const TextStyle(
-                          color: Colors.grey, // <-- Change this
-                          fontWeight: FontWeight.w600,
-                          fontStyle: FontStyle.normal,
-                        ),
-                        contentPadding: const EdgeInsets.only(bottom: 10),
-                        enabledBorder: OutlineInputBorder(
-                          borderSide: const BorderSide(
-                            color: Colors.transparent,
-                          ),
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderSide: const BorderSide(
-                            color: Colors.transparent,
-                          ),
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        
-                        // prefixIcon: const Icon(Icons.search, color: Colors.grey),
-                        prefixIcon: Icon(Icons.search,
-                              color: fieldnode.hasFocus 
-                              ? Theme.of(context).primaryColor
-                              : Colors.grey),
+              ),
+            ),
+
+            Center(
+              child: Container (                                  
+                height: 40,
+                width: 350,
+                // margin: const EdgeInsets.only(top: 50, left: 20, right: 20, bottom: 0),
+                margin: const EdgeInsets.only(top: 100),
+                alignment: Alignment.centerLeft,
+                padding: const EdgeInsets.symmetric(horizontal: 10),
+                child: TextFormField(
+                  focusNode: fieldnode,
+                  onChanged: (value) {
+                      setState((){
+                        searchString = value; 
+                      });
+                  },
+                  controller: searchController,
+                  decoration: InputDecoration(
+                    hintText: "Search Community..",
+                    hintStyle: const TextStyle(
+                      color: Colors.grey, // <-- Change this
+                      fontWeight: FontWeight.w600,
+                      fontStyle: FontStyle.normal,
+                    ),
+                    contentPadding: const EdgeInsets.only(bottom: 10),
+                    enabledBorder: OutlineInputBorder(
+                      borderSide: const BorderSide(
+                        color: Colors.transparent,
                       ),
-                      
+                      borderRadius: BorderRadius.circular(10),
                     ),
-                    decoration: BoxDecoration(
-                      border: Border.all(color: Colors.grey.shade300),
-                      borderRadius: BorderRadius.circular(20),
-                      color: Colors.white,
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withOpacity(0.7),
-                          blurRadius: 3.0,
-                          offset: const Offset(0.0, 4.0),
-                        ),
-                      ],
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: const BorderSide(
+                        color: Colors.transparent,
+                      ),
+                      borderRadius: BorderRadius.circular(10),
                     ),
+                    // prefixIcon: const Icon(Icons.search, color: Colors.grey),
+                    prefixIcon: Icon(Icons.search,
+                          color: fieldnode.hasFocus 
+                          ? Theme.of(context).primaryColor
+                          : Colors.grey),
                   ),
                 ),
-          
-                // Iconbutton back
-                // Container(
-                //   margin: const EdgeInsets.only(top: 20, left: 20),
-                //   child: Container(
-                //     decoration: BoxDecoration(
-                //       color: Colors.grey.withOpacity(0.8),
-                //       shape: BoxShape.circle,
-                //     ),
-                //     child: IconButton(
-                //       visualDensity: VisualDensity.compact,
-                //       icon: const Icon(Icons.arrow_back),
-                //       iconSize: 30,
-                //       color: Colors.white,
-                //       onPressed: () {
-                //         Navigator.pop(context);
-                //       },
-                //     ),
-                //   ),   
-                // ),
-          
-                // Content
-                Container(          
-                  margin: const EdgeInsets.only(top: 160, left: 0, right: 0, bottom: 0),
-                  child: Container(
-                    height: 150,
-                    padding: const EdgeInsets.only(left: 20, right: 20, top: 20),
-                    width: MediaQuery.of(context).size.width,
-                    decoration: const BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(20),
-                        topRight: Radius.circular(20),
-                      ),
+                decoration: BoxDecoration(
+                  border: Border.all(color: Colors.grey.shade300),
+                  borderRadius: BorderRadius.circular(20),
+                  color: Colors.white,
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.7),
+                      blurRadius: 3.0,
+                      offset: const Offset(0.0, 4.0),
                     ),
-                  )
+                  ],
                 ),
+              ),
+            ),
       
-                Column(
+            // Content
+            Container(          
+              margin: const EdgeInsets.only(top: 160, left: 0, right: 0, bottom: 0),
+              child: Container(
+                width: MediaQuery.of(context).size.width,
+                decoration: const BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(20),
+                    topRight: Radius.circular(20),
+                  ),
+                ),
+                child: Column(
                   children: [
-                    Container(
-                      margin: const EdgeInsets.only(top: 170, left: 20, right: 20),
-                      // margin: const EdgeInsets.all(10),
+
+                    Padding(
+                      padding: const EdgeInsets.all(10.0),
                       child: Row(
                         children: [
                           const Text("Trending Community",
@@ -180,9 +180,9 @@ class _CommuPageState extends State<CommuPage> {
                           ),
                           const Spacer(),
                           TextButton(
-                            onPressed: () async {
+                            onPressed: () {
                             // Navigator.pushNamed(context, 'forumAllPage', arguments: _futureForum).then(refreshPage);
-                            await Navigator.push(
+                            Navigator.push(
                               context,
                               MaterialPageRoute(
                                 builder: (context) => CommuAllPage(value: searchString),
@@ -196,106 +196,104 @@ class _CommuPageState extends State<CommuPage> {
                         ],
                       ),
                     ),
-                    Container(
-                      margin: const EdgeInsets.only(left: 5),
-                      height: 250,
-                      width: double.maxFinite,
+
+                    SizedBox(
+                      height: 270,
                       child: FutureBuilder<List<Community>>(
                         future: trendingCommu,
-                        builder: (BuildContext context, AsyncSnapshot<List<Community>> snapshot) { 
-                          
-                          if(snapshot.hasData) {
+                        builder: (BuildContext context, AsyncSnapshot<List<Community>> snapshot){
+                          if (snapshot.hasData) {
                             snapshot.data!.sort((b, a) => (a.memberAmount).compareTo((b.memberAmount)));
-                            return ListView.builder(
-                              itemCount: (snapshot.data!.length <= 5) ? snapshot.data!.length : 5, // number of item to display
+                            return ListView.separated(
+                              itemCount: (snapshot.data!.length <= 5) ? snapshot.data!.length : 5,
                               scrollDirection: Axis.horizontal,
+                              separatorBuilder: (BuildContext context, int index) { 
+                                return const SizedBox(width: 15); 
+                              },
                               itemBuilder: (BuildContext context, int index) {
                                 var contained = searchCommunity(snapshot.data![index], searchString);
-                                return contained ? InkWell(
-                                  child: Container(
-                                    margin: const EdgeInsets.all(10),
-                                    width: 300,
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(20),
-                                      color: Colors.lightBlue[100],
-                                      boxShadow: [
-                                        BoxShadow(
-                                          color: Colors.grey.withOpacity(0.7),
-                                          blurRadius: 5.0,
-                                          offset: const Offset(0.0, 5.0),
-                                        ),
-                                      ],
+                                return contained ? Card(
+                                    //elevation: 4.0,
+                                    clipBehavior: Clip.antiAlias,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(20)
                                     ),
-                                    child: Stack(
-                                      children: [
-                                        Positioned(
-                                          top: 0,
-                                          child: Container(
-                                            height: 120,
-                                            width: 300,
-                                            decoration: BoxDecoration(
-                                              borderRadius: const BorderRadius.only(
-                                                topLeft: Radius.circular(20),
-                                                topRight: Radius.circular(20),
-                                              ),
-                                              image: DecorationImage(
-                                                fit: BoxFit.fill,
-                                                image: NetworkImage(snapshot.data![index].thumbnail) // Community Image
+                                    child: InkWell(
+                                      child: SizedBox(
+                                        width: 300,
+                                        child: Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+
+                                            Ink.image(
+                                              image: NetworkImage(snapshot.data![index].thumbnail),
+                                              height: 150,
+                                              fit: BoxFit.cover,
+                                            ),
+
+                                            Padding(
+                                              padding: const EdgeInsets.all(10.0),
+                                              child: Text(snapshot.data![index].name,
+                                                overflow: TextOverflow.ellipsis,
+                                                style: const TextStyle(
+                                                  fontSize: 20.0,
+                                                  fontWeight: FontWeight.bold,
+                                                ),
                                               ),
                                             ),
-                                          )
-                                        ),
-                                        Container(
-                                          margin: const EdgeInsets.only(top: 140, left: 20, right: 0, bottom: 0),
-                                          /* top: 140,
-                                          left: 20, */
-                                          child: Column(
-                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                            children: [
-                                              Text(
-                                                snapshot.data![index].name,
-                                                style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
-                                                overflow: TextOverflow.ellipsis, // Community Title
-                                              ),
-                                              Text(
-                                                snapshot.data![index].shortdesc,
-                                                style: const TextStyle(fontSize: 15), // Community Subtitle
+
+                                            Padding(
+                                              padding: const EdgeInsets.symmetric(horizontal: 10),
+                                              child: Text(snapshot.data![index].shortdesc,
                                                 overflow: TextOverflow.ellipsis,
+                                                style: const TextStyle(
+                                                  fontSize: 15.0,
+                                                  color: Colors.black,
+                                                ),
                                               ),
-                                              Text(
-                                                "Members : ${snapshot.data![index].memberAmount.toString()}",
-                                                style: const TextStyle(fontSize: 15), // Community Subtitle
+                                            ),
+
+                                            const SizedBox(height: 10),
+
+                                            Padding(
+                                              padding: const EdgeInsets.symmetric(horizontal: 10),
+                                              child: Text("Members : ${snapshot.data![index].memberAmount.toString()}",
+                                                overflow: TextOverflow.ellipsis,
+                                                style: const TextStyle(
+                                                  fontSize: 15.0,
+                                                  color: Colors.black,
+                                                ),
                                               ),
-                                            ],
-                                          )
-                                        )
-                                      ],
-                                    ),
-                                  ),
-                                  onTap: () async {
-                                    await Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) => const CommuDetailPage(),
-                                        settings: RouteSettings(
-                                          arguments: snapshot.data![index],
+                                            ),
+                                          ],
                                         ),
-                                      )
-                                    ).then(refreshPage);
-                                  },
-                                ) : Container();
-                              }
+                                      ),
+
+                                      onTap: () {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) => const CommuDetailPage(),
+                                            settings: RouteSettings(
+                                              arguments: snapshot.data![index],
+                                            ),
+                                          )
+                                        ).then(refreshPage);
+                                      },
+                                    ), 
+                                  ): Container();
+                              },
                             );
                           }
                           else {
-                            return const CircularProgressIndicator();
+                              return const CircularProgressIndicator();
                           }
-                        }
+                        },
                       ),
                     ),
-                    Container(
-                      margin: const EdgeInsets.only(left: 20, right: 20, top: 10),
-                      // margin: const EdgeInsets.all(10),
+
+                    Padding(
+                      padding: const EdgeInsets.all(10.0),
                       child: Row(
                         children: [
                           const Text("Newest Community",
@@ -304,10 +302,11 @@ class _CommuPageState extends State<CommuPage> {
                           const Spacer(),
                           TextButton(
                             onPressed: () {
+                            // Navigator.pushNamed(context, 'forumAllPage', arguments: _futureForum).then(refreshPage);
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => CommuAllPage(value: '',),
+                                builder: (context) => CommuAllPage(value: searchString),
                                 settings: RouteSettings(
                                   arguments: newestCommu,
                                 ),
@@ -318,143 +317,113 @@ class _CommuPageState extends State<CommuPage> {
                         ],
                       ),
                     ),
-                    Container(
-                      margin: const EdgeInsets.only(left: 5),
-                      height: 250,
-                      width: double.maxFinite,
+
+                    SizedBox(
+                      height: 270,
                       child: FutureBuilder<List<Community>>(
-                        future: newestCommu,
-                        builder: (BuildContext context, AsyncSnapshot<List<Community>> snapshot) { 
-                          if(snapshot.hasData) {
+                        future: trendingCommu,
+                        builder: (BuildContext context, AsyncSnapshot<List<Community>> snapshot){
+                          if (snapshot.hasData) {
                             snapshot.data!.sort((b, a) => (a.createDate).compareTo((b.createDate)));
-                            return ListView.builder(
-                              itemCount: (snapshot.data!.length <= 5) ? snapshot.data!.length : 5, // number of item to display
+                            return ListView.separated(
+                              itemCount: (snapshot.data!.length <= 5) ? snapshot.data!.length : 5,
                               scrollDirection: Axis.horizontal,
+                              separatorBuilder: (BuildContext context, int index) { 
+                                return const SizedBox(width: 15); 
+                              },
                               itemBuilder: (BuildContext context, int index) {
                                 var contained = searchCommunity(snapshot.data![index], searchString);
-                                return contained ? InkWell(
-                                  child: Container(
-                                    margin: const EdgeInsets.all(10),
-                                    width: 300,
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(20),
-                                      color: Colors.lightBlue[100],
-                                      boxShadow: [
-                                        BoxShadow(
-                                          color: Colors.grey.withOpacity(0.7),
-                                          blurRadius: 5.0,
-                                          offset: const Offset(0.0, 5.0),
-                                        ),
-                                      ],
+                                return contained ? Card(
+                                    //elevation: 4.0,
+                                    clipBehavior: Clip.antiAlias,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(20)
                                     ),
-                                    child: Stack(
-                                      children: [
-                                        Positioned(
-                                          top: 0,
-                                          child: Container(
-                                            height: 120,
-                                            width: 300,
-                                            decoration: BoxDecoration(
-                                              borderRadius: const BorderRadius.only(
-                                                topLeft: Radius.circular(20),
-                                                topRight: Radius.circular(20),
-                                              ),
-                                              image: DecorationImage(
-                                                fit: BoxFit.fill,
-                                                image: NetworkImage(snapshot.data![index].thumbnail) // Community Image
+                                    child: InkWell(
+                                      child: SizedBox(
+                                        width: 300,
+                                        child: Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+
+                                            Ink.image(
+                                              image: NetworkImage(snapshot.data![index].thumbnail),
+                                              height: 150,
+                                              fit: BoxFit.cover,
+                                            ),
+
+                                            Padding(
+                                              padding: const EdgeInsets.all(10.0),
+                                              child: Text(snapshot.data![index].name,
+                                                overflow: TextOverflow.ellipsis,
+                                                style: const TextStyle(
+                                                  fontSize: 20.0,
+                                                  fontWeight: FontWeight.bold,
+                                                ),
                                               ),
                                             ),
-                                          )
-                                        ),
-                                        Container(
-                                          margin: const EdgeInsets.only(top: 140, left: 20, right: 0, bottom: 0),
-                                          /* top: 140,
-                                          left: 20, */
-                                          child: Column(
-                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                            children: [
-                                              Text(
-                                                snapshot.data![index].name,
-                                                style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
-                                                overflow: TextOverflow.ellipsis, // Community Title
-                                              ),
-                                              Text(
-                                                snapshot.data![index].shortdesc,
-                                                style: const TextStyle(fontSize: 15), // Community Subtitle
+
+                                            Padding(
+                                              padding: const EdgeInsets.symmetric(horizontal: 10),
+                                              child: Text(snapshot.data![index].shortdesc,
                                                 overflow: TextOverflow.ellipsis,
+                                                style: const TextStyle(
+                                                  fontSize: 15.0,
+                                                  color: Colors.black,
+                                                ),
                                               ),
-                                              Text(
-                                                "Members : ${snapshot.data![index].memberAmount.toString()}",
-                                                style: const TextStyle(fontSize: 15), // Community Subtitle
+                                            ),
+
+                                            const SizedBox(height: 10),
+
+                                            Padding(
+                                              padding: const EdgeInsets.symmetric(horizontal: 10),
+                                              child: Text("Members : ${snapshot.data![index].memberAmount.toString()}",
+                                                overflow: TextOverflow.ellipsis,
+                                                style: const TextStyle(
+                                                  fontSize: 15.0,
+                                                  color: Colors.black,
+                                                ),
                                               ),
-                                            ],
-                                          )
-                                        )
-                                      ],
-                                    ),
-                                  ),
-                                  onTap: () async {
-                                    await Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) => const CommuDetailPage(),
-                                        settings: RouteSettings(
-                                          arguments: snapshot.data![index],
+                                            ),
+                                          ],
                                         ),
-                                      )
-                                    ).then(refreshPage);
-                                  },
-                                ) : Container();
-                              }
+                                      ),
+
+                                      onTap: () {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) => const CommuDetailPage(),
+                                            settings: RouteSettings(
+                                              arguments: snapshot.data![index],
+                                            ),
+                                          )
+                                        ).then(refreshPage);
+                                      },
+                                    ), 
+                                  ): Container();
+                              },
                             );
                           }
                           else {
-                            return const CircularProgressIndicator();
+                              return const CircularProgressIndicator();
                           }
-                        }
+                        },
                       ),
                     ),
+                    const SizedBox(height: 20),
                   ],
                 ),
-              ],
+              ),
             ),
-          ), 
+          ],
         ),
-        
-        floatingActionButton: FloatingActionButton(
-          onPressed: () async {
-            if (AuthHelper.checkAuth()) {
-              await Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const CommuPostPage(),
-                )
-              );
-              setState(() {
-                
-              });
-            }
-            else {
-              Fluttertoast.showToast(msg: "You are not signed in");
-            }
-          },
-          child: const Icon(Icons.group_add_outlined)
-        ),
-        endDrawer: const NavigationDrawerWidget(),
-        bottomNavigationBar: const Navbar(currentIndex: 3),
-      );
-    
+      ), 
+    );
   }
-
+}
   
-  FutureOr refreshPage(dynamic value) {
-    setState(() {
-      trendingCommu = getCommus();
-      newestCommu = getCommus();
-    });
-  }
-  
-
   Future<List<Community>> getCommus() async {
     final response = await http.get(Uri.parse('http://10.0.2.2:3000/communities'));
     final List<Community> forumList = [];
@@ -481,5 +450,3 @@ class _CommuPageState extends State<CommuPage> {
     return isContain;
 
   }
-
-}
