@@ -69,7 +69,7 @@ class _EditForumPageState extends State<EditForumPage>{
               Container(
                 margin: const EdgeInsets.only(right: 0, left: 0),
                 height: 180,
-                color: Color.fromRGBO(220, 71, 47, 1),
+                color: Colors.red,
                 child: const Center(
                   child: Text("Edit Forum", 
                     style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold, color: Colors.white),

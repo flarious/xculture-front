@@ -57,7 +57,8 @@ class _NewForumPageState extends State<NewForumPage> {
               Container(
                 margin: const EdgeInsets.only(right: 0, left: 0),
                 height: 180,
-                color: Color.fromRGBO(220, 71, 47, 1),
+                //color: Color.fromRGBO(220, 71, 47, 1),
+                color: Colors.red,
                 child: const Center(
                   child: Text("Post Forum", 
                     style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold, color: Colors.white),
@@ -223,7 +224,7 @@ class _NewForumPageState extends State<NewForumPage> {
                             decoration: const InputDecoration(
                               hintText: "Enter Your Content Here",
                               hintStyle: TextStyle(color: Colors.grey),
-                              enabledBorder: OutlineInputBorder(
+                              enabledBorder: UnderlineInputBorder(
                                 borderSide: BorderSide(
                                   color: Colors.grey
                                 ),

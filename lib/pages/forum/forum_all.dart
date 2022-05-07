@@ -28,11 +28,12 @@ class _ForumAllPageState extends State<ForumAllPage> {
   String searchString;
   _ForumAllPageState(this.searchString);
 
+  bool isAscending = false;
+  bool isDescending = false;
+
   List sortList = [
-    "Newest",
-    "Oldest",
-    "Most Viewed",
-    "Most Favorited"
+    "Ascending",
+    "Descending"
   ];
 
   // String searchString = "";
@@ -44,14 +45,7 @@ class _ForumAllPageState extends State<ForumAllPage> {
         ModalRoute.of(context)!.settings.arguments as Future<List<Forum>>;
 
     return Scaffold(
-      appBar: AppBar(
-        centerTitle: true,
-        title: const Text(
-          "Forum",
-          style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: 25),
-        ),
-        actions: <Widget>[Container()],
-      ),
+      backgroundColor: Colors.white,
       body: showAllForum(forumList),
       // bottomNavigationBar: BottomNavigationBar(const NavBar()),
       floatingActionButton: FloatingActionButton(
@@ -78,11 +72,17 @@ class _ForumAllPageState extends State<ForumAllPage> {
   Widget showAllForum(Future<List<Forum>> dataList) {
     return Column(
       children: <Widget>[
-        const SizedBox(height: 20),
+
         Container(
           alignment: Alignment.centerLeft,
-          padding: const EdgeInsets.only(left: 20),
-          child: const Text("Trending Forum", style: TextStyle(fontSize: 20)),
+          padding: const EdgeInsets.fromLTRB(20, 20, 0, 0),
+          child: const Text("Forum", 
+            style: TextStyle(
+              fontSize: 40, 
+              fontWeight: FontWeight.bold,
+              color: Colors.red,
+            ),
+          ),
         ),
         /*
         const SizedBox(height: 20),
@@ -135,21 +135,12 @@ class _ForumAllPageState extends State<ForumAllPage> {
                       });
                   },
                   // controller: searchController,
-                  decoration: InputDecoration(
+                  //style: const TextStyle(color: Colors.white),
+                  decoration: const InputDecoration(
                     hintText: "Search Here...",
-                    enabledBorder: OutlineInputBorder(
-                      borderSide: const BorderSide(
-                        color: Colors.transparent,
-                      ),
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderSide: const BorderSide(
-                        color: Colors.transparent,
-                      ),
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    prefixIcon: const Icon(Icons.search, color: Colors.red),
+                    hintStyle: TextStyle(fontSize: 20.0),
+                    border: InputBorder.none,
+                    prefixIcon: Icon(Icons.search, color: Colors.red),
                   ),
                 ),
               ),
@@ -174,6 +165,14 @@ class _ForumAllPageState extends State<ForumAllPage> {
                     onChanged: (value) {
                       setState(() {
                         this.values = value as String?;
+                        if(value == "Ascending") {
+                          isAscending = true;
+                          isDescending = false;
+                        }
+                        else if(value == "Descending") {
+                          isAscending = false;
+                          isDescending = true;
+                        }
                       });
                     }
                   ),
@@ -187,105 +186,120 @@ class _ForumAllPageState extends State<ForumAllPage> {
           child: FutureBuilder<List<Forum>>(
             builder: (BuildContext context, AsyncSnapshot<List<Forum>> snapshot) {
               if (snapshot.hasData) {
+                isAscending ? snapshot.data!.sort((b, a) => (b.title).compareTo((a.title))) : "";
+                isDescending ? snapshot.data!.sort((b, a) => (a.title).compareTo((b.title))) : "";
                 return ListView.builder(
                   itemCount: snapshot.data?.length,
                   itemBuilder: (context, index) {
                     var dt = DateTime.parse(snapshot.data![index].updateDate).toLocal();
                     String formattedDate = DateFormat('dd/MM/yyyy – HH:mm a').format(dt);
                     var contained = isContain(snapshot.data![index], searchString);
-                    return contained ? InkWell(
-                      // padding: const EdgeInsets.all(20.0),
-                      child: 
-                        Container(
-                          margin: const EdgeInsets.all(10),
-                          height: 120,
-                          child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              AspectRatio(
-                                aspectRatio: 1.0,
-                                child: Container(
+                    return contained ? Padding(
+                      padding: const EdgeInsets.all(10.0),
+                      child: Card(
+                        clipBehavior: Clip.antiAlias,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20)
+                        ),
+                        child: InkWell(
+                          // padding: const EdgeInsets.all(20.0),
+                          child: SizedBox(
+                            height: 150,
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                          
+                                AspectRatio(
+                                  aspectRatio: 0.9,
+                                  child: Container(
                                     decoration: BoxDecoration(
                                       borderRadius: const BorderRadius.only(
-                                        topLeft: Radius.circular(10),
-                                        topRight: Radius.circular(10),
-                                        bottomLeft: Radius.circular(10),
-                                        bottomRight: Radius.circular(10),
+                                        topLeft: Radius.circular(20),
+                                        bottomLeft: Radius.circular(20),
                                       ),
                                       image: DecorationImage(
-                                        fit: BoxFit.fill,
+                                        fit: BoxFit.cover,
                                         image: NetworkImage(snapshot.data![index].thumbnail) // Forum Image
                                       ),
                                     ),
-                                ),
-                              ),
-                              Expanded(
-                                child: Padding(
-                                  padding: const EdgeInsets.fromLTRB(20.0, 0.0, 2.0, 0.0),
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: [
-                                          Text(snapshot.data![index].title,
-                                            overflow: TextOverflow.ellipsis,
-                                            style: const TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                            ),
-                                          ),
-                                          const Padding(padding: EdgeInsets.only(bottom: 2.0)),
-                                          Text(snapshot.data![index].subtitle,
-                                            overflow: TextOverflow.ellipsis,
-                                            style: const TextStyle(
-                                              fontSize: 12.0,
-                                              color: Colors.black,
-                                            ),
-                                          ),
-                                          const SizedBox(height: 5),
-                                          Wrap(
-                                            crossAxisAlignment: WrapCrossAlignment.start,
-                                            children: snapshot.data![index].tags.take(2).map((tag) => Padding(
-                                              padding: const EdgeInsets.only(right: 10),
-                                              child: Chip(
-                                                visualDensity: const VisualDensity(horizontal: -4, vertical: -4), // Chip size -4 -> 4
-                                                label: Text(tag.name),
-                                              ),
-                                            )).toList(),
-                                          ),
-                                          const SizedBox(height: 5),
-                                          Text(snapshot.data![index].author.name,
-                                            style: const TextStyle(
-                                              fontSize: 12.0,
-                                              //color: Colors.black,
-                                            ),
-                                          ),
-                                          Text(formattedDate,
-                                            style: const TextStyle(
-                                              fontSize: 12.0,
-                                              //color: Colors.grey,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ],
                                   ),
                                 ),
-                              ),
-                            ],
+                          
+                                Expanded(
+                                  child: Padding(
+                                    padding: const EdgeInsets.fromLTRB(20.0, 0.0, 2.0, 0.0),
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                      children: [
+                                                
+                                        Text(snapshot.data![index].title,
+                                          maxLines: 2,
+                                          overflow: TextOverflow.ellipsis,
+                                          style: const TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                                
+                                        Text(snapshot.data![index].subtitle,
+                                          maxLines: 2,
+                                          overflow: TextOverflow.ellipsis,
+                                          style: const TextStyle(
+                                            fontSize: 12.0,
+                                            color: Colors.black,
+                                          ),
+                                        ),
+                          
+                                        SizedBox(
+                                          height: 30,
+                                          child: Align(
+                                            alignment: Alignment.bottomLeft,
+                                            child: ListView(
+                                              scrollDirection: Axis.horizontal,
+                                              children: snapshot.data![index].tags.map((tag) => Padding(
+                                                padding: const EdgeInsets.only(right: 10),
+                                                child: Chip(
+                                                  label: Text(tag.name),
+                                                ),
+                                              )).toList(),
+                                            ),
+                                          ),
+                                        ),
+                                                
+                                        // Text(snapshot.data![index].author.name,
+                                        //   style: const TextStyle(
+                                        //     fontSize: 12.0,
+                                        //     //color: Colors.black,
+                                        //   ),
+                                        // ),
+                                                
+                                        // Text(formattedDate,
+                                        //   style: const TextStyle(
+                                        //     fontSize: 12.0,
+                                        //     //color: Colors.grey,
+                                        //   ),
+                                        // ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
+                    
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const ForumDetailPage(),
+                                settings: RouteSettings(
+                                  arguments: snapshot.data![index],
+                                ),
+                              )
+                            );
+                          },
                         ),
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => const ForumDetailPage(),
-                              settings: RouteSettings(
-                                arguments: snapshot.data![index],
-                              ),
-                            )
-                          );
-                        },
+                      ),
                     ) : Container();
                   },
                 );

@@ -6,7 +6,12 @@ import '../constants.dart';
 import '../size_config.dart';
 
 class NoAccountText extends StatelessWidget {
-  const NoAccountText({
+  final String text;
+  bool? isGuest; 
+
+  NoAccountText({
+    required this.text,
+    this.isGuest = false,
     Key? key,
   }) : super(key: key);
 
@@ -16,10 +21,11 @@ class NoAccountText extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Text(
-          "Don’t have an account? ",
+          text,
           style: TextStyle(fontSize: getProportionateScreenWidth(16)),
         ),
-        GestureDetector(
+
+        isGuest == false ? GestureDetector(
           onTap: () => Navigator.push(
             context,
             MaterialPageRoute(
@@ -29,6 +35,15 @@ class NoAccountText extends StatelessWidget {
           // Navigator.pushNamed(context, SignUpScreen.routeName),
           child: Text(
             "Sign Up",
+            style: TextStyle(
+                fontSize: getProportionateScreenWidth(16),
+                color: kPrimaryColor),
+          ),
+        ): GestureDetector(
+          onTap: () {},
+          // Navigator.pushNamed(context, SignUpScreen.routeName),
+          child: Text(
+            "Here",
             style: TextStyle(
                 fontSize: getProportionateScreenWidth(16),
                 color: kPrimaryColor),

@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:xculturetestapi/constants.dart';
 import 'package:xculturetestapi/data.dart';
 import 'dart:convert';
 import 'package:xculturetestapi/arguments.dart';
@@ -13,6 +14,7 @@ import 'package:xculturetestapi/pages/comments/comment_edit.dart';
 import 'package:xculturetestapi/navbar.dart';
 
 import '../../widgets/hamburger_widget.dart';
+import '../report/report_page.dart';
 
 
 
@@ -59,695 +61,699 @@ class _ForumDetailPageState extends State<ForumDetailPage> {
     return SafeArea(
       child: Scaffold(
         body: SingleChildScrollView(
-          child: SizedBox(
-            height: double.maxFinite,
-            width: double.maxFinite,
-            child: FutureBuilder<Forum>(
-              future: fullDetail,
-              builder: (BuildContext context, AsyncSnapshot<Forum> snapshot) {
-                if (snapshot.hasData) {
-                  favourite = (AuthHelper.checkAuth() && snapshot.data!.favoritedBy.contains(AuthHelper.auth.currentUser!.uid)) ? true : false;
-                  var viewed = snapshot.data!.viewed.toString();
-                  var favorited = snapshot.data!.favorited.toString();
-                  var dt = DateTime.parse(snapshot.data!.updateDate).toLocal();
-                  String dateforum = DateFormat('MMMM dd, yyyy – HH:mm a').format(dt);
-                  for (var comment in snapshot.data!.comments) {
-                    _favComment = (AuthHelper.checkAuth() && comment.favoritedBy.contains(AuthHelper.auth.currentUser!.uid));
-                    final TextEditingController _contentReply = TextEditingController();
-                    List<bool> _favRepliesPerComment = [];
-                    var index = snapshot.data!.comments.indexOf(comment);
+          child: FutureBuilder<Forum>(
+            future: fullDetail,
+            builder: (BuildContext context, AsyncSnapshot<Forum> snapshot) {
+              if (snapshot.hasData) {
+                favourite = (AuthHelper.checkAuth() && snapshot.data!.favoritedBy.contains(AuthHelper.auth.currentUser!.uid)) ? true : false;
+                var viewed = snapshot.data!.viewed.toString();
+                var favorited = snapshot.data!.favorited.toString();
+                var dt = DateTime.parse(snapshot.data!.updateDate).toLocal();
+                String dateforum = DateFormat('MMMM dd, yyyy – HH:mm a').format(dt);
+                for (var comment in snapshot.data!.comments) {
+                  _favComment = (AuthHelper.checkAuth() && comment.favoritedBy.contains(AuthHelper.auth.currentUser!.uid));
+                  final TextEditingController _contentReply = TextEditingController();
+                  List<bool> _favRepliesPerComment = [];
+                  var index = snapshot.data!.comments.indexOf(comment);
     
-                    if(_contentReplies.length < snapshot.data!.comments.length) { // Depend on the amount of comments
-                      _favComments.add(_favComment);
-                      _isReply.add(isReply);
-                      _isShowReply.add(isShowReply);
-                      _contentReplies.add(_contentReply);
-                      incognitoReplies.add(incognitoReply);
-                      _formKeyReplies.add(GlobalKey<FormState>());
-                      _favRepliesTotal.add(_favRepliesPerComment);
-                    }
-                    
-                    for(var reply in comment.replies) {
-                      _favReply = (AuthHelper.checkAuth() && reply.favoritedBy.contains(AuthHelper.auth.currentUser!.uid));
-                      if(_favRepliesTotal[index].length < comment.replies.length) { // Depend on the amount of replies
-                        _favRepliesTotal[index].add(_favReply);
-                      }
+                  if(_contentReplies.length < snapshot.data!.comments.length) { // Depend on the amount of comments
+                    _favComments.add(_favComment);
+                    _isReply.add(isReply);
+                    _isShowReply.add(isShowReply);
+                    _contentReplies.add(_contentReply);
+                    incognitoReplies.add(incognitoReply);
+                    _formKeyReplies.add(GlobalKey<FormState>());
+                    _favRepliesTotal.add(_favRepliesPerComment);
+                  }
+                  
+                  for(var reply in comment.replies) {
+                    _favReply = (AuthHelper.checkAuth() && reply.favoritedBy.contains(AuthHelper.auth.currentUser!.uid));
+                    if(_favRepliesTotal[index].length < comment.replies.length) { // Depend on the amount of replies
+                      _favRepliesTotal[index].add(_favReply);
                     }
                   }
+                }
     
-                  return Stack(
-                      children: [
-                        // Container(
-                        //   height: 10000, //set height by manual
-                        // ),
+                return Stack(
+                    children: [
+                    
+                      // Thumbnail Image
+                      Container(
+                        margin: const EdgeInsets.only(right: 0, left: 0),
+                        child: Container(
+                          height: 300,
+                          decoration: BoxDecoration(
+                            image: DecorationImage(
+                              image: NetworkImage(snapshot.data!.thumbnail),
+                              fit: BoxFit.cover, 
+                            )
+                          ),
+                        )
+                      ),
 
-                        // Thumbnail Image
-                        Container(
-                          margin: const EdgeInsets.only(right: 0, left: 0),
-                          // right: 0,
-                          // left: 0,
-                          child: Container(
-                            height: 300,
-                            decoration: BoxDecoration(
-                              image: DecorationImage(
-                                image: NetworkImage(snapshot.data!.thumbnail),
-                                fit: BoxFit.cover, 
-                              )
-                            ),
-                          )
-                        ),
-                        // Iconbutton back
-                        Container(
-                          margin: const EdgeInsets.only(top: 40, left: 20),
-                          // top: 20,
-                          // left: 20,
-                          child: Container(
-                            decoration: const BoxDecoration(
-                              color: Colors.grey,
-                              shape: BoxShape.circle,
-                            ),
-                            child: IconButton(
-                              visualDensity: VisualDensity.compact,
-                              icon: const Icon(Icons.arrow_back),
+                      // Iconbutton back
+                      Container(
+                        margin: const EdgeInsets.only(top: 40, left: 20),
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: Colors.grey.withOpacity(0.8),
+                            shape: BoxShape.circle,
+                          ),
+                          child: IconButton(
+                            visualDensity: VisualDensity.compact,
+                            icon: const Icon(Icons.arrow_back),
+                            iconSize: 30,
+                            color: Colors.white,
+                            onPressed: () {
+                              Navigator.pop(context);
+                            },
+                          ),
+                        ),   
+                      ),
+
+                      // Iconbutton menu
+                      Container(
+                        alignment: Alignment.centerRight,
+                        margin: const EdgeInsets.only(top: 40, right: 20),
+                        child: Container(
+                          padding: const EdgeInsets.all(8),
+                          decoration: BoxDecoration(
+                            color: Colors.grey.withOpacity(0.8),
+                            shape: BoxShape.circle,
+                          ),
+                          child: PopupMenuButton(
+                            itemBuilder: (context) => [
+                              PopupMenuItem(
+                                child: const Text("Edit"),
+                                onTap: () async {
+                                  if (AuthHelper.checkAuth() && snapshot.data!.author.id == AuthHelper.auth.currentUser!.uid) {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => const EditForumPage(),
+                                        settings: RouteSettings(
+                                          arguments: snapshot.data,
+                                        ),
+                                      )
+                                    ).then(refreshPage);
+                                  }
+                                  else {
+                                    Fluttertoast.showToast(msg: "You are not the owner");
+                                  }
+                                },
+                              ),
+                              PopupMenuItem(
+                                child: const Text("Delete"),
+                                onTap: () async {
+                                    
+                                  },
+                              ),
+                              PopupMenuItem(
+                                child: const Text("Report"),
+                                onTap: () async {
+                                    // await Future.delayed(const Duration(milliseconds: 1));
+                                    // Navigator.push(
+                                    //   context, 
+                                    //   MaterialPageRoute(
+                                    //     builder: (context) => const ReportPage(),
+                                    //     settings: RouteSettings(
+                                    //       arguments: snapshot.data!.id,
+                                    //     ),
+                                    //   )
+                                    // ).then(refreshPage);
+                                  }
+                              ),
+                            ],
+                            child: const Icon(
+                              Icons.more_vert,
                               color: Colors.white,
-                              onPressed: () {
-                                Navigator.pop(context);
-                              },
-                            ),
-                          ),   
-                        ),
-                        // Iconbutton menu
-                        Container(
-                          alignment: Alignment.centerRight,
-                          margin: const EdgeInsets.only(top: 40, right: 20),
-                          // top: 20,
-                          // right: 20,
-                          child: Container(
-                            decoration: const BoxDecoration(
-                              color: Colors.grey,
-                              shape: BoxShape.circle,
-                            ),
-                            child: IconButton(
-                              visualDensity: VisualDensity.compact,
-                              icon: const Icon(Icons.edit),
-                              // icon: const Icon(Icons.more_vert),
-                              color: Colors.white,
-                              onPressed: () {
-                                if (AuthHelper.checkAuth() && snapshot.data!.author.id == AuthHelper.auth.currentUser!.uid) {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => const EditForumPage(),
-                                      settings: RouteSettings(
-                                        arguments: snapshot.data,
-                                      ),
-                                    )
-                                  ).then(refreshPage);
-                                }
-                                else {
-                                  Fluttertoast.showToast(msg: "You are not the owner");
-                                }
-                              },
-                            ),
+                              size: 30,
+                            ), 
                           ),
                         ),
-                        // Details/Contents
-                        Container(
-                          margin: const EdgeInsets.only(top: 280, left: 0, right: 0, bottom: 0),
-                          //top: 280,
-                          child: Container(
-                            padding: const EdgeInsets.only(left: 20, right: 20, top: 20),
-                            width: MediaQuery.of(context).size.width,
-                            decoration: const BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.only(
-                                topLeft: Radius.circular(20),
-                                topRight: Radius.circular(20),
-                              ),
+                      ),
+                     
+                      //Contents
+                      Container(
+                        margin: const EdgeInsets.only(top: 280, left: 0, right: 0, bottom: 0),
+                        //top: 280,
+                        child: Container(
+                          padding: const EdgeInsets.only(left: 20, right: 20, top: 20),
+                          width: MediaQuery.of(context).size.width,
+                          decoration: const BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.only(
+                              topLeft: Radius.circular(20),
+                              topRight: Radius.circular(20),
                             ),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
 
-                                // // Title with favorite button
-                                // Padding(
-                                //   padding: const EdgeInsets.symmetric(vertical: 5.0),
-                                //   child: Table(
-                                //     defaultVerticalAlignment: TableCellVerticalAlignment.top,
-                                //     columnWidths: const {1: FractionColumnWidth(.1)},
-                                //     children: [
-                                //       TableRow(
-                                //         children: [
-                                //           Text(snapshot.data!.title,
-                                //             style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 23, color: Colors.red)
-                                //           ),
-                                //           IconButton(
-                                //             visualDensity: VisualDensity.compact,
-                                //             icon: favourite == false ? const Icon(Icons.favorite_border) : const Icon(Icons.favorite),
-                                //             color: Colors.red,
-                                //             iconSize: 30,
-                                //             onPressed: () async {
-                                //               if (favourite == false ) {
-                                //                 favourite = true;
-                                //                 var success = await forumFavorited(snapshot.data!.id);
-                                //                 if(success) {
-                                //                   Fluttertoast.showToast(msg: "Favorited.");
-                                //                 }
-                                //               } else {
-                                //                 favourite = false;
-                                //                 var success = await forumUnfavorited(snapshot.data!.id);
-                                //                 if(success) {
-                                //                   Fluttertoast.showToast(msg: "Unfavorited.");
-                                //                 }
-                                //               }   
-                                //               setState(() { 
-                                                                         
-                                //               });
-                                //             },
-                                //           ),
-                                //         ],
-                                //       ),
-                                //     ],
-                                //   ),
-                                // ),
+                              // Title with favorite button
+                              Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
 
-                                // Title with favorite button
-                                Row(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Expanded(
-                                      child: Padding(
-                                        padding: EdgeInsets.symmetric(vertical: 5.0),
-                                        child: Text(snapshot.data!.title,
-                                          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 25, color: Colors.red)
-                                        ),
+                                  Expanded(
+                                    child: Padding(
+                                      padding: const EdgeInsets.symmetric(vertical: 5.0),
+                                      child: Text(snapshot.data!.title,
+                                        style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 25)
                                       ),
                                     ),
-                                    IconButton(
-                                      visualDensity: VisualDensity.compact,
-                                      icon: favourite == false ? const Icon(Icons.favorite_border) : const Icon(Icons.favorite),
-                                      color: Colors.red,
-                                      iconSize: 30,
-                                      onPressed: () async {
-                                        if (favourite == false ) {
-                                          favourite = true;
-                                          var success = await forumFavorited(snapshot.data!.id);
-                                          if(success) {
-                                            Fluttertoast.showToast(msg: "Favorited.");
-                                          }
-                                        } else {
-                                          favourite = false;
-                                          var success = await forumUnfavorited(snapshot.data!.id);
-                                          if(success) {
-                                            Fluttertoast.showToast(msg: "Unfavorited.");
-                                          }
-                                        }   
-                                        setState(() { 
-                                                                         
-                                        });
-                                      },
+                                  ),
+
+                                  IconButton(
+                                    visualDensity: VisualDensity.compact,
+                                    icon: favourite == false ? const Icon(Icons.favorite_outline) : const Icon(Icons.favorite),
+                                    color: Colors.red,
+                                    iconSize: 40,
+                                    onPressed: () async {
+                                      if (favourite == false ) {
+                                        favourite = true;
+                                        var success = await forumFavorited(snapshot.data!.id);
+                                        if(success) {
+                                          Fluttertoast.showToast(msg: "Favorited.");
+                                        }
+                                      } else {
+                                        favourite = false;
+                                        var success = await forumUnfavorited(snapshot.data!.id);
+                                        if(success) {
+                                          Fluttertoast.showToast(msg: "Unfavorited.");
+                                        }
+                                      }   
+                                      setState(() { 
+                                                                       
+                                      });
+                                    },
+                                  ),
+                                ],
+                              ),
+
+                              // Subtitle
+                              Padding(
+                                padding: const EdgeInsets.symmetric(vertical: 5.0),
+                                child: Text(snapshot.data!.subtitle,
+                                  style: const TextStyle(fontSize: 15),
+                                ),
+                              ),
+    
+                              // Tags
+                              Padding(
+                                padding: const EdgeInsets.symmetric(vertical: 5.0),
+                                child: Wrap(
+                                  crossAxisAlignment: WrapCrossAlignment.start,
+                                  children: snapshot.data!.tags.map((tag) => Padding(
+                                    padding: const EdgeInsets.only(right: 10),
+                                    child: Chip(
+                                      label: Text(tag.name),
+                                    ),
+                                  )).toList(),
+                                ),
+                              ),
+
+                              // Author
+                              Padding(
+                                padding: const EdgeInsets.symmetric(vertical: 5.0),
+                                child: Row(
+                                  children: [
+                                    const Icon(Icons.account_circle),
+                                    const SizedBox(width: 5),
+                                    (snapshot.data!.incognito == false) ? Text(snapshot.data!.author.name) : const Text("Author")
+                                  ],
+                                ),
+                              ),
+
+                              // Date and Like/Favorite count
+                              Padding(
+                                padding: const EdgeInsets.symmetric(vertical: 5.0),
+                                child: Row(
+                                  children: [
+                                    Text(dateforum),
+                                    const Spacer(),
+                                    Row(
+                                      children: [
+                                          const Icon(Icons.visibility_sharp),
+                                          const SizedBox(width: 5),
+                                          Text(viewed),                    //total viewed
+                                          const SizedBox(width: 5),
+                                          const Icon(Icons.favorite),
+                                          const SizedBox(width: 5),
+                                          Text(favorited),                 //total favourite
+                                      ],
                                     ),
                                   ],
                                 ),
+                              ),
 
-                                // Subtitle
-                                Padding(
-                                  padding: const EdgeInsets.symmetric(vertical: 5.0),
-                                  child: Text(snapshot.data!.subtitle,
-                                    style: const TextStyle(fontSize: 15),
-                                  ),
+                              // Division line
+                              Padding(
+                                padding: const EdgeInsets.symmetric(vertical: 5.0),
+                                child: Container(
+                                    height: 1.0,
+                                    width: 400,
+                                    color: Colors.grey,
                                 ),
-    
-                                // Tags
-                                Padding(
-                                  padding: const EdgeInsets.symmetric(vertical: 5.0),
-                                  child: Wrap(
-                                    crossAxisAlignment: WrapCrossAlignment.start,
-                                    children: snapshot.data!.tags.map((tag) => Padding(
-                                      padding: const EdgeInsets.only(right: 10),
-                                      child: Chip(
-                                        label: Text(tag.name),
-                                      ),
-                                    )).toList(),
-                                  ),
+                              ),
+
+                              // Desc Header
+                              const Padding(
+                                padding: EdgeInsets.symmetric(vertical: 5.0),
+                                child: Text("Description",
+                                  style: TextStyle(fontWeight: FontWeight.bold),
                                 ),
-                                // Author
-                                Padding(
-                                  padding: const EdgeInsets.symmetric(vertical: 5.0),
-                                  child: Row(
+                              ),
+
+                              // Desc Content
+                              Padding(
+                                padding: const EdgeInsets.symmetric(vertical: 5.0),
+                                child: Text(snapshot.data!.content),
+                              ),
+
+                              // Comment Header
+                              const Padding(
+                                padding: EdgeInsets.symmetric(vertical: 5.0),
+                                child: Text("Comments",
+                                  style: TextStyle(fontWeight: FontWeight.bold),
+                                ),
+                              ),
+
+                              // Comment Box
+                              Form(
+                                key: _formKeyComment,
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(vertical: 8.0),
+                                  child: Column(
                                     children: [
-                                      const Icon(Icons.account_circle),
-                                      const SizedBox(width: 5),
-                                      (snapshot.data!.incognito == false) ? Text(snapshot.data!.author.name) : const Text("Author")
-                                    ],
-                                  ),
-                                ),
-                                // Date and Like/Favorite count
-                                Padding(
-                                  padding: const EdgeInsets.symmetric(vertical: 5.0),
-                                  child: Row(
-                                    children: [
-                                      Text(dateforum),
-                                      const Spacer(),
                                       Row(
                                         children: [
-                                            const Icon(Icons.visibility_sharp),
-                                            const SizedBox(width: 5),
-                                            Text(viewed),                    //total viewed
-                                            const SizedBox(width: 5),
-                                            const Icon(Icons.favorite),
-                                            const SizedBox(width: 5),
-                                            Text(favorited),                 //total favourite
+
+                                          const CircleAvatar(
+                                            radius: 20,
+                                            backgroundImage: AssetImage("assets/images/User_icon.jpg"),
+                                          ),
+
+                                          const SizedBox(width: 20),
+
+                                          Expanded(
+                                            child: TextFormField(
+                                              controller: _contentComment,
+                                              decoration: InputDecoration(
+                                                contentPadding: const EdgeInsets.all(15),
+                                                hintText: "Type your comment here....",
+                                                border: OutlineInputBorder(
+                                                  borderRadius: BorderRadius.circular(30),
+                                                ),
+                                                suffixIcon: IconButton(
+                                                  icon: const Icon(
+                                                    Icons.send,
+                                                    color: Colors.red,
+                                                  ),
+                                                  onPressed: () async {
+                                                    if(_formKeyComment.currentState!.validate()) {
+                                                      var success = await sendCommentDetail(snapshot.data!.id, _contentComment.text, incognitoComment);
+                                                      if (success) {
+                                                        Fluttertoast.showToast(msg: "Your comment has been posted.");
+                                                        refreshPage(snapshot.data!.id);
+                                                      }
+                                                    }
+                                                    setState(() {
+                                                      _contentComment.text = "";
+                                                    });
+                                                  },
+                                                ),
+                                              ),
+                                              validator: (value) {
+                                                if (value == null || value.isEmpty) {
+                                                  return "Please enter comment";
+                                                }
+                                                else {
+                                                  return null;
+                                                }
+                                              },
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+
+                                      Row(
+                                        children: [
+                                          const Text("Incognito : "),
+                                          Switch(
+                                            value: incognitoComment, 
+                                            onChanged: (value) {
+                                              setState(() {
+                                                incognitoComment = value;
+                                              });
+                                            }
+                                          ),
                                         ],
                                       ),
                                     ],
                                   ),
                                 ),
-                                // Division line
-                                Padding(
-                                  padding: const EdgeInsets.symmetric(vertical: 5.0),
-                                  child: Container(
-                                      height: 1.0,
-                                      width: 400,
-                                      color: Colors.grey,
-                                  ),
-                                ),
-                                // Desc Header
-                                const Padding(
-                                  padding: EdgeInsets.symmetric(vertical: 5.0),
-                                  child: Text("Description",
-                                    style: TextStyle(fontWeight: FontWeight.bold),
-                                  ),
-                                ),
-                                // Desc Content
-                                Padding(
-                                  padding: const EdgeInsets.symmetric(vertical: 5.0),
-                                  child: Text(snapshot.data!.content),
-                                ),
-                                // Comment Header
-                                const Padding(
-                                  padding: EdgeInsets.symmetric(vertical: 5.0),
-                                  child: Text("Comments",
-                                    style: TextStyle(fontWeight: FontWeight.bold),
-                                  ),
-                                ),
-                                // Comment Box
-                                Form(
-                                  key: _formKeyComment,
-                                  child: Padding(
-                                    padding: const EdgeInsets.symmetric(vertical: 8.0),
-                                    child: Column(
-                                      children: [
-                                        Row(
-                                          children: [
-                                            const CircleAvatar(
-                                              radius: 20,
-                                              backgroundImage: AssetImage("assets/images/User_icon.jpg"),
-                                            ),
-                                            const SizedBox(width: 20),
-                                            Expanded(
-                                              child: TextFormField(
-                                                //minLines: 1,
-                                                //maxLines: 3,
-                                                controller: _contentComment,
-                                                //keyboardType: TextInputType.multiline,
-                                                decoration: const InputDecoration(
-                                                  hintText: "Type your comment...",
-                                                  border: OutlineInputBorder(
-                                                    borderRadius: BorderRadius.all(Radius.circular(10)),
-                                                  ),
-                                                  isDense: true, // important line
-                                                  contentPadding: EdgeInsets.fromLTRB(20, 20, 20, 15), // adjust form size
-                                                ),
-                                                validator: (value) {
-                                                  if (value == null || value.isEmpty) {
-                                                    return "Please enter comment";
-                                                  }
-                                                  else {
-                                                    return null;
-                                                  }
-                                                },
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                        Row(
-                                          children: [
-                                            const Text("Incognito : "),
-                                            Switch(
-                                              value: incognitoComment, 
-                                              onChanged: (value) {
-                                                setState(() {
-                                                  incognitoComment = value;
-                                                });
-                                              }
-                                            ),
-                                            const Spacer(),
-                                            ElevatedButton(
-                                              onPressed: () async{
-                                                if(_formKeyComment.currentState!.validate()) {
-                                                    var success = await sendCommentDetail(snapshot.data!.id, _contentComment.text, incognitoComment);
-                                                    if (success) {
-                                                      Fluttertoast.showToast(msg: "Your comment has been posted.");
-                                                      refreshPage(snapshot.data!.id);
-                                                    }
-                                                  }
-                                              }, 
-                                              child: const SizedBox(
-                                                width: 100,
-                                                height: 30,
-                                                child: Center(
-                                                  child: Text("Comment"),
-                                                ),
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                                // Commented List
-                                Padding(
-                                  padding: const EdgeInsets.symmetric(vertical: 10.0),
-                                  child: ListView.builder(
-                                    itemCount: snapshot.data!.comments.length,
-                                    shrinkWrap: true,
-                                    itemBuilder: (BuildContext context, int index) {
-                                      var favComments = snapshot.data!.comments[index].favorited.toString();
-                                      var replied = snapshot.data!.comments[index].replied.toString();
-                                      var dt = DateTime.parse(snapshot.data!.comments[index].updateDate).toLocal();
-                                      var datecomment = DateFormat('HH:mm a').format(dt);
-                                      
-                                      return Container(
-                                        padding: const EdgeInsets.all(10),
+                              ),
+
+                              // Commented List
+                              ListView.builder(
+                                itemCount: snapshot.data!.comments.length,
+                                shrinkWrap: true,
+                                itemBuilder: (BuildContext context, int index) {
+                                  var favComments = snapshot.data!.comments[index].favorited.toString();
+                                  var replied = snapshot.data!.comments[index].replied.toString();
+                                  var dt = DateTime.parse(snapshot.data!.comments[index].updateDate).toLocal();
+                                  var datecomment = DateFormat('HH:mm a').format(dt);
+                                  
+                                  return Column(
+                                    children: [
+                                      Card(
+                                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
                                         child: Column(
                                           children: [
-                                            Card(
-                                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+
+                                            ListTile(
+                                              leading: const CircleAvatar(
+                                                radius: 20,
+                                                backgroundImage: AssetImage("assets/images/User_icon.jpg"),
+                                              ),
+                                              title: Row(
+                                                children: [
+
+                                                  Expanded(
+                                                    // Condition of incognito
+                                                    child: (snapshot.data!.comments[index].incognito == false) ? 
+                                                    Text(snapshot.data!.comments[index].author.name, 
+                                                        overflow: TextOverflow.ellipsis,
+                                                        maxLines: 1
+                                                    ) : const Text("Author",
+                                                        overflow: TextOverflow.ellipsis,
+                                                        maxLines: 1,
+                                                    ),
+                                                  ),
+                                                  // Date time
+                                                  Text(datecomment, style: const TextStyle(fontSize: 12)),
+                                                ],
+                                              ),
+                                              subtitle: Text(snapshot.data!.comments[index].content),
+                                            ),
+                                            Row(
+                                              children: [
+
+                                                Expanded(
+                                                  child: TextButton(
+                                                    child: Container(
+                                                      alignment: Alignment.centerLeft,
+                                                      padding: const EdgeInsets.only(left: 10),
+                                                      child: Text(replied + " Replies"),
+                                                    ),
+                                                    onPressed: () {
+                                                      setState(() {
+                                                        _isShowReply[index] = !_isShowReply[index];
+                                                      });
+                                                    },
+                                                  ),
+                                                ),
+
+                                                IconButton(
+                                                  visualDensity: VisualDensity.compact,
+                                                  icon: _favComments[index] == false ? const Icon(Icons.thumb_up_alt_outlined) : const Icon(Icons.thumb_up),
+                                                  color: Colors.red,
+                                                  iconSize: 20,
+                                                  onPressed: () async {
+                                                    if (_favComments[index] == false ) {
+                                                        _favComments[index] = true;
+                                                        var success = await commentFavorited(snapshot.data!.id, snapshot.data!.comments[index].id);
+                                                        if (success) {
+                                                          Fluttertoast.showToast(msg: "Favorite Comment.");
+                                                        }
+                                                      } else {
+                                                        _favComments[index] = false;
+                                                        var success = await commentUnfavorited(snapshot.data!.id, snapshot.data!.comments[index].id);
+                                                        if (success) {
+                                                          Fluttertoast.showToast(msg: "Unfavorite Comment.");
+                                                        }
+                                                      }        
+                                                    setState(() { 
+                                                                          
+                                                    });
+                                                  },
+                                                ),
+
+                                                Text(favComments, style: const TextStyle(color: Colors.red, fontWeight: FontWeight.bold)),
+                                                
+                                                TextButton(
+                                                  child: Row(
+                                                    children: const [
+                                                      Icon(Icons.reply, size: 20),
+                                                      SizedBox(width: 5),
+                                                      Text('Reply'),
+                                                    ],
+                                                  ),
+                                                  onPressed: () {
+                                                    setState(() {
+                                                      _isReply[index] = !_isReply[index];
+                                                    });
+                                                  },
+                                                ),
+
+                                                TextButton(
+                                                  child: Row(
+                                                    children: const [
+                                                      Icon(Icons.edit, size: 20),
+                                                      SizedBox(width: 5),
+                                                      Text('Edit'),
+                                                    ],
+                                                  ),
+                                                  onPressed: () {
+                                                    setState(() {
+                                                      Navigator.push(
+                                                        context,
+                                                        MaterialPageRoute(
+                                                          builder: (context) => const EditCommentPage(),
+                                                          settings: RouteSettings(
+                                                            arguments: EditCommentArguments(
+                                                              forumID: snapshot.data!.id, 
+                                                              comment: snapshot.data!.comments[index]
+                                                            ),
+                                                          )
+                                                        )
+                                                      ).then(refreshPage);
+                                                    });
+                                                  },
+                                                ),
+                                              ],
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+
+                                      // Reply TextField
+                                      Visibility(
+                                        visible: _isReply[index],
+                                        child: Form(
+                                          key: _formKeyReplies[index],
+                                          child: Card(
+                                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+                                            child: Padding(
+                                              padding: const EdgeInsets.symmetric(horizontal: 20),
                                               child: Column(
                                                 children: [
-                                                  const SizedBox(height: 10),
-                                                  ListTile(
-                                                    leading: const CircleAvatar(
-                                                      radius: 20,
-                                                      backgroundImage: AssetImage("assets/images/User_icon.jpg"),
-                                                    ),
-                                                    title: Row(
-                                                      children: [
-                                                        Expanded(
-                                                          // Condition of incognito
-                                                          child: (snapshot.data!.comments[index].incognito == false) ? 
-                                                          Text(snapshot.data!.comments[index].author.name, 
-                                                              overflow: TextOverflow.ellipsis,
-                                                              maxLines: 1
-                                                          ) : const Text("Author",
-                                                              overflow: TextOverflow.ellipsis,
-                                                              maxLines: 1,
-                                                          ),
-                                                        ),
-                                                        // Date time
-                                                        Text(datecomment, style: const TextStyle(fontSize: 12)),
-                                                      ],
-                                                    ),
-                                                    subtitle: Text(snapshot.data!.comments[index].content),
-                                                  ),
+
                                                   Row(
                                                     children: [
+
+                                                      const CircleAvatar(
+                                                        radius: 20,
+                                                        backgroundImage: AssetImage("assets/images/User_icon.jpg"),
+                                                      ),
+
+                                                      const SizedBox(width: 20),
+
                                                       Expanded(
-                                                        child: TextButton(
-                                                          child: Container(
-                                                            alignment: Alignment.centerLeft,
-                                                            padding: const EdgeInsets.only(left: 10),
-                                                            child: Text(replied + " Replies"),
+                                                        child: TextFormField(
+                                                          controller: _contentReplies[index],
+                                                          decoration: InputDecoration(
+                                                            //contentPadding: const EdgeInsets.all(15),
+                                                            hintText: "Type your reply....",
+                                                            border: InputBorder.none,
+                                                            suffixIcon: IconButton(
+                                                              icon: const Icon(
+                                                                Icons.reply,
+                                                                color: Colors.red,
+                                                                size: 30,
+                                                              ),
+                                                              onPressed: () async {
+                                                                if(_formKeyReplies[index].currentState!.validate()) {
+                                                                  var success = await sendReplyDetail(snapshot.data!.id, snapshot.data!.comments[index].id, _contentReplies[index].text, incognitoReplies[index]);
+                                                                  if (success) {
+                                                                    Fluttertoast.showToast(msg: "Your reply has been posted.");
+                                                                    refreshPage(snapshot.data!.id);
+                                                                  }
+                                                                }
+                                                                setState(() {
+                                                                  _contentReplies[index].text = "";
+                                                                  _isReply[index] = false;
+                                                                });
+                                                              },
+                                                            ),
                                                           ),
-                                                          onPressed: () {
-                                                            setState(() {
-                                                              _isShowReply[index] = !_isShowReply[index];
-                                                            });
+                                                          validator: (value) {
+                                                            if (value == null || value.isEmpty) {
+                                                              return "Please enter reply";
+                                                            }
+                                                            else {
+                                                              return null;
+                                                            }
                                                           },
                                                         ),
                                                       ),
-                                                      IconButton(
-                                                        visualDensity: VisualDensity.compact,
-                                                        icon: _favComments[index] == false ? const Icon(Icons.thumb_up_alt_outlined) : const Icon(Icons.thumb_up),
-                                                        color: Colors.red,
-                                                        iconSize: 20,
-                                                        onPressed: () async {
-                                                          if (_favComments[index] == false ) {
-                                                              _favComments[index] = true;
-                                                              var success = await commentFavorited(snapshot.data!.id, snapshot.data!.comments[index].id);
-                                                              if (success) {
-                                                                Fluttertoast.showToast(msg: "Favorite Comment.");
-                                                              }
-                                                            } else {
-                                                              _favComments[index] = false;
-                                                              var success = await commentUnfavorited(snapshot.data!.id, snapshot.data!.comments[index].id);
-                                                              if (success) {
-                                                                Fluttertoast.showToast(msg: "Unfavorite Comment.");
-                                                              }
-                                                            }        
-                                                          setState(() { 
-                                                                                
-                                                          });
-                                                        },
-                                                      ),
-                                                      Text(favComments, style: const TextStyle(color: Colors.red, fontWeight: FontWeight.bold)),
-                                                      
-                                                      TextButton(
-                                                        child: Row(
-                                                          children: const [
-                                                            Icon(Icons.reply, size: 20),
-                                                            SizedBox(width: 5),
-                                                            Text('Reply'),
-                                                          ],
-                                                        ),
-                                                        onPressed: () {
+                                                    ],
+                                                  ),
+
+                                                  Row(
+                                                    children: [
+                                                      const Text("Incognito : "),
+                                                      Switch(
+                                                        value: incognitoReplies[index], 
+                                                        onChanged: (value) {
                                                           setState(() {
-                                                            _isReply[index] = !_isReply[index];
+                                                            incognitoReplies[index] = value;
                                                           });
-                                                        },
-                                                      ),
-                                                      TextButton(
-                                                        child: Row(
-                                                          children: const [
-                                                            Icon(Icons.edit, size: 20),
-                                                            SizedBox(width: 5),
-                                                            Text('Edit'),
-                                                          ],
-                                                        ),
-                                                        onPressed: () {
-                                                          setState(() {
-                                                            Navigator.push(
-                                                              context,
-                                                              MaterialPageRoute(
-                                                                builder: (context) => const EditCommentPage(),
-                                                                settings: RouteSettings(
-                                                                  arguments: EditCommentArguments(
-                                                                    forumID: snapshot.data!.id, 
-                                                                    comment: snapshot.data!.comments[index]
-                                                                  ),
-                                                                )
-                                                              )
-                                                            ).then(refreshPage);
-                                                          });
-                                                        },
+                                                        }
                                                       ),
                                                     ],
                                                   ),
                                                 ],
                                               ),
                                             ),
-                                            // Reply TextField
-                                            Visibility(
-                                              visible: _isReply[index],
-                                              child: Form(
-                                                key: _formKeyReplies[index],
+                                          ),
+                                        ),
+                                      ),
+
+                                      // Reply List
+                                      Visibility(
+                                        visible: _isShowReply[index],
+                                        child: ListView.builder(
+                                          itemCount: snapshot.data!.comments[index].replies.length,
+                                          shrinkWrap: true,
+                                          itemBuilder: (BuildContext context, int index2) {
+                                            var favReply = snapshot.data!.comments[index].replies[index2].favorited.toString();
+                                            var dt = DateTime.parse(snapshot.data!.comments[index].replies[index2].updateDate).toLocal();
+                                            String datereplies = DateFormat('HH:mm a').format(dt);
+                                            return Container(
+                                              padding: const EdgeInsets.only(left: 20),
+                                              child: Card(
+                                                color: Colors.grey[200],
+                                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
                                                 child: Column(
-                                                  // shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                                                   children: [
-                                                    Row(
-                                                      children: [
-                                                        const CircleAvatar(
-                                                          radius: 20,
-                                                          backgroundImage: AssetImage("assets/images/User_icon.jpg"),
-                                                        ),
-                                                        const SizedBox(width: 20),
-                                                        Expanded(
-                                                          child: TextFormField(
-                                                            minLines: 1,
-                                                            maxLines: 2,
-                                                            controller: _contentReplies[index],
-                                                            keyboardType: TextInputType.multiline,
-                                                            decoration: const InputDecoration(
-                                                              hintText: "Type your reply...",
-                                                              border: InputBorder.none,
-                                                              isDense: true, // important line
-                                                              contentPadding: EdgeInsets.fromLTRB(20, 20, 20, 15), // adjust form size
-                                                            ),
-                                                            validator: (value) {
-                                                              if (value == null || value.isEmpty) {
-                                                                return "Please enter reply";
-                                                              }
-                                                              else {
-                                                                return null;
-                                                              }
-                                                            },
-                                                          ),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                    Row(
-                                                      children: [
-                                                        const Text("Incognito : "),
-                                                        Switch(
-                                                          value: incognitoReplies[index], 
-                                                          onChanged: (value) {
-                                                            setState(() {
-                                                              incognitoReplies[index] = value;
-                                                            });
-                                                          }
-                                                        ),
-                                                        const Spacer(),
-                                                        IconButton(
-                                                          onPressed: () async {
-                                                            if(_formKeyReplies[index].currentState!.validate()) {
-                                                                var success = await sendReplyDetail(snapshot.data!.id, snapshot.data!.comments[index].id, _contentReplies[index].text, incognitoReplies[index]);
-                                                                if (success) {
-                                                                  Fluttertoast.showToast(msg: "Your reply has been posted.");
-                                                                  refreshPage(snapshot.data!.id);
-                                                                }
-                                                              }
-                                                          }, 
-                                                          icon: const Icon(Icons.reply),
-                                                          iconSize: 25,
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  ]
-                                                ),
-                                              ),
-                                            ),
-                                            // Reply List
-                                            Visibility(
-                                              visible: _isShowReply[index],
-                                              child: ListView.builder(
-                                                itemCount: snapshot.data!.comments[index].replies.length,
-                                                shrinkWrap: true,
-                                                itemBuilder: (BuildContext context, int index2) {
-                                                  var favReply = snapshot.data!.comments[index].replies[index2].favorited.toString();
-                                                  var dt = DateTime.parse(snapshot.data!.comments[index].replies[index2].updateDate).toLocal();
-                                                  String datereplies = DateFormat('HH:mm a').format(dt);
-                                                  return Container(
-                                                    padding: const EdgeInsets.fromLTRB(20, 10, 0, 10), // adjust box size
-                                                    child: Card(
-                                                      color: Colors.grey[300],
-                                                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                                                      child: Column(
+                                                    
+                                                    ListTile(
+                                                      leading: const CircleAvatar(
+                                                        radius: 20,
+                                                        backgroundImage: AssetImage("assets/images/User_icon.jpg"),
+                                                      ),
+                                                      title: Row(
                                                         children: [
-                                                          const SizedBox(height: 10),
-                                                          ListTile(
-                                                            leading: const CircleAvatar(
-                                                              radius: 20,
-                                                              backgroundImage: AssetImage("assets/images/User_icon.jpg"),
-                                                            ),
-                                                            title: Row(
-                                                              children: [
-                                                                Expanded(   
-                                                                  child: (snapshot.data!.comments[index].replies[index2].incognito == false) ? 
-                                                                    Text(snapshot.data!.comments[index].replies[index2].author.name, 
-                                                                          overflow: TextOverflow.ellipsis,
-                                                                          maxLines: 1,
-                                                                    ) : const Text("Author",
-                                                                          overflow: TextOverflow.ellipsis,
-                                                                          maxLines: 1,
-                                                                    ),
-                                                                ),
-                                                                Text(datereplies, style: const TextStyle(fontSize: 12)),
-                                                              ],
-                                                            ),
-                                                            subtitle: Text(snapshot.data!.comments[index].replies[index2].content),
-                                                          ),
-                                                          Row(
-                                                            mainAxisAlignment: MainAxisAlignment.end,
-                                                            children: [
-                                                              IconButton(
-                                                                visualDensity: VisualDensity.compact,
-                                                                icon: _favRepliesTotal[index][index2] == false ? const Icon(Icons.thumb_up_alt_outlined) : const Icon(Icons.thumb_up),
-                                                                color: Colors.red,
-                                                                iconSize: 20,
-                                                                onPressed: () async {
-                                                                  if (_favRepliesTotal[index][index2] == false ) {
-                                                                      _favRepliesTotal[index][index2] = true;
-                                                                      var success = await replyFavorited(snapshot.data!.id, snapshot.data!.comments[index].id, snapshot.data!.comments[index].replies[index2].id);
-                                                                      if (success) {
-                                                                        Fluttertoast.showToast(msg: "Favorite Reply.");
-                                                                      }
-                                                                    } else {
-                                                                      _favRepliesTotal[index][index2] = false;
-                                                                      var success = await replyUnfavorited(snapshot.data!.id, snapshot.data!.comments[index].id, snapshot.data!.comments[index].replies[index2].id);
-                                                                      if (success) {
-                                                                        Fluttertoast.showToast(msg: "Unfavorite Reply.");
-                                                                      }
-                                                                    }   
-                                                                  setState(() { 
-                                                                                             
-                                                                  });
-                                                                },
+
+                                                          Expanded(   
+                                                            child: (snapshot.data!.comments[index].replies[index2].incognito == false) ? 
+                                                              Text(snapshot.data!.comments[index].replies[index2].author.name, 
+                                                                    overflow: TextOverflow.ellipsis,
+                                                                    maxLines: 1,
+                                                              ) : const Text("Author",
+                                                                    overflow: TextOverflow.ellipsis,
+                                                                    maxLines: 1,
                                                               ),
-                                                              Text(favReply, style: const TextStyle(color: Colors.red, fontWeight: FontWeight.bold)),
-                                                              TextButton(
-                                                                child: Row(
-                                                                  children: const [
-                                                                    Icon(Icons.edit, size: 20),
-                                                                    SizedBox(width: 5),
-                                                                    Text('Edit'),
-                                                                  ],
-                                                                ),
-                                                                onPressed: () {
-                                                                  setState(() {
-                                                                    Navigator.push(
-                                                                      context,
-                                                                      MaterialPageRoute(
-                                                                        builder: (context) => const EditReplyPage(),
-                                                                        settings: RouteSettings(
-                                                                          arguments: EditReplyArguments(
-                                                                            forumID: snapshot.data!.id, 
-                                                                            commentID: snapshot.data!.comments[index].id,
-                                                                            reply: snapshot.data!.comments[index].replies[index2]
-                                                                          ),
-                                                                        )
-                                                                      )
-                                                                    ).then(refreshPage);
-                                                                  });
-                                                                },
-                                                              ),
-                                                            ],
                                                           ),
+
+                                                          Text(datereplies, style: const TextStyle(fontSize: 12)),
                                                         ],
                                                       ),
+                                                      subtitle: Text(snapshot.data!.comments[index].replies[index2].content),
                                                     ),
-                                                  );
-                                                }
+                                                    Row(
+                                                      mainAxisAlignment: MainAxisAlignment.end,
+                                                      children: [
+
+                                                        IconButton(
+                                                          visualDensity: VisualDensity.compact,
+                                                          icon: _favRepliesTotal[index][index2] == false ? const Icon(Icons.thumb_up_alt_outlined) : const Icon(Icons.thumb_up),
+                                                          color: Colors.red,
+                                                          iconSize: 20,
+                                                          onPressed: () async {
+                                                            if (_favRepliesTotal[index][index2] == false ) {
+                                                                _favRepliesTotal[index][index2] = true;
+                                                                var success = await replyFavorited(snapshot.data!.id, snapshot.data!.comments[index].id, snapshot.data!.comments[index].replies[index2].id);
+                                                                if (success) {
+                                                                  Fluttertoast.showToast(msg: "Favorite Reply.");
+                                                                }
+                                                              } else {
+                                                                _favRepliesTotal[index][index2] = false;
+                                                                var success = await replyUnfavorited(snapshot.data!.id, snapshot.data!.comments[index].id, snapshot.data!.comments[index].replies[index2].id);
+                                                                if (success) {
+                                                                  Fluttertoast.showToast(msg: "Unfavorite Reply.");
+                                                                }
+                                                              }   
+                                                            setState(() { 
+                                                                                       
+                                                            });
+                                                          },
+                                                        ),
+
+                                                        Text(favReply, style: const TextStyle(color: Colors.red, fontWeight: FontWeight.bold)),
+                                                        
+                                                        TextButton(
+                                                          child: Row(
+                                                            children: const [
+                                                              Icon(Icons.edit, size: 20),
+                                                              SizedBox(width: 5),
+                                                              Text('Edit'),
+                                                            ],
+                                                          ),
+                                                          onPressed: () {
+                                                            setState(() {
+                                                              Navigator.push(
+                                                                context,
+                                                                MaterialPageRoute(
+                                                                  builder: (context) => const EditReplyPage(),
+                                                                  settings: RouteSettings(
+                                                                    arguments: EditReplyArguments(
+                                                                      forumID: snapshot.data!.id, 
+                                                                      commentID: snapshot.data!.comments[index].id,
+                                                                      reply: snapshot.data!.comments[index].replies[index2]
+                                                                    ),
+                                                                  )
+                                                                )
+                                                              ).then(refreshPage);
+                                                            });
+                                                          },
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ],
+                                                ),
                                               ),
-                                            ),
-                                          ],
+                                            );
+                                          }
                                         ),
-                                      );
-                                    }
-                                  ),
-                                ),
-                              ],
-                            ),
+                                      ),
+                                    ],
+                                  );
+                                }
+                              ),
+                            ],
                           ),
                         ),
-                      ],
-                    );
-                } else {
-                    return const CircularProgressIndicator();
-                }
+                      ),
+                    ],
+                  );
+              } else {
+                  return const CircularProgressIndicator();
               }
-            ),
+            }
           ),
         ),
         endDrawer: const NavigationDrawerWidget(),

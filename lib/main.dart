@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:xculturetestapi/pages/community/commudetail_page.dart';
 import 'package:xculturetestapi/pages/community/private/question_page.dart';
+import 'package:xculturetestapi/pages/sign_in/sign_in_screen.dart';
 // import 'package:xculturetestapi/pages/community/commu_page.dart';
 // import 'package:xculturetestapi/pages/community/commudetail_page.dart';
 // import 'package:xculturetestapi/pages/community/commuedit_page.dart';
@@ -20,6 +21,9 @@ import 'package:xculturetestapi/pages/community/private/question_page.dart';
 // import 'package:xculturetestapi/pages/event/event_page.dart';
 // import 'package:xculturetestapi/pages/report/report_page.dart';
 import 'package:xculturetestapi/pages/splash/splash_screen.dart';
+import 'package:xculturetestapi/widgets/guesthamburger_widget.dart';
+
+import 'widgets/hamburger_widget.dart';
 // import 'package:xculturetestapi/pages/event/eventdetail_page.dart';
 //import 'package:xculturetestapi/routes.dart';
 //import 'package:xculturetestapi/pages/Navbar.dart';
@@ -29,7 +33,7 @@ import 'package:xculturetestapi/pages/splash/splash_screen.dart';
 // import 'package:xculturetestapi/pages/forum_edit.dart';
 // import 'package:xculturetestapi/pages/comment_edit.dart';
 // import 'package:xculturetestapi/pages/forum_detail.dart';
-import 'package:xculturetestapi/firebase/firebase_options.dart';
+import 'package:xculturetestapi/firebase_options.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -55,6 +59,7 @@ class MyApp extends StatelessWidget {
       // home: MemberPage(),
       // home: const ForumPage(),
       home: SplashScreen(),
+      //home: GuestHamburger(),
       // home: ReportPage(),
       /*
       initialRoute: 'navbar', // Set first page
