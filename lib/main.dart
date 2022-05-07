@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:xculturetestapi/pages/community/commudetail_page.dart';
 import 'package:xculturetestapi/pages/community/private/question_page.dart';
-import 'package:xculturetestapi/pages/sign_in/sign_in_screen.dart';
 // import 'package:xculturetestapi/pages/community/commu_page.dart';
 // import 'package:xculturetestapi/pages/community/commudetail_page.dart';
 // import 'package:xculturetestapi/pages/community/commuedit_page.dart';
@@ -56,7 +55,6 @@ class MyApp extends StatelessWidget {
       // home: MemberPage(),
       // home: const ForumPage(),
       home: SplashScreen(),
-      // home: SignInScreen()
       // home: ReportPage(),
       /*
       initialRoute: 'navbar', // Set first page
