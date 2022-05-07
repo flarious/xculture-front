@@ -236,7 +236,7 @@ class _CommuPageState extends State<CommuPage> {
                                               child: Text(snapshot.data![index].name,
                                                 overflow: TextOverflow.ellipsis,
                                                 style: const TextStyle(
-                                                  fontSize: 20.0,
+                                                  fontSize: 25.0,
                                                   fontWeight: FontWeight.bold,
                                                 ),
                                               ),
@@ -253,7 +253,7 @@ class _CommuPageState extends State<CommuPage> {
                                               ),
                                             ),
 
-                                            const SizedBox(height: 10),
+                                            //const SizedBox(height: 10),
 
                                             Padding(
                                               padding: const EdgeInsets.symmetric(horizontal: 10),
@@ -357,7 +357,7 @@ class _CommuPageState extends State<CommuPage> {
                                               child: Text(snapshot.data![index].name,
                                                 overflow: TextOverflow.ellipsis,
                                                 style: const TextStyle(
-                                                  fontSize: 20.0,
+                                                  fontSize: 25.0,
                                                   fontWeight: FontWeight.bold,
                                                 ),
                                               ),
@@ -374,7 +374,7 @@ class _CommuPageState extends State<CommuPage> {
                                               ),
                                             ),
 
-                                            const SizedBox(height: 10),
+                                            //const SizedBox(height: 10),
 
                                             Padding(
                                               padding: const EdgeInsets.symmetric(horizontal: 10),

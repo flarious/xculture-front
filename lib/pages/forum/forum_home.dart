@@ -229,11 +229,11 @@ class _ForumPageState extends State<ForumPage> {
                                             ),
 
                                             Padding(
-                                              padding: const EdgeInsets.all(10.0),
+                                              padding: const EdgeInsets.fromLTRB(10, 10, 0, 10),
                                               child: Text(snapshot.data![index].title,
                                                 overflow: TextOverflow.ellipsis,
                                                 style: const TextStyle(
-                                                  fontSize: 20.0,
+                                                  fontSize: 25.0,
                                                   fontWeight: FontWeight.bold,
                                                 ),
                                               ),
@@ -351,11 +351,11 @@ class _ForumPageState extends State<ForumPage> {
                                             ),
 
                                             Padding(
-                                              padding: const EdgeInsets.all(10.0),
+                                              padding: const EdgeInsets.fromLTRB(10, 10, 0, 10),
                                               child: Text(snapshot.data![index].title,
                                                 overflow: TextOverflow.ellipsis,
                                                 style: const TextStyle(
-                                                  fontSize: 20.0,
+                                                  fontSize: 25.0,
                                                   fontWeight: FontWeight.bold,
                                                 ),
                                               ),

@@ -420,6 +420,7 @@ class _ForumDetailPageState extends State<ForumDetailPage> {
                               ListView.builder(
                                 itemCount: snapshot.data!.comments.length,
                                 shrinkWrap: true,
+                                physics: const ClampingScrollPhysics(),
                                 itemBuilder: (BuildContext context, int index) {
                                   var favComments = snapshot.data!.comments[index].favorited.toString();
                                   var replied = snapshot.data!.comments[index].replied.toString();
@@ -638,6 +639,7 @@ class _ForumDetailPageState extends State<ForumDetailPage> {
                                         child: ListView.builder(
                                           itemCount: snapshot.data!.comments[index].replies.length,
                                           shrinkWrap: true,
+                                          physics: const ClampingScrollPhysics(),
                                           itemBuilder: (BuildContext context, int index2) {
                                             var favReply = snapshot.data!.comments[index].replies[index2].favorited.toString();
                                             var dt = DateTime.parse(snapshot.data!.comments[index].replies[index2].updateDate).toLocal();

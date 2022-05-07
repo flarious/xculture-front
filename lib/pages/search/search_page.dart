@@ -171,7 +171,7 @@ class _SearchPageState extends State<SearchPage> {
                 ),
                 child: Column(
                   children: [
-
+                    //Forum
                     Padding(
                       padding: const EdgeInsets.all(10.0),
                       child: Row(
@@ -233,11 +233,11 @@ class _SearchPageState extends State<SearchPage> {
                                             ),
 
                                             Padding(
-                                              padding: const EdgeInsets.all(10.0),
+                                             padding: const EdgeInsets.fromLTRB(10, 10, 0, 10),
                                               child: Text(snapshot.data![index].title,
                                                 overflow: TextOverflow.ellipsis,
                                                 style: const TextStyle(
-                                                  fontSize: 20.0,
+                                                  fontSize: 25.0,
                                                   fontWeight: FontWeight.bold,
                                                 ),
                                               ),
@@ -294,6 +294,7 @@ class _SearchPageState extends State<SearchPage> {
                       ),
                     ),
 
+                    //Event
                     Padding(
                       padding: const EdgeInsets.all(10.0),
                       child: Row(
@@ -361,7 +362,7 @@ class _SearchPageState extends State<SearchPage> {
                                               child: Text(snapshot.data![index].name,
                                                 overflow: TextOverflow.ellipsis,
                                                 style: const TextStyle(
-                                                  fontSize: 20.0,
+                                                  fontSize: 25.0,
                                                   fontWeight: FontWeight.bold,
                                                 ),
                                               ),
@@ -378,7 +379,7 @@ class _SearchPageState extends State<SearchPage> {
                                               ),
                                             ),
 
-                                            const SizedBox(height: 10),
+                                            //const SizedBox(height: 10),
                                             
                                             Padding(
                                               padding: const EdgeInsets.symmetric(horizontal: 10),
@@ -417,6 +418,7 @@ class _SearchPageState extends State<SearchPage> {
                       ),
                     ),
 
+                    //Community
                     Padding(
                       padding: const EdgeInsets.all(10.0),
                       child: Row(
@@ -482,7 +484,7 @@ class _SearchPageState extends State<SearchPage> {
                                               child: Text(snapshot.data![index].name,
                                                 overflow: TextOverflow.ellipsis,
                                                 style: const TextStyle(
-                                                  fontSize: 20.0,
+                                                  fontSize: 25.0,
                                                   fontWeight: FontWeight.bold,
                                                 ),
                                               ),
@@ -499,7 +501,7 @@ class _SearchPageState extends State<SearchPage> {
                                               ),
                                             ),
 
-                                            const SizedBox(height: 10),
+                                            //const SizedBox(height: 10),
 
                                             Padding(
                                               padding: const EdgeInsets.symmetric(horizontal: 10),

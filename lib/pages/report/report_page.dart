@@ -30,7 +30,7 @@ class _ReportPageState extends State<ReportPage> {
 
     return SafeArea(
       child: Scaffold(
-        backgroundColor: Colors.deepOrange,
+        backgroundColor: Colors.white,
         body: WillPopScope(
           onWillPop: () async {
             Navigator.pop(context, itemId);

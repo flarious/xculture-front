@@ -49,7 +49,7 @@ class _MemberPageState extends State<MemberPage> with TickerProviderStateMixin{
                       Container(
                         margin: const EdgeInsets.only(right: 0, left: 0),
                         height: 190,
-                        color: Color.fromRGBO(220, 71, 47, 1),
+                        color: Colors.red,
                         child: const Center(
                           child: Text("Members", 
                             style: TextStyle(fontSize: 35, fontWeight: FontWeight.bold, color: Colors.white),

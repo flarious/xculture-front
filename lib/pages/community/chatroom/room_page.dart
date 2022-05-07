@@ -44,7 +44,7 @@ class _RoomPageState extends State<RoomPage> {
                     Container(
                       margin: const EdgeInsets.only(right: 0, left: 0),
                       height: 180,
-                      color: Color.fromRGBO(220, 71, 47, 1),
+                      color: Colors.red,
                       child: Center(
                         child: Text("Rooms", 
                           style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold, color: Colors.white),
@@ -133,7 +133,7 @@ class _RoomPageState extends State<RoomPage> {
                                             Fluttertoast.showToast(msg: "Action not allowed");
                                           }
                                         }, 
-                                        child: Text("Yes", style: TextStyle(color: Colors.deepOrange)),
+                                        child: Text("Yes", style: TextStyle(color: Colors.red)),
                                       ),
                                     ],
                                     elevation: 24.0,
@@ -169,58 +169,51 @@ class _RoomPageState extends State<RoomPage> {
                             children: [
                               ListView.builder(
                                 shrinkWrap: true,
+                                physics: const ClampingScrollPhysics(),
                                 itemCount: snapshot.data!.length,
                                 itemBuilder: (context, index) {
                                   return Column(
                                     children: [
-                                      InkWell(
-                                        child: ClipRRect(
-                                          borderRadius: BorderRadius.circular(20),
-                                          child: BackdropFilter(
-                                            filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-                                            child: Container(
-                                              height: 70,
-                                              width: double.maxFinite,
-                                              decoration: BoxDecoration(
-                                                gradient: LinearGradient(colors: [
-                                                  Colors.lightBlue.withOpacity(0.2),
-                                                  Colors.lightBlue.withOpacity(0.05),
-                                                ], begin: Alignment.topLeft, end: Alignment.bottomRight),
-                                                borderRadius: BorderRadius.circular(20)
-                                              ),
-                                              child: Row(
-                                                children: [
-                                                  const SizedBox(width: 30),
-                                                  Text("# ${snapshot.data![index].name}",
-                                                    overflow: TextOverflow.ellipsis,
-                                                    style: TextStyle(fontSize: 20.0),
+                                      Card(
+                                        clipBehavior: Clip.antiAlias,
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(20)
+                                        ),
+                                        child: InkWell(
+                                          child: SizedBox(
+                                            height: 70,
+                                            child: Row(
+                                              children: [
+                                                const SizedBox(width: 30),
+                                                Text("# ${snapshot.data![index].name}",
+                                                  overflow: TextOverflow.ellipsis,
+                                                  style: TextStyle(fontSize: 20.0),
+                                                ),
+                                                const Spacer(),
+                                                const Padding(
+                                                  padding: EdgeInsets.symmetric(horizontal: 20),
+                                                  child: Icon(
+                                                    Icons.arrow_forward_ios,
                                                   ),
-                                                  Spacer(),
-                                                  Padding(
-                                                    padding: EdgeInsets.symmetric(horizontal: 20),
-                                                    child: Icon(
-                                                      Icons.arrow_forward_ios,
-                                                    ),
-                                                  ),
-                                                ]
-                                              ),
+                                                ),
+                                              ]
                                             ),
                                           ),
-                                        ),
-                                        onTap: () async {
-                                          await Navigator.push(
-                                            context, 
-                                            MaterialPageRoute(
-                                              builder: (context) => const ChatRoomPage(),
-                                              settings: RouteSettings(
-                                                arguments: ChatRoomArguments(commu: commu, room: snapshot.data![index])
+                                          onTap: () async {
+                                            await Navigator.push(
+                                              context, 
+                                              MaterialPageRoute(
+                                                builder: (context) => const ChatRoomPage(),
+                                                settings: RouteSettings(
+                                                  arguments: ChatRoomArguments(commu: commu, room: snapshot.data![index])
+                                                )
                                               )
-                                            )
-                                          );
-                                          setState(() {
-                                            
-                                          });
-                                        },
+                                            );
+                                            setState(() {
+                                              
+                                            });
+                                          },
+                                        ),
                                       ),
                       
                                       const SizedBox(height: 20),
@@ -278,7 +271,7 @@ class _RoomPageState extends State<RoomPage> {
                                                 if (success) {
                                                   Fluttertoast.showToast(msg: "Your community have been created.");
                                                   setState(() {
-                                                    
+                                                    isPost = !isPost;
                                                   });
                                                 }
                                               }
@@ -310,7 +303,7 @@ class _RoomPageState extends State<RoomPage> {
                                       height: 50,
                                       alignment: Alignment.center,
                                       decoration: BoxDecoration(
-                                        color: Color.fromRGBO(220, 71, 47, 1),
+                                        color: Colors.red,
                                         borderRadius: BorderRadius.circular(20)
                                       ),
                                       child: Icon(
