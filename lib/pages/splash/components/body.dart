@@ -64,6 +64,7 @@ class _BodyState extends State<Body> {
                     DefaultButton(
                       text: "Continue",
                       press: () async {
+                        AuthHelper.signOut();
                         if (AuthHelper.checkAuth()) {
                           Navigator.push(
                             context,
