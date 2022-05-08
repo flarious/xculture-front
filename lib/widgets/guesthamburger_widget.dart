@@ -35,7 +35,7 @@ class _GuestHamburgerState extends State<GuestHamburger> {
                 child: Row(
                   children: const [
                     SizedBox(width: 25),
-                    CircleAvatar(radius: 30),
+                    CircleAvatar(radius: 30, backgroundImage: const AssetImage("assets/images/User_icon.jpg"),),
                     SizedBox(width: 25),
                     Text(
                       "Guest",
