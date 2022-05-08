@@ -32,7 +32,12 @@ class Body extends StatelessWidget {
                 SignForm(),
                 SizedBox(height: SizeConfig.screenHeight * 0.08),
                 SizedBox(height: getProportionateScreenHeight(20)),
-                NoAccountText(),
+                NoAccountText(text: "Don't have an account?"),
+                Text(
+                  "or",
+                  textAlign: TextAlign.center, 
+                ),
+                NoAccountText(text: "Sign in as guest", isGuest: true),
               ],
             ),
           ),

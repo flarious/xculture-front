@@ -28,11 +28,12 @@ class _CommuAllPageState extends State<CommuAllPage> {
   String searchString;
   _CommuAllPageState(this.searchString);
 
+  bool isAscending = false;
+  bool isDescending = false;
+
   List sortList = [
-    "Newest",
-    "Oldest",
-    "Most Viewed",
-    "Most Favorited"
+    "Ascending",
+    "Descending"
   ];
 
   // String searchString = "";
@@ -44,14 +45,7 @@ class _CommuAllPageState extends State<CommuAllPage> {
         ModalRoute.of(context)!.settings.arguments as Future<List<Community>>;
 
     return Scaffold(
-      appBar: AppBar(
-        centerTitle: true,
-        title: const Text(
-          "Community",
-          style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: 25),
-        ),
-        actions: <Widget>[Container()],
-      ),
+      backgroundColor: Colors.white,
       body: showAllCommu(commuList),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
@@ -77,12 +71,56 @@ class _CommuAllPageState extends State<CommuAllPage> {
   Widget showAllCommu(Future<List<Community>> dataList) {
     return Column(
       children: <Widget>[
+
+        Container(
+          alignment: Alignment.centerLeft,
+          padding: const EdgeInsets.fromLTRB(20, 20, 0, 0),
+          child: const Text("Community", 
+            style: TextStyle(
+              fontSize: 40, 
+              fontWeight: FontWeight.bold,
+              color: Colors.red,
+            ),
+          ),
+        ),
+        /*
         const SizedBox(height: 20),
         Container(
           alignment: Alignment.centerLeft,
-          padding: const EdgeInsets.only(left: 20),
-          child: const Text("Trending Community", style: TextStyle(fontSize: 20)),
+          padding: const EdgeInsets.symmetric(horizontal: 10),
+          child: Row(
+            children: [
+              Expanded(
+                child: TextFormField(
+                  onChanged: (value) {
+                      setState((){
+                        searchString = value; 
+                      });
+                  },
+                  controller: searchController,
+                  decoration: InputDecoration(
+                    hintText: "Search Here...",
+                    enabledBorder: OutlineInputBorder(
+                      borderSide: const BorderSide(
+                        color: Colors.redAccent,
+                      ),
+                      borderRadius: BorderRadius.circular(50),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: const BorderSide(
+                        color: Colors.redAccent,
+                      ),
+                      borderRadius: BorderRadius.circular(50),
+                      
+                    ),
+                    prefixIcon: const Icon(Icons.search, color: Colors.red),
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
+        */
         Container(
           alignment: Alignment.centerLeft,
           padding: const EdgeInsets.symmetric(horizontal: 10),
@@ -96,21 +134,12 @@ class _CommuAllPageState extends State<CommuAllPage> {
                       });
                   },
                   // controller: searchController,
-                  decoration: InputDecoration(
+                  //style: const TextStyle(color: Colors.white),
+                  decoration: const InputDecoration(
                     hintText: "Search Here...",
-                    enabledBorder: OutlineInputBorder(
-                      borderSide: const BorderSide(
-                        color: Colors.transparent,
-                      ),
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderSide: const BorderSide(
-                        color: Colors.transparent,
-                      ),
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    prefixIcon: const Icon(Icons.search, color: Colors.red),
+                    hintStyle: TextStyle(fontSize: 20.0),
+                    border: InputBorder.none,
+                    prefixIcon: Icon(Icons.search, color: Colors.red),
                   ),
                 ),
               ),
@@ -134,7 +163,15 @@ class _CommuAllPageState extends State<CommuAllPage> {
                     value: values,
                     onChanged: (value) {
                       setState(() {
-                        values = value as String?;
+                        this.values = value as String?;
+                        if(value == "Ascending") {
+                          isAscending = true;
+                          isDescending = false;
+                        }
+                        else if(value == "Descending") {
+                          isAscending = false;
+                          isDescending = true;
+                        }
                       });
                     }
                   ),
@@ -148,86 +185,111 @@ class _CommuAllPageState extends State<CommuAllPage> {
           child: FutureBuilder<List<Community>>(
             builder: (BuildContext context, AsyncSnapshot<List<Community>> snapshot) {
               if (snapshot.hasData) {
+                isAscending ? snapshot.data!.sort((b, a) => (b.desc).compareTo((a.desc))) : "";
+                isDescending ? snapshot.data!.sort((b, a) => (a.desc).compareTo((b.desc))) : "";
                 return ListView.builder(
                   itemCount: snapshot.data?.length,
                   itemBuilder: (context, index) {
                     var contained = isContain(snapshot.data![index], searchString);
-                    return contained ? InkWell(
-                      // padding: const EdgeInsets.all(20.0),
-                      child: 
-                        Container(
-                          margin: const EdgeInsets.all(10),
-                          height: 90,
-                          child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              AspectRatio(
-                                aspectRatio: 1.0,
-                                child: Container(
+                    return contained ? Padding(
+                      padding: const EdgeInsets.all(10.0),
+                      child: Card(
+                        clipBehavior: Clip.antiAlias,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20)
+                        ),
+                        child: InkWell(
+                          // padding: const EdgeInsets.all(20.0),
+                          child: SizedBox(
+                            height: 100,
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                          
+                                AspectRatio(
+                                  aspectRatio: 0.9,
+                                  child: Container(
                                     decoration: BoxDecoration(
                                       borderRadius: const BorderRadius.only(
-                                        topLeft: Radius.circular(10),
-                                        topRight: Radius.circular(10),
-                                        bottomLeft: Radius.circular(10),
-                                        bottomRight: Radius.circular(10),
+                                        topLeft: Radius.circular(20),
+                                        bottomLeft: Radius.circular(20),
                                       ),
                                       image: DecorationImage(
-                                        fit: BoxFit.fill,
-                                        image: NetworkImage(snapshot.data![index].thumbnail) // Commu Image
+                                        fit: BoxFit.cover,
+                                        image: NetworkImage(snapshot.data![index].thumbnail) // Forum Image
                                       ),
                                     ),
-                                ),
-                              ),
-                              Expanded(
-                                child: Padding(
-                                  padding: const EdgeInsets.fromLTRB(20.0, 0.0, 2.0, 0.0),
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: [
-                                          // const SizedBox(height: 20),
-                                          Text(snapshot.data![index].name,
-                                            overflow: TextOverflow.ellipsis,
-                                            style: const TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                            ),
-                                          ),
-                                          const Padding(padding: EdgeInsets.only(bottom: 2.0)),
-                                          Text(
-                                            snapshot.data![index].shortdesc,
-                                            overflow: TextOverflow.ellipsis,
-                                            style: const TextStyle(
-                                              fontSize: 12.0,
-                                              color: Colors.black,
-                                            ),
-                                          ),
-                                          const SizedBox(height: 5),
-                                          Text(
-                                            "Members : ${snapshot.data![index].memberAmount.toString()}",
-                                            style: const TextStyle(fontSize: 15), // Community Subtitle
-                                          ),
-                                        ],
-                                      ),
-                                    ],
                                   ),
                                 ),
-                              ),
-                            ],
+                          
+                                Expanded(
+                                  child: Padding(
+                                    padding: const EdgeInsets.fromLTRB(20.0, 0.0, 2.0, 0.0),
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                      children: [
+                                                
+                                        Text(snapshot.data![index].desc,
+                                          maxLines: 2,
+                                          overflow: TextOverflow.ellipsis,
+                                          style: const TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                                
+                                        Text(snapshot.data![index].shortdesc,
+                                          maxLines: 2,
+                                          overflow: TextOverflow.ellipsis,
+                                          style: const TextStyle(
+                                            fontSize: 12.0,
+                                            color: Colors.black,
+                                          ),
+                                        ),
+                          
+                                        Text("Members : ${snapshot.data![index].memberAmount.toString()}",
+                                          maxLines: 2,
+                                          overflow: TextOverflow.ellipsis,
+                                          style: const TextStyle(
+                                            fontSize: 12.0,
+                                            color: Colors.black,
+                                          ),
+                                        ),
+                                                
+                                        // Text(snapshot.data![index].author.name,
+                                        //   style: const TextStyle(
+                                        //     fontSize: 12.0,
+                                        //     //color: Colors.black,
+                                        //   ),
+                                        // ),
+                                                
+                                        // Text(formattedDate,
+                                        //   style: const TextStyle(
+                                        //     fontSize: 12.0,
+                                        //     //color: Colors.grey,
+                                        //   ),
+                                        // ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
+                    
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const CommuDetailPage(),
+                                settings: RouteSettings(
+                                  arguments: snapshot.data![index],
+                                ),
+                              )
+                            );
+                          },
                         ),
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => const CommuDetailPage(),
-                              settings: RouteSettings(
-                                arguments: snapshot.data![index],
-                              ),
-                            )
-                          );
-                        },
+                      ),
                     ) : Container();
                   },
                 );
@@ -237,7 +299,7 @@ class _CommuAllPageState extends State<CommuAllPage> {
               }
             }, future: dataList
           ),
-        )      
+        ),   
       ],
     );
   }

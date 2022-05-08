@@ -245,44 +245,58 @@ class _NavigationDrawerWidgetState extends State<NavigationDrawerWidget> with Ti
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                const Divider(height: 15, thickness: 4),
-                                // const SizedBox(height: 0),
+                                  const Divider(height: 15, thickness: 2),
+
+                                  const SizedBox(height: 24),
+
                                   buildMenuItem(
                                     text: 'Profile',
                                     icon: Icons.person,
                                     onClicked: () => selectedItem(context, 0),
                                   ),
+
                                   const SizedBox(height: 10),
+
                                   buildMenuItem(
                                     text: 'Your Community',
                                     icon: Icons.comment,
                                     onClicked: () => selectedItem(context, 1),
                                   ),
+
                                   const SizedBox(height: 10),
+
                                   buildMenuItem(
                                     text: 'Your Forum',
-                                    icon: Icons.book_outlined,
+                                    icon: Icons.book,
                                     //icon: Icons.article_outlined,
                                     onClicked: () => selectedItem(context, 2),
                                   ),
+
                                   const SizedBox(height: 10),
+
                                   buildMenuItem(
                                     text: 'Your Event',
-                                    icon: Icons.location_on_outlined,
+                                    icon: Icons.location_on,
                                     onClicked: () => selectedItem(context, 3),
                                   ),
+
                                   const SizedBox(height: 24),
-                                  Divider(height: 15,thickness: 4,),
+
+                                  const Divider(height: 15,thickness: 2),
+
                                   const SizedBox(height: 24),
+
                                   buildMenuItem(
                                     text: 'Setting',
                                     icon: Icons.settings,
                                     onClicked: () => selectedItem(context, 4),
                                   ),
-                                  const SizedBox(height: 16),
+
+                                  const SizedBox(height: 10),
+
                                   buildMenuItem(
                                     text: 'Sign out',
-                                    icon: Icons.logout_sharp,
+                                    icon: Icons.logout,
                                     onClicked: () => selectedItem(context, 5),
                                   ),
                                 ],
