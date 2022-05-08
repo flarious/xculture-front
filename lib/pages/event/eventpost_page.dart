@@ -424,15 +424,22 @@ class _EventPostPageState extends State<EventPostPage>{
                                         onPressed: () async {
                                           if(_formKey.currentState!.validate()) {
                                             final path = image?.path;
-                                            final fileName = DateTime.now().toString() + '_' + _name.text + '.jpg';
-                                            firebase_storage.uploadEvent(path!, fileName).then((value) async {
-                                              var success = await sendEventDetail(_name.text, _desc.text, value, _location.text, _dateTime.toString());
-                                              if(success) {
-                                                Fluttertoast.showToast(msg: "Your event has been created.");
-                                                Navigator.pop(context);
-                                                Navigator.pop(context);
-                                              }
-                                            });
+                                            if (path != null) {
+                                              final fileName = DateTime.now().toString() + '_' + _name.text + '.jpg';
+                                              firebase_storage.uploadEvent(path, fileName).then((value) async {
+                                                var success = await sendEventDetail(_name.text, _desc.text, value, _location.text, _dateTime.toString());
+                                                if(success) {
+                                                  Fluttertoast.showToast(msg: "Your event has been created.");
+                                                  Navigator.pop(context);
+                                                  Navigator.pop(context);
+                                                }
+                                              });
+                                            }
+                                            else {
+                                              Fluttertoast.showToast(msg: "Please upload an image");
+                                              Navigator.pop(context);
+                                            }
+                                            
                                             // var success = await sendEventDetail(_name.text, _desc.text, _thumbnail.text, _location.text, _dateTime.toString());
                                             // if (success) {
                                             //   Fluttertoast.showToast(msg: "Your event has been created.");

@@ -109,7 +109,7 @@ class _MemberPageState extends State<MemberPage> with TickerProviderStateMixin{
                                           return snapshot.data!.members[index].type == "member" ? ListTile(
                                             leading: CircleAvatar(
                                               radius: 20,
-                                              backgroundImage: NetworkImage(snapshot.data!.members[index].member.profilePic),
+                                              backgroundImage: snapshot.data!.members[index].member.profilePic == "" ? const AssetImage("assets/images/User_icon.jpg") : NetworkImage(snapshot.data!.members[index].member.profilePic) as ImageProvider,
                                             ),
                                             title: Text(snapshot.data!.members[index].member.name),
                                             //subtitle: Text("Score : 99"),
@@ -158,7 +158,7 @@ class _MemberPageState extends State<MemberPage> with TickerProviderStateMixin{
                                           return snapshot.data!.members[index].type == "pending" ? ListTile(
                                             leading: CircleAvatar(
                                               radius: 20,
-                                              backgroundImage: NetworkImage(snapshot.data!.members[index].member.profilePic),
+                                              backgroundImage: snapshot.data!.members[index].member.profilePic == "" ? const AssetImage("assets/images/User_icon.jpg") : NetworkImage(snapshot.data!.members[index].member.profilePic) as ImageProvider,
                                             ),
                                             title: Text(snapshot.data!.members[index].member.name),
                                             //subtitle: Text("Score : 99"),

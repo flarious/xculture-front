@@ -439,9 +439,9 @@ class _ForumDetailPageState extends State<ForumDetailPage> {
                                           children: [
 
                                             ListTile(
-                                              leading: const CircleAvatar(
+                                              leading: CircleAvatar(
                                                 radius: 20,
-                                                backgroundImage: AssetImage("assets/images/User_icon.jpg"),
+                                                backgroundImage: snapshot.data!.comments[index].author.profilePic == "" ? const AssetImage("assets/images/User_icon.jpg") : NetworkImage(snapshot.data!.author.profilePic) as ImageProvider,
                                               ),
                                               title: Row(
                                                 children: [
@@ -657,9 +657,9 @@ class _ForumDetailPageState extends State<ForumDetailPage> {
                                                   children: [
                                                     
                                                     ListTile(
-                                                      leading: const CircleAvatar(
+                                                      leading: CircleAvatar(
                                                         radius: 20,
-                                                        backgroundImage: AssetImage("assets/images/User_icon.jpg"),
+                                                        backgroundImage: snapshot.data!.comments[index].replies[index2].author.profilePic == "" ? const AssetImage("assets/images/User_icon.jpg") : NetworkImage(snapshot.data!.author.profilePic) as ImageProvider,
                                                       ),
                                                       title: Row(
                                                         children: [
