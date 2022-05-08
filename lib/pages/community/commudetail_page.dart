@@ -337,7 +337,36 @@ class _CommuDetailPageState extends State<CommuDetailPage> {
                               visible: isPrivate && userType == "pending",
                               child: ElevatedButton(
                                 onPressed: () async {
+                                  showDialog(
+                                      context: context,
+                                      builder: (context) => AlertDialog(
+                                        title: const Text("Cancel Join Request"),
+                                        content: const Text("Do you really want to cancel your request? You will have to answer the question again before joining this community."),
+                                        actions: [
+                                          TextButton(
+                                            onPressed: (){
+                                              //No
+                                              Navigator.pop(context);
+                                            }, 
+                                            child: const Text("No", style: TextStyle(color: Colors.grey)),
+                                          ),
+                                          TextButton(
+                                            onPressed: () async {
+                                              var success = await cancelJoinRequest(snapshot.data!.id);
+                                              if (success) {
+                                                Fluttertoast.showToast(msg: "Request Cancelled");
+                                                Navigator.pop(context);
+                                              }
+                                              setState(() {
 
+                                              });
+                                            }, 
+                                            child: const Text("Yes", style: TextStyle(color: Colors.red)),
+                                          ),
+                                        ],
+                                        elevation: 24.0,
+                                      ),
+                                    );
                                 }, 
                                 child: const SizedBox(
                                   width: double.infinity,
@@ -442,6 +471,24 @@ class _CommuDetailPageState extends State<CommuDetailPage> {
     );
 
     if (response.statusCode == 200) {
+      return true;
+    }
+    else {
+      Fluttertoast.showToast(msg: ServerResponse.fromJson(jsonDecode(response.body)).message);
+      return false;
+    }
+  }
+
+  Future<bool> cancelJoinRequest(commuID) async {
+    final userToken = await AuthHelper.getToken();
+    final response = await http.delete(
+      Uri.parse('http://10.0.2.2:3000/communities/$commuID/cancel'),
+      headers: <String, String> {
+        'Authorization' : 'bearer $userToken'
+      }
+    );
+
+     if (response.statusCode == 200) {
       return true;
     }
     else {
