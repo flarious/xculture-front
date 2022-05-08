@@ -185,7 +185,6 @@ class _NewForumPageState extends State<NewForumPage> {
           ),
         ],
       );
-
   }
 
   @override

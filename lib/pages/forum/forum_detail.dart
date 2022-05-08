@@ -147,6 +147,9 @@ class _ForumDetailPageState extends State<ForumDetailPage> {
                                 child: const Text("Edit"),
                                 onTap: () async {
                                   if (AuthHelper.checkAuth() && snapshot.data!.author.id == AuthHelper.auth.currentUser!.uid) {
+                                    await Future.delayed(
+                                      const Duration(milliseconds: 1)
+                                    );
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(

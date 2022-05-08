@@ -45,7 +45,7 @@ class _EventPostPageState extends State<EventPostPage>{
 
   DateTime? _dateTime;
 
-  //image
+  // image
   File? image;
   final Storage firebase_storage = Storage();
 
