@@ -9,6 +9,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:find_dropdown/find_dropdown.dart';
 import 'package:xculturetestapi/helper/auth.dart';
 import 'package:xculturetestapi/navbar.dart';
+import 'package:xculturetestapi/widgets/guesthamburger_widget.dart';
 
 import '../../widgets/hamburger_widget.dart';
 
@@ -461,7 +462,7 @@ class _EventPostPageState extends State<EventPostPage>{
             ),
           ),
         ),
-        endDrawer: const NavigationDrawerWidget(),
+        endDrawer: AuthHelper.checkAuth() ? const NavigationDrawerWidget() : const GuestHamburger(),
         bottomNavigationBar: const Navbar(currentIndex: 0),
       ),
     );

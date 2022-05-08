@@ -9,6 +9,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 // import 'package:xculturetestapi/model/user.dart';
 import 'package:xculturetestapi/helper/auth.dart';
 import 'package:xculturetestapi/utils/user_info.dart';
+import 'package:xculturetestapi/widgets/guesthamburger_widget.dart';
 import 'package:xculturetestapi/widgets/number_widget.dart';
 import 'package:xculturetestapi/widgets/cardList_widget.dart';
 import 'package:xculturetestapi/widgets/hamburger_widget.dart';
@@ -689,7 +690,7 @@ class _ProfilePageState extends State<ProfilePage> with TickerProviderStateMixin
             }
           ),
         ),
-        endDrawer: const NavigationDrawerWidget(),
+        endDrawer: AuthHelper.checkAuth() ? const NavigationDrawerWidget() : const GuestHamburger(),
         bottomNavigationBar: const Navbar(currentIndex: 4),
       ),
     );

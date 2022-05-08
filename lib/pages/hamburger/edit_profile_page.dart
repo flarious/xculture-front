@@ -11,6 +11,7 @@ import 'package:xculturetestapi/helper/auth.dart';
 import 'package:xculturetestapi/model/user.dart';
 import 'package:xculturetestapi/navbar.dart';
 import 'package:xculturetestapi/utils/user_info.dart';
+import 'package:xculturetestapi/widgets/guesthamburger_widget.dart';
 import 'package:xculturetestapi/widgets/hamburger_widget.dart';
 import 'package:xculturetestapi/widgets/profile_widget.dart';
 import 'package:xculturetestapi/widgets/textfield_widget.dart';
@@ -454,7 +455,7 @@ class _EditProfilePageState extends State<EditProfilePage>{
             ),
           ),
         ),
-        endDrawer: const NavigationDrawerWidget(),
+        endDrawer: AuthHelper.checkAuth() ? const NavigationDrawerWidget() : const GuestHamburger(),
         bottomNavigationBar: const Navbar(currentIndex: 4),
       ),
     );

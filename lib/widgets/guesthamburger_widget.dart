@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:xculturetestapi/pages/sign_in/sign_in_screen.dart';
+import 'package:xculturetestapi/pages/sign_up/sign_up_screen.dart';
 
 class GuestHamburger extends StatefulWidget {
   const GuestHamburger({ Key? key }) : super(key: key);
@@ -55,7 +57,14 @@ class _GuestHamburgerState extends State<GuestHamburger> {
                     buildMenuItem(
                       text: 'Sign in',
                       icon: Icons.login,
-                      onClicked: () => "",
+                      onClicked: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => SignInScreen(),
+                          )
+                        );
+                      },
                     ),
 
                     const SizedBox(height: 10),
@@ -63,7 +72,14 @@ class _GuestHamburgerState extends State<GuestHamburger> {
                     buildMenuItem(
                       text: 'Sign up',
                       icon: Icons.app_registration,
-                      onClicked: () => "",
+                      onClicked: () {
+                         Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => SignUpScreen(),
+                          )
+                        );
+                      },
                     ),
                   ],
                 ),

@@ -9,6 +9,7 @@ import 'package:xculturetestapi/helper/auth.dart';
 import 'package:xculturetestapi/pages/community/chatroom/room_page.dart';
 import 'package:xculturetestapi/pages/community/commuedit_page.dart';
 import 'package:xculturetestapi/pages/community/private/question_page.dart';
+import 'package:xculturetestapi/widgets/guesthamburger_widget.dart';
 
 import '../../navbar.dart';
 import '../../widgets/hamburger_widget.dart';
@@ -436,7 +437,7 @@ class _CommuDetailPageState extends State<CommuDetailPage> {
             },
           ),
         ),
-        endDrawer: const NavigationDrawerWidget(),
+        endDrawer: AuthHelper.checkAuth() ? const NavigationDrawerWidget() : const GuestHamburger(),
         bottomNavigationBar: const Navbar(currentIndex: 3), 
       ),
     );

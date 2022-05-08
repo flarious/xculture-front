@@ -7,6 +7,7 @@ import 'package:xculturetestapi/navbar.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:xculturetestapi/helper/auth.dart';
 import 'package:xculturetestapi/pages/forum/forum_detail.dart';
+import 'package:xculturetestapi/widgets/guesthamburger_widget.dart';
 import 'package:xculturetestapi/widgets/hamburger_widget.dart';
 
 
@@ -423,7 +424,7 @@ class _YourForumPageState extends State<YourForumPage> with TickerProviderStateM
             }
           ),
         ),
-        endDrawer: const NavigationDrawerWidget(),
+        endDrawer: AuthHelper.checkAuth() ? const NavigationDrawerWidget() : const GuestHamburger(),
         bottomNavigationBar: const Navbar(currentIndex: 4),
       ),
     );

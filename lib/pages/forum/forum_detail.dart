@@ -12,6 +12,7 @@ import 'package:xculturetestapi/pages/forum/forum_edit.dart';
 import 'package:xculturetestapi/pages/reply/reply_edit.dart';
 import 'package:xculturetestapi/pages/comments/comment_edit.dart';
 import 'package:xculturetestapi/navbar.dart';
+import 'package:xculturetestapi/widgets/guesthamburger_widget.dart';
 
 import '../../widgets/hamburger_widget.dart';
 import '../report/report_page.dart';
@@ -761,7 +762,7 @@ class _ForumDetailPageState extends State<ForumDetailPage> {
             }
           ),
         ),
-        endDrawer: const NavigationDrawerWidget(),
+        endDrawer: AuthHelper.checkAuth() ? const NavigationDrawerWidget() : const GuestHamburger(),
         bottomNavigationBar: const Navbar(currentIndex: 2),
       ),
     );

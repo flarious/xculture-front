@@ -1,4 +1,5 @@
 import 'package:intl/intl.dart';
+import 'package:xculturetestapi/widgets/guesthamburger_widget.dart';
 import '../../helper/auth.dart';
 import 'package:flutter/material.dart';
 import 'package:xculturetestapi/data.dart';
@@ -63,7 +64,7 @@ class _CommuAllPageState extends State<CommuAllPage> {
         },
         child: const Icon(Icons.post_add)
       ),
-      endDrawer: const NavigationDrawerWidget(),
+      endDrawer: AuthHelper.checkAuth() ? const NavigationDrawerWidget() : const GuestHamburger(),
       bottomNavigationBar: const Navbar(currentIndex: 3),
     );
   }

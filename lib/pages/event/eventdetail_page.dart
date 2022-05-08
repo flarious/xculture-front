@@ -8,6 +8,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:xculturetestapi/helper/auth.dart';
 import 'package:xculturetestapi/pages/event/event_edit.dart';
 import 'package:xculturetestapi/pages/report/report_page.dart';
+import 'package:xculturetestapi/widgets/guesthamburger_widget.dart';
 
 import '../../navbar.dart';
 import '../../widgets/hamburger_widget.dart';
@@ -385,7 +386,7 @@ class _EventDetailPageState extends State<EventDetailPage> {
             }
           ),
         ),
-      endDrawer: const NavigationDrawerWidget(),
+      endDrawer: AuthHelper.checkAuth() ? const NavigationDrawerWidget() : const GuestHamburger(),
       bottomNavigationBar: const Navbar(currentIndex: 0),
       ),
     );

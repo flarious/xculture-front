@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:xculturetestapi/widgets/guesthamburger_widget.dart';
 import 'package:xculturetestapi/widgets/textform_widget.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
@@ -468,7 +469,7 @@ class _CommuPostPageState extends State<CommuPostPage> {
             ),
           ),
         ),
-        endDrawer: const NavigationDrawerWidget(),
+        endDrawer: AuthHelper.checkAuth() ? const NavigationDrawerWidget() : const GuestHamburger(),
         bottomNavigationBar: const Navbar(currentIndex: 3),
       ),
     );

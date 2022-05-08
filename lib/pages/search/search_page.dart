@@ -14,6 +14,7 @@ import 'package:xculturetestapi/pages/forum/forum_detail.dart';
 import 'package:xculturetestapi/pages/community/commu_all.dart';
 import 'package:xculturetestapi/pages/event/eventdetail_page.dart';
 import 'package:xculturetestapi/pages/community/commudetail_page.dart';
+import 'package:xculturetestapi/widgets/guesthamburger_widget.dart';
 
 import '../../widgets/hamburger_widget.dart';
 
@@ -60,7 +61,7 @@ class _SearchPageState extends State<SearchPage> {
       //   actions: <Widget>[Container()],
       // ),
       body: showTopFive(),
-      endDrawer: const NavigationDrawerWidget(),
+      endDrawer: AuthHelper.checkAuth() ? const NavigationDrawerWidget() : const GuestHamburger(),
       bottomNavigationBar: const Navbar(currentIndex: 1),
       // bottomNavigationBar: Navbar.navbar(context, 1),
     );

@@ -8,6 +8,7 @@ import 'package:xculturetestapi/navbar.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:xculturetestapi/helper/auth.dart';
 import 'package:xculturetestapi/pages/community/commudetail_page.dart';
+import 'package:xculturetestapi/widgets/guesthamburger_widget.dart';
 import 'package:xculturetestapi/widgets/hamburger_widget.dart';
 
 
@@ -428,7 +429,7 @@ class _YourCommuPageState extends State<YourCommuPage> with TickerProviderStateM
             }
           ),
         ),
-        endDrawer: const NavigationDrawerWidget(),
+        endDrawer: AuthHelper.checkAuth() ? const NavigationDrawerWidget() : const GuestHamburger(),
         bottomNavigationBar: const Navbar(currentIndex: 4),
       ),
     );

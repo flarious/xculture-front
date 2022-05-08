@@ -6,6 +6,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:find_dropdown/find_dropdown.dart';
 import 'package:xculturetestapi/helper/auth.dart';
 import 'package:xculturetestapi/navbar.dart';
+import 'package:xculturetestapi/widgets/guesthamburger_widget.dart';
 import 'package:xculturetestapi/widgets/textform_widget.dart';
 
 import '../../widgets/hamburger_widget.dart';
@@ -499,7 +500,7 @@ class _EditCommuPageState extends State<EditCommuPage>{
             ),
           ),
         ),
-      endDrawer: const NavigationDrawerWidget(),
+      endDrawer: AuthHelper.checkAuth() ? const NavigationDrawerWidget() : const GuestHamburger(),
       bottomNavigationBar: const Navbar(currentIndex: 3),
     );
   }
