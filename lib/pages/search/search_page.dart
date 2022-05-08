@@ -551,7 +551,20 @@ class _SearchPageState extends State<SearchPage> {
 
   // Function get Forum
   Future<List<Forum>> getForums() async {
-    final response = await http.get(Uri.parse('http://10.0.2.2:3000/forums'));
+    final userToken = await AuthHelper.getToken();
+
+    http.Response response;
+    if (userToken == "") {
+      response = await http.get(Uri.parse('http://10.0.2.2:3000/forums'));
+    }
+    else {
+      response = await http.get(Uri.parse('http://10.0.2.2:3000/forums/recommendation'),
+        headers: <String, String> {
+          'Authorization' : 'bearer $userToken'
+        }
+      );
+    }
+    
     final List<Forum> forumList = [];
 
     if(response.statusCode == 200) {
@@ -568,7 +581,20 @@ class _SearchPageState extends State<SearchPage> {
 
   // Function get Event
   Future<List<Event>> getEvents() async {
-    final response = await http.get(Uri.parse('http://10.0.2.2:3000/events'));
+    final userToken = await AuthHelper.getToken();
+
+    http.Response response;
+    if (userToken == "") {
+      response = await http.get(Uri.parse('http://10.0.2.2:3000/events'));
+    }
+    else {
+      response = await http.get(Uri.parse('http://10.0.2.2:3000/events/recommendation'),
+        headers: <String, String> {
+          'Authorization' : 'bearer $userToken'
+        }
+      );
+    }
+
     final List<Event> eventList = [];
 
     if(response.statusCode == 200) {
@@ -585,7 +611,20 @@ class _SearchPageState extends State<SearchPage> {
 
   // Function get Community
   Future<List<Community>> getCommus() async {
-    final response = await http.get(Uri.parse('http://10.0.2.2:3000/communities'));
+    final userToken = await AuthHelper.getToken();
+
+    http.Response response;
+    if (userToken == "") {
+      response = await http.get(Uri.parse('http://10.0.2.2:3000/communities'));
+    }
+    else {
+      response = await http.get(Uri.parse('http://10.0.2.2:3000/communities/recommendation'),
+        headers: <String, String> {
+          'Authorization' : 'bearer $userToken'
+        }
+      );
+    }
+
     final List<Community> commuList = [];
 
     if(response.statusCode == 200) {

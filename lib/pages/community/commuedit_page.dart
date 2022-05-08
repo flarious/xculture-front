@@ -236,6 +236,7 @@ class _EditCommuPageState extends State<EditCommuPage>{
                     style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold, color: Colors.white),
                   ),
                 ),
+              ),
     
                 //Back Icon
                 Container(
@@ -498,9 +499,8 @@ class _EditCommuPageState extends State<EditCommuPage>{
             ),
           ),
         ),
-        endDrawer: const NavigationDrawerWidget(),
-        bottomNavigationBar: const Navbar(currentIndex: 3),
-      ),
+      endDrawer: const NavigationDrawerWidget(),
+      bottomNavigationBar: const Navbar(currentIndex: 3),
     );
   }
 
