@@ -40,7 +40,11 @@ class NoAccountText extends StatelessWidget {
                 color: kPrimaryColor),
           ),
         ): GestureDetector(
-          onTap: () {},
+          onTap: () {
+            Navigator.push(context, MaterialPageRoute(
+              builder: (context) => const ForumPage()
+            ));
+          },
           // Navigator.pushNamed(context, SignUpScreen.routeName),
           child: Text(
             "Here",
