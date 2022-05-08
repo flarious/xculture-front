@@ -8,14 +8,6 @@ import '../../helper/auth.dart';
 import '../../navbar.dart';
 import '../../widgets/hamburger_widget.dart';
 
-// image
-import 'dart:io';
-import 'package:flutter/services.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:xculturetestapi/helper/storage.dart';
-
-
-
 class CommuPostPage extends StatefulWidget {
   const CommuPostPage({ Key? key }) : super(key: key);
 
@@ -37,144 +29,6 @@ class _CommuPostPageState extends State<CommuPostPage> {
   bool isPrivate = false;
 
   final _formKey = GlobalKey<FormState>();
-
-  // image
-  File? image;
-  final Storage firebase_storage = Storage();
-
-  Future takePhoto(ImageSource source) async {
-    try {
-      final image = await ImagePicker().pickImage(source: source);
-      if (image == null) return;
-
-      final imageTemporary = File(image.path);
-      setState(() {
-        this.image = imageTemporary;
-      });
-    } on PlatformException catch (e) {
-      print('Failed to pick image $e');
-    }
-  }
-
-  Widget commuPhoto() {
-    return Stack(
-      children: <Widget>[
-        Container(
-            child: image == null ? Container(
-              child: Row(
-                children: const [
-                  Text(
-                    "Upload Thumbnail ",
-                    style: TextStyle(
-                      color: Colors.grey,
-                    ),
-                  ),
-                  Icon(
-                    Icons.file_upload_sharp,
-                    color: Colors.grey,
-                    size: 30,
-                  ),
-                ],
-              ),
-            ) : Container(
-              decoration: BoxDecoration(
-                  color: Colors.transparent,
-                  borderRadius: BorderRadius.circular(0)
-              ),
-              child: Flexible(
-                child: Image.file(
-                  image!,
-                  width: 200,
-                  height: 200,
-                  fit: BoxFit.cover,
-                ),
-              ),
-            )
-        ),
-        Positioned(
-          right: 0,
-          bottom: 0,
-          child: Container(
-            // color: Colors.amber,
-            height: 300,
-            width: 350,
-            child: InkWell(
-              onTap: () {
-                showModalBottomSheet<void>(
-                  backgroundColor: Colors.transparent,
-                  context: context,
-                  builder: (BuildContext context) {
-                    return Container(
-                      height: 150,
-                      decoration: const BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(20),
-                          topRight: Radius.circular(20),
-                        ),
-                      ),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        mainAxisSize: MainAxisSize.min,
-                        children: <Widget>[
-                          Container(
-                              decoration: BoxDecoration(
-                                border: Border(
-                                  bottom: BorderSide(
-                                      width: 0.8,
-                                      color: Colors.grey.withOpacity(0.5)),
-                                )
-                              ),
-                              child: ListTile(
-                                onTap: () async {
-                                  Future.delayed(Duration(seconds: 5));
-                                  Navigator.of(context).pop();
-                                  await takePhoto(ImageSource.camera);
-                                },
-                                leading: const Icon(
-                                  Icons.photo_camera_front_outlined,
-                                  color: Colors.black,
-                                ),
-                                title: const Text("Take a photo",
-                                  style: TextStyle(
-                                    color: Colors.black,
-                                    fontSize: 14,
-                                  ),
-                                )
-                              ),
-                          ),
-                          Container(
-                              child: ListTile(
-                                onTap: () async {
-                                  Future.delayed(Duration(seconds: 5));
-                                  Navigator.of(context).pop();
-                                  await takePhoto(ImageSource.gallery);
-                                },
-                                leading: const Icon(
-                                  Icons.photo_library_outlined,
-                                  color: Colors.black,
-                                ),
-                                title: const Text("Choose from gallery",
-                                style: TextStyle(
-                                  color: Colors.black,
-                                  fontSize: 14,
-                                ),
-                                )
-                              ),
-                          ),
-                        ],
-                      ),
-
-                    );
-                  },
-                );
-              },
-            ),
-          ),
-        ),
-      ],
-    );
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -301,28 +155,26 @@ class _CommuPostPageState extends State<CommuPostPage> {
                             },
                           ),
                           const SizedBox(height: 20),
-                          // Thumbnail URL
-                          commuPhoto(),
-                          // TextFormField(
-                          //   controller: _thumbnail,
-                          //   decoration: const InputDecoration(
-                          //     labelText: "Thumbnail URL",
-                          //     labelStyle: TextStyle(color: Colors.grey),
-                          //     enabledBorder: UnderlineInputBorder(
-                          //       borderSide: BorderSide(
-                          //         color: Colors.grey
-                          //       ),
-                          //     ),
-                          //   ),
-                          //   validator: (value) {
-                          //     if (value == null || value.isEmpty) {
-                          //       return "Please enter community's thumbnail url";
-                          //     }
-                          //     else {
-                          //       return null;
-                          //     }
-                          //   },
-                          // ),
+                          TextFormField(
+                            controller: _thumbnail,
+                            decoration: const InputDecoration(
+                              labelText: "Thumbnail URL",
+                              labelStyle: TextStyle(color: Colors.grey),
+                              enabledBorder: UnderlineInputBorder(
+                                borderSide: BorderSide(
+                                  color: Colors.grey
+                                ),
+                              ),
+                            ),
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return "Please enter community's thumbnail url";
+                              }
+                              else {
+                                return null;
+                              }
+                            },
+                          ),
                           const SizedBox(height: 20),
                           TextFormField(
                             maxLines: 10,
@@ -437,16 +289,12 @@ class _CommuPostPageState extends State<CommuPostPage> {
                                     FlatButton(
                                       onPressed: () async {
                                         if(_formKey.currentState!.validate()) {
-                                          final path = image?.path;
-                                          final fileName = DateTime.now().toString() + '_' + _name.text + '.jpg';
-                                          firebase_storage.uploadCommu(path!, fileName).then((value) async {
-                                            var success = await sendCommuDetail(_name.text, _shortdesc.text, _desc.text, value, isPrivate, _questions);
-                                            if(success) {
-                                              Fluttertoast.showToast(msg: "Your community have been created.");
-                                              Navigator.pop(context);
-                                              Navigator.pop(context);
-                                            }
-                                          });
+                                          var success = await sendCommuDetail(_name.text, _shortdesc.text, _desc.text, _thumbnail.text, isPrivate, _questions);
+                                          if (success) {
+                                            Fluttertoast.showToast(msg: "Your community have been created.");
+                                            Navigator.pop(context);
+                                            Navigator.pop(context);
+                                          }
                                         }
                                       }, 
                                       child: Text("Yes", style: TextStyle(color: Colors.red)),
