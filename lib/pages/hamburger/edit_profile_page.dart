@@ -63,7 +63,7 @@ class _EditProfilePageState extends State<EditProfilePage>{
               Container(
                 margin: const EdgeInsets.only(right: 0, left: 0),
                 height: 180,
-                color: Color.fromRGBO(220, 71, 47, 1),
+                color: Colors.red,
                 child: const Center(
                   child: Text("Edit Profile", 
                     style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold, color: Colors.white),
@@ -170,7 +170,7 @@ class _EditProfilePageState extends State<EditProfilePage>{
                                     if(snapshot.hasData) {
                                       return Row(
                                         children: [
-                                          const Text("Add Tags"),
+                                          const Text("Add Interest Tags"),
                                           const SizedBox(width: 20),
                                           FindDropdown<Tag>(
                                             items: snapshot.data,
@@ -220,7 +220,7 @@ class _EditProfilePageState extends State<EditProfilePage>{
                                   decoration: const InputDecoration(
                                     hintText: "Enter your bio here",
                                     hintStyle: TextStyle(color: Colors.grey),
-                                    enabledBorder: OutlineInputBorder(
+                                    enabledBorder: UnderlineInputBorder(
                                       borderSide: BorderSide(
                                         color: Colors.grey
                                       ),

@@ -79,78 +79,78 @@ class _SearchPageState extends State<SearchPage> {
       child: SingleChildScrollView(
         child: Stack(
           children: [
-            // Thumbnail Image
+
+            //Post Forum text
             Container(
               margin: const EdgeInsets.only(right: 0, left: 0),
-              child: Container(
-                height: 300,
-                width: 500,
-                color: Colors.red,
-                child: Container(
-                  padding: const EdgeInsets.only(left: 125, top: 30),
-                  // padding: EdgeInsets.symmetric(vertical: 20.0),
-                  child: const Text("Explore",
-                    style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: 40),
-                  ),
-                ),
-              ),
-            ),
+              height: 300,
+              color: Colors.red,
+              child: Center(
+                child: Column(
+                  children: [
 
-            Center(
-              child: Container (                                  
-                height: 40,
-                width: 350,
-                // margin: const EdgeInsets.only(top: 50, left: 20, right: 20, bottom: 0),
-                margin: const EdgeInsets.only(top: 100),
-                alignment: Alignment.centerLeft,
-                padding: const EdgeInsets.symmetric(horizontal: 10),
-                child: TextFormField(
-                  focusNode: fieldnode,
-                  onChanged: (value) {
-                      setState((){
-                        searchString = value; 
-                      });
-                  },
-                  
-                  controller: searchController,
-                  decoration: InputDecoration(
-                    hintText: "Search..",
-                    hintStyle: const TextStyle(
-                      color: Colors.grey, // <-- Change this
-                      fontWeight: FontWeight.w600,
-                      fontStyle: FontStyle.normal,
+                    const SizedBox(height: 30),
+
+                    const Text("Explore", 
+                      style: TextStyle(fontSize: 40, fontWeight: FontWeight.bold, color: Colors.white),
                     ),
-                    contentPadding: const EdgeInsets.only(bottom: 10),
-                    enabledBorder: OutlineInputBorder(
-                      borderSide: const BorderSide(
-                        color: Colors.transparent,
+
+                    const SizedBox(height: 10),
+
+                    Container (                                  
+                      height: 40,
+                      width: 350,
+                      // margin: const EdgeInsets.only(top: 50, left: 20, right: 20, bottom: 0),
+                      //margin: const EdgeInsets.only(top: 100),
+                      alignment: Alignment.centerLeft,
+                      padding: const EdgeInsets.symmetric(horizontal: 10),
+                      child: TextFormField(
+                        focusNode: fieldnode,
+                        onChanged: (value) {
+                            setState((){
+                              searchString = value; 
+                            });
+                        },
+                        controller: searchController,
+                        decoration: InputDecoration(
+                          hintText: "Search Here..",
+                          hintStyle: const TextStyle(
+                            color: Colors.grey, // <-- Change this
+                            fontWeight: FontWeight.w600,
+                            fontStyle: FontStyle.normal,
+                          ),
+                          contentPadding: const EdgeInsets.only(bottom: 10),
+                          enabledBorder: OutlineInputBorder(
+                            borderSide: const BorderSide(
+                              color: Colors.transparent,
+                            ),
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderSide: const BorderSide(
+                              color: Colors.transparent,
+                            ),
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          // prefixIcon: const Icon(Icons.search, color: Colors.grey),
+                          prefixIcon: Icon(Icons.search,
+                                color: fieldnode.hasFocus 
+                                ? Theme.of(context).primaryColor
+                                : Colors.grey),
+                        ),
                       ),
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderSide: const BorderSide(
-                        color: Colors.transparent,
+                      decoration: BoxDecoration(
+                        border: Border.all(color: Colors.grey.shade300),
+                        borderRadius: BorderRadius.circular(20),
+                        color: Colors.white,
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.7),
+                            blurRadius: 3.0,
+                            offset: const Offset(0.0, 4.0),
+                          ),
+                        ],
                       ),
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    
-                    // prefixIcon: const Icon(Icons.search, color: Colors.grey),
-                    prefixIcon: Icon(Icons.search,
-                          color: fieldnode.hasFocus 
-                          ? Theme.of(context).primaryColor
-                          : Colors.grey),
-                  ),
-                  
-                ),
-                decoration: BoxDecoration(
-                  border: Border.all(color: Colors.grey.shade300),
-                  borderRadius: BorderRadius.circular(20),
-                  color: Colors.white,
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.7),
-                      blurRadius: 3.0,
-                      offset: const Offset(0.0, 4.0),
                     ),
                   ],
                 ),
