@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'dart:async';
 import 'dart:convert';
 import 'package:xculturetestapi/data.dart';
@@ -7,8 +8,12 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:find_dropdown/find_dropdown.dart';
 import 'package:xculturetestapi/helper/auth.dart';
 import 'package:xculturetestapi/navbar.dart';
-
 import '../../widgets/hamburger_widget.dart';
+
+// image
+import 'package:flutter/services.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:xculturetestapi/helper/storage.dart';
 
 
 class NewForumPage extends StatefulWidget {
@@ -28,280 +33,441 @@ class _NewForumPageState extends State<NewForumPage> {
 
   final _formKey = GlobalKey<FormState>();
 
+  //image
+  File? image;
+  final Storage firebase_storage = Storage();
+
+
   @override
   void initState() {
     super.initState();
     tags = getTags();
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      // appBar: AppBar(
-      //   centerTitle: true,
-      //   title: const Text(
-      //     "Post Forum",
-      //     style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: 25),
-      //   ),
-      // ),
-      body: WillPopScope(
-        onWillPop: () async {
-          Navigator.pop(context);
-          return false;
-        },
-        child: SingleChildScrollView(
-          child: Stack(
-            children: [
+  Future takePhoto(ImageSource source) async {
+    try {
+      final image = await ImagePicker().pickImage(source: source);
+      if (image == null) return;
 
-              //Report text
-              Container(
-                margin: const EdgeInsets.only(right: 0, left: 0),
-                height: 180,
-                //color: Color.fromRGBO(220, 71, 47, 1),
-                color: Colors.red,
-                child: const Center(
-                  child: Text("Post Forum", 
-                    style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold, color: Colors.white),
+      final imageTemporary = File(image.path);
+      setState(() {
+        this.image = imageTemporary;
+      });
+    } on PlatformException catch (e) {
+      print('Failed to pick image $e');
+    }
+  }
+
+  Widget forumPhoto() {
+    return Stack(
+        children: <Widget>[
+          Container(
+              child: image == null ? Container(
+                child: Row(
+                  children: const [
+                    Text(
+                      "Upload Thumbnail ",
+                      style: TextStyle(
+                        color: Colors.grey,
+                      ),
+                    ),
+                    Icon(
+                      Icons.file_upload_sharp,
+                      color: Colors.grey,
+                      size: 30,
+                    ),
+                  ],
+                ),
+                // child: CircleAvatar(
+                //     radius: 50,
+                //     backgroundColor: Colors.transparent,
+                //     backgroundImage: NetworkImage(_thumbnail.text)
+                // ),
+              ) : Container(
+                decoration: BoxDecoration(
+                    color: Colors.transparent,
+                    borderRadius: BorderRadius.circular(0)
+                ),
+                child: Flexible(
+                  child: Image.file(
+                    image!,
+                    width: 200,
+                    height: 200,
+                    fit: BoxFit.cover,
                   ),
                 ),
-              ),
+              )
+          ),
+          Positioned(
+            right: 0,
+            bottom: 0,
+            child: Container(
+              // color: Colors.amber,
+              height: 300,
+              width: 350,
+              // decoration: BoxDecoration(
+              //     color: Colors.black.withOpacity(0.3),
+              //     borderRadius: BorderRadius.circular(50)
+              // ),
+              child: InkWell(
+                onTap: () {
+                  showModalBottomSheet<void>(
+                    backgroundColor: Colors.transparent,
+                    context: context,
+                    builder: (BuildContext context) {
+                      return Container(
+                        height: 150,
+                        decoration: const BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(20),
+                            topRight: Radius.circular(20),
+                          ),
+                        ),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          mainAxisSize: MainAxisSize.min,
+                          children: <Widget>[
+                            Container(
+                                decoration: BoxDecoration(
+                                  border: Border(
+                                    bottom: BorderSide(
+                                        width: 0.8,
+                                        color: Colors.grey.withOpacity(0.5)),
+                                  )
+                                ),
+                                child: ListTile(
+                                  onTap: () async {
+                                    Future.delayed(Duration(seconds: 5));
+                                    Navigator.of(context).pop();
+                                    await takePhoto(ImageSource.camera);
+                                  },
+                                  leading: const Icon(
+                                    Icons.photo_camera_front_outlined,
+                                    color: Colors.black,
+                                  ),
+                                  title: const Text("Take a photo",
+                                    style: TextStyle(
+                                      color: Colors.black,
+                                      fontSize: 14,
+                                    ),
+                                  )
+                                ),
+                            ),
+                            Container(
+                                child: ListTile(
+                                  onTap: () async {
+                                    Future.delayed(Duration(seconds: 5));
+                                    Navigator.of(context).pop();
+                                    await takePhoto(ImageSource.gallery);
+                                  },
+                                  leading: const Icon(
+                                    Icons.photo_library_outlined,
+                                    color: Colors.black,
+                                  ),
+                                  title: const Text("Choose from gallery",
+                                  style: TextStyle(
+                                    color: Colors.black,
+                                    fontSize: 14,
+                                  ),
+                                  )
+                                ),
+                            ),
+                          ],
+                        ),
 
-              //Back Icon
-              Container(
-                margin: const EdgeInsets.only(top: 40, left: 20),
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: Colors.grey.withOpacity(0.8),
-                    shape: BoxShape.circle,
-                  ),
-                  child: IconButton(
-                    visualDensity: VisualDensity.compact,
-                    icon: const Icon(Icons.arrow_back),
-                    iconSize: 30,
-                    color: Colors.white,
-                    onPressed: () {
-                      Navigator.pop(context);
+                      );
                     },
-                  ),
-                ),   
+                  );
+                },
               ),
+            ),
+          ),
+        ],
+      );
 
-              //White box(content)
-              Container(
-                margin: const EdgeInsets.only(top: 150, left: 0, right: 0, bottom: 0),
-                child: Container(
-                  padding: const EdgeInsets.only(left: 20, right: 20, top: 20),
-                  width: MediaQuery.of(context).size.width,
-                  decoration: const BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(20),
-                      topRight: Radius.circular(20),
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return SafeArea(
+      child: Scaffold(
+        // appBar: AppBar(
+        //   centerTitle: true,
+        //   title: const Text(
+        //     "Post Forum",
+        //     style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: 25),
+        //   ),
+        // ),
+        body: WillPopScope(
+          onWillPop: () async {
+            Navigator.pop(context);
+            return false;
+          },
+          child: SingleChildScrollView(
+            child: Stack(
+              children: [
+    
+                //Report text
+                Container(
+                  margin: const EdgeInsets.only(right: 0, left: 0),
+                  height: 180,
+                  color: Colors.red,
+                  child: const Center(
+                    child: Text("Post Forum", 
+                      style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold, color: Colors.white),
                     ),
                   ),
-                  child: Form(
-                    key: _formKey, 
-                    child: Container(
-                      padding: const EdgeInsets.all(20),
-                      child: Column(
-                        children: [
-                          TextFormField(
-                            controller: _title,
-                            decoration: const InputDecoration(
-                              labelText: "Title",
-                              labelStyle: TextStyle(color: Colors.grey),
-                              enabledBorder: UnderlineInputBorder(
-                                borderSide: BorderSide(
-                                  color: Colors.grey
+                ),
+    
+                //Back Icon
+                Container(
+                  margin: const EdgeInsets.only(top: 40, left: 20),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: Colors.grey.withOpacity(0.8),
+                      shape: BoxShape.circle,
+                    ),
+                    child: IconButton(
+                      visualDensity: VisualDensity.compact,
+                      icon: const Icon(Icons.arrow_back),
+                      iconSize: 30,
+                      color: Colors.white,
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                    ),
+                  ),   
+                ),
+    
+                //White box(content)
+                Container(
+                  margin: const EdgeInsets.only(top: 150, left: 0, right: 0, bottom: 0),
+                  child: Container(
+                    padding: const EdgeInsets.only(left: 20, right: 20, top: 20),
+                    width: MediaQuery.of(context).size.width,
+                    decoration: const BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(20),
+                        topRight: Radius.circular(20),
+                      ),
+                    ),
+                    child: Form(
+                      key: _formKey, 
+                      child: Container(
+                        padding: const EdgeInsets.all(20),
+                        child: Column(
+                          children: [
+                            TextFormField(
+                              controller: _title,
+                              decoration: const InputDecoration(
+                                labelText: "Title",
+                                labelStyle: TextStyle(color: Colors.grey),
+                                enabledBorder: UnderlineInputBorder(
+                                  borderSide: BorderSide(
+                                    color: Colors.grey
+                                  ),
                                 ),
                               ),
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return "Please enter forum's title";
+                                }
+                                else {
+                                  return null;
+                                }
+                              },
                             ),
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return "Please enter forum's title";
-                              }
-                              else {
-                                return null;
-                              }
-                            },
-                          ),
-                          const SizedBox(height: 20),
-                          TextFormField(
-                            controller: _subtitle,
-                            decoration: const InputDecoration(
-                              labelText: "Subtitle",
-                              labelStyle: TextStyle(color: Colors.grey),
-                              enabledBorder: UnderlineInputBorder(
-                                borderSide: BorderSide(
-                                  color: Colors.grey
+                            const SizedBox(height: 20),
+                            TextFormField(
+                              controller: _subtitle,
+                              decoration: const InputDecoration(
+                                labelText: "Subtitle",
+                                labelStyle: TextStyle(color: Colors.grey),
+                                enabledBorder: UnderlineInputBorder(
+                                  borderSide: BorderSide(
+                                    color: Colors.grey
+                                  ),
                                 ),
                               ),
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return "Please enter forum's subtitle";
+                                }
+                                else {
+                                  return null;
+                                }
+                              },
                             ),
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return "Please enter forum's subtitle";
+                            const SizedBox(height: 20),
+                            forumPhoto(),
+                            // TextFormField(
+                            //   controller: _thumbnail,
+                            //   decoration: const InputDecoration(
+                            //     labelText: "Upload Forum Thumbnail",
+                            //     labelStyle: TextStyle(color: Colors.grey),
+                            //     enabledBorder: UnderlineInputBorder(
+                            //       borderSide: BorderSide(
+                            //         color: Colors.grey
+                            //       ),
+                            //     ),
+                            //   ),
+                            //   validator: (value) {
+                            //     if (value == null || value.isEmpty) {
+                            //       return "Please enter forum's thumbnail url";
+                            //     }
+                            //     else {
+                            //       return null;
+                            //     }
+                            //   },
+                            // ),
+                            const SizedBox(height: 20),
+                            FutureBuilder<List<Tag>>(
+                              future: tags,
+                              builder: (BuildContext context, AsyncSnapshot<List<Tag>> snapshot) {
+                                if(snapshot.hasData) {
+                                  return Row(
+                                    children: [
+                                      const Text("Add Tags"),
+                                      const SizedBox(width: 20),
+                                      FindDropdown<Tag>(
+                                        items: snapshot.data,
+                                        onChanged: (item) {
+                                          setState(() {
+                                            if(!arr.contains(item)){
+                                              arr.add(item!);
+                                            }
+                                          });
+                                        },
+                                        // ignore: deprecated_member_use
+                                        searchHint: "Search here",
+                                        backgroundColor: Colors.white,
+                                      ),
+                                    ],
+                                  );
+                                }
+                                else {
+                                  return const CircularProgressIndicator();
+                                }
                               }
-                              else {
-                                return null;
-                              }
-                            },
-                          ),
-                          const SizedBox(height: 20),
-                          TextFormField(
-                            controller: _thumbnail,
-                            decoration: const InputDecoration(
-                              labelText: "Upload Forum Thumbnail",
-                              labelStyle: TextStyle(color: Colors.grey),
-                              enabledBorder: UnderlineInputBorder(
-                                borderSide: BorderSide(
-                                  color: Colors.grey
-                                ),
+                            ),
+                            
+                            const SizedBox(height: 20),
+                            Align(
+                              alignment: Alignment.centerLeft,
+                              child: Wrap(
+                                children: arr.map((e) => Padding(
+                                  padding: const EdgeInsets.only(right: 10),
+                                  child: Chip(
+                                    label: Text(e.name),
+                                    deleteIcon: const Icon(Icons.clear),
+                                    onDeleted: () {
+                                      setState(() {
+                                        arr.remove(e);
+                                      });
+                                    },
+                                  ),
+                                )).toList(),
                               ),
                             ),
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return "Please enter forum's thumbnail url";
+                            const SizedBox(height: 20),
+                            TextFormField(
+                              maxLines: 10,
+                              keyboardType: TextInputType.multiline,
+                              controller: _content,
+                              decoration: const InputDecoration(
+                                hintText: "Enter Your Content Here",
+                                hintStyle: TextStyle(color: Colors.grey),
+                                enabledBorder: UnderlineInputBorder(
+                                  borderSide: BorderSide(
+                                    color: Colors.grey
+                                  ),
+                                ),
+                              ),
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return "Please enter forum's content";
+                                }
+                                else {
+                                  return null;
+                                }
+                              },
+                            ),
+                            const SizedBox(height: 20),
+                            SwitchListTile(
+                              title: const Text("Incognito"),
+                              activeColor: Theme.of(context).primaryColor,
+                              subtitle: const Text("If incognito is on this post will hide author/owner username."),
+                              value: incognito, 
+                              onChanged: (selected){
+                                setState(() {
+                                  incognito = !incognito;
+                                });
                               }
-                              else {
-                                return null;
-                              }
-                            },
-                          ),
-                          const SizedBox(height: 20),
-                          FutureBuilder<List<Tag>>(
-                            future: tags,
-                            builder: (BuildContext context, AsyncSnapshot<List<Tag>> snapshot) {
-                              if(snapshot.hasData) {
-                                return Row(
-                                  children: [
-                                    const Text("Add Tags"),
-                                    const SizedBox(width: 20),
-                                    FindDropdown<Tag>(
-                                      items: snapshot.data,
-                                      onChanged: (item) {
-                                        setState(() {
-                                          if(!arr.contains(item)){
-                                            arr.add(item!);
+                            ),
+                            const SizedBox(height: 20),
+                            //Button
+                            ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                minimumSize: const Size(350, 50),
+                              ),
+                              onPressed: (){
+                                showDialog(
+                                  context: context,
+                                  builder: (context) => AlertDialog(
+                                    title: Text("Post Forum"),
+                                    content: Text("Do you want to post this forum?"),
+                                    actions: [
+                                      FlatButton(
+                                        onPressed: (){
+                                          Navigator.pop(context);
+                                        }, 
+                                        child: Text("No")
+                                      ),
+                                      FlatButton(
+                                        onPressed: () async {
+                                          if (_formKey.currentState!.validate()) {
+                                            final path = image?.path;
+                                            final fileName = DateTime.now().toString() + '_' + _title.text + '.jpg';
+                                            firebase_storage.uploadForum(path!, fileName).then((value) async {
+                                              var success = await sendForumDetail(_title.text, _subtitle.text, value, _content.text, incognito, arr);
+                                              if(success) {
+                                                Fluttertoast.showToast(msg: "Your post has been created.");
+                                                Navigator.pop(context);
+                                                Navigator.pop(context);
+                                              }
+                                            });
+                                            // var success =  await sendForumDetail(_title.text, _subtitle.text, _thumbnail.text, _content.text, incognito, arr);
+                                            // if(success) {
+                                            //   Fluttertoast.showToast(msg: "Your post has been created.");
+                                            //   Navigator.pop(context);
+                                            //   Navigator.pop(context);
+                                            // }
                                           }
-                                        });
-                                      },
-                                      // ignore: deprecated_member_use
-                                      searchHint: "Search here",
-                                      backgroundColor: Colors.white,
-                                    ),
-                                  ],
+                                        }, 
+                                        child: Text("Yes", style: TextStyle(color: Colors.red)),
+                                      ),
+                                    ],
+                                    elevation: 24.0,
+                                  ),
                                 );
-                              }
-                              else {
-                                return const CircularProgressIndicator();
-                              }
-                            }
-                          ),
-                          
-                          const SizedBox(height: 20),
-                          Align(
-                            alignment: Alignment.centerLeft,
-                            child: Wrap(
-                              children: arr.map((e) => Padding(
-                                padding: const EdgeInsets.only(right: 10),
-                                child: Chip(
-                                  label: Text(e.name),
-                                  deleteIcon: const Icon(Icons.clear),
-                                  onDeleted: () {
-                                    setState(() {
-                                      arr.remove(e);
-                                    });
-                                  },
-                                ),
-                              )).toList(),
+                              }, 
+                              child: const Text("Post Forum")
                             ),
-                          ),
-                          const SizedBox(height: 20),
-                          TextFormField(
-                            maxLines: 10,
-                            keyboardType: TextInputType.multiline,
-                            controller: _content,
-                            decoration: const InputDecoration(
-                              hintText: "Enter Your Content Here",
-                              hintStyle: TextStyle(color: Colors.grey),
-                              enabledBorder: UnderlineInputBorder(
-                                borderSide: BorderSide(
-                                  color: Colors.grey
-                                ),
-                              ),
-                            ),
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return "Please enter forum's content";
-                              }
-                              else {
-                                return null;
-                              }
-                            },
-                          ),
-                          const SizedBox(height: 20),
-                          SwitchListTile(
-                            title: const Text("Incognito"),
-                            activeColor: Theme.of(context).primaryColor,
-                            subtitle: const Text("If incognito is on this post will hide author/owner username."),
-                            value: incognito, 
-                            onChanged: (selected){
-                              setState(() {
-                                incognito = !incognito;
-                              });
-                            }
-                          ),
-                          const SizedBox(height: 20),
-                          //Button
-                          ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                              minimumSize: const Size(350, 50),
-                            ),
-                            onPressed: (){
-                              showDialog(
-                                context: context,
-                                builder: (context) => AlertDialog(
-                                  title: Text("Post Forum"),
-                                  content: Text("Do you want to post this forum?"),
-                                  actions: [
-                                    FlatButton(
-                                      onPressed: (){
-                                        Navigator.pop(context);
-                                      }, 
-                                      child: Text("No")
-                                    ),
-                                    FlatButton(
-                                      onPressed: () async {
-                                        if (_formKey.currentState!.validate()) {
-                                          var success =  await sendForumDetail(_title.text, _subtitle.text, _thumbnail.text, _content.text, incognito, arr);
-                                          if(success) {
-                                            Fluttertoast.showToast(msg: "Your post has been created.");
-                                            Navigator.pop(context);
-                                            Navigator.pop(context);
-                                          }
-                                        }
-                                      }, 
-                                      child: Text("Yes", style: TextStyle(color: Colors.red)),
-                                    ),
-                                  ],
-                                  elevation: 24.0,
-                                ),
-                              );
-                            }, 
-                            child: const Text("Post Forum")
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
                     ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
+        endDrawer: const NavigationDrawerWidget(),
+        bottomNavigationBar: const Navbar(currentIndex: 2),
       ),
-      endDrawer: const NavigationDrawerWidget(),
-      bottomNavigationBar: const Navbar(currentIndex: 2),
     );
   }
 

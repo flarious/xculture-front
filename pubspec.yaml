@@ -45,6 +45,7 @@ dependencies:
   flutter_datetime_picker: ^1.5.1
   grouped_list: ^4.2.0
   image_picker_for_web: ^2.1.6
+  firebase_storage: ^10.2.15
 
 
 dev_dependencies:
