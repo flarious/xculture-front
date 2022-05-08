@@ -35,6 +35,7 @@ class _CommuDetailPageState extends State<CommuDetailPage> {
 
     return SafeArea(
       child: Scaffold(
+        backgroundColor: Colors.white,
         body: SingleChildScrollView(
           child: FutureBuilder<Community>(
             future: commuDetail,
@@ -217,7 +218,7 @@ class _CommuDetailPageState extends State<CommuDetailPage> {
                                   child: Padding(
                                     padding: EdgeInsets.symmetric(vertical: 5.0),
                                     child: Text(snapshot.data!.name,
-                                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 25, color: Colors.red)
+                                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 25)
                                     ),
                                   ),
                                 ),
@@ -234,23 +235,43 @@ class _CommuDetailPageState extends State<CommuDetailPage> {
                             Padding(
                               padding: EdgeInsets.symmetric(vertical: 5.0),
                               child: Text(snapshot.data!.shortdesc,
-                                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                                style: const TextStyle(fontSize: 15),
                               ),
                             ),
 
-                            //Author
+                            const SizedBox(height: 20),
+
                             Padding(
-                              padding: EdgeInsets.symmetric(vertical: 5.0),
-                              child: Text("Created by: ${snapshot.data!.owner.name}",
-                                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                              padding: const EdgeInsets.symmetric(vertical: 5.0),
+                              child: RichText(
+                                text: TextSpan(
+                                  style: const TextStyle(
+                                    fontSize: 15,
+                                    color: Colors.black,
+                                    fontFamily: 'Poppins',
+                                  ),
+                                  children: <TextSpan>[
+                                    const TextSpan(text: 'Created by  ', style: TextStyle(fontWeight: FontWeight.bold)),
+                                    TextSpan(text: '${snapshot.data!.owner.name}'),
+                                  ],
+                                ),
                               ),
                             ),
 
-                            //Start Date
                             Padding(
-                              padding: EdgeInsets.symmetric(vertical: 5.0),
-                              child: Text(dateCommu,
-                                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                              padding: const EdgeInsets.symmetric(vertical: 5.0),
+                              child: RichText(
+                                text: TextSpan(
+                                  style: const TextStyle(
+                                    fontSize: 15,
+                                    color: Colors.black,
+                                    fontFamily: 'Poppins',
+                                  ),
+                                  children: <TextSpan>[
+                                    const TextSpan(text: 'Created at  ', style: TextStyle(fontWeight: FontWeight.bold)),
+                                    TextSpan(text: '$dateCommu'),
+                                  ],
+                                ),
                               ),
                             ),
 
@@ -268,7 +289,7 @@ class _CommuDetailPageState extends State<CommuDetailPage> {
                             const Padding(
                               padding: EdgeInsets.symmetric(vertical: 5.0),
                               child: Text("Description",
-                                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                                style: TextStyle(fontWeight: FontWeight.bold),
                               ),
                             ),
 

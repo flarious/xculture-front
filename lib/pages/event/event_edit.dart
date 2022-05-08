@@ -197,6 +197,7 @@ class _EditEventPageState extends State<EditEventPage>{
       _desc.text = eventDetail!.body;
       _dateTime = DateTime.parse(eventDetail!.eventDate);
     }
+
     return SafeArea(
       child: Scaffold(
         // appBar: AppBar(

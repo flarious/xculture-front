@@ -189,7 +189,6 @@ class _CommuPostPageState extends State<CommuPostPage> {
       }
     }
 
-
     return SafeArea(
       child: Scaffold(
         // appBar: AppBar(
@@ -359,6 +358,7 @@ class _CommuPostPageState extends State<CommuPostPage> {
                             }
                           ),
                           const SizedBox(height: 20),
+
                           Visibility(
                             visible: isPrivate,
                             child: Column(

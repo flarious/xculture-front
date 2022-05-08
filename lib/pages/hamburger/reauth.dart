@@ -27,6 +27,7 @@ class _ReAuthPageState extends State<ReAuthPage>{
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       body: WillPopScope(
         onWillPop: () async {
           Navigator.pop(context);
@@ -40,7 +41,7 @@ class _ReAuthPageState extends State<ReAuthPage>{
               Container(
                 margin: const EdgeInsets.only(right: 0, left: 0),
                 height: 180,
-                color: Color.fromRGBO(220, 71, 47, 1),
+                color: Colors.red,
                 child: const Center(
                   child: Text("Re-authentication", 
                     style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold, color: Colors.white),
@@ -50,7 +51,7 @@ class _ReAuthPageState extends State<ReAuthPage>{
 
               //Back Icon
               Container(
-                margin: const EdgeInsets.only(top: 40, left: 20),
+                margin: const EdgeInsets.only(top: 20, left: 20),
                 child: Container(
                   decoration: BoxDecoration(
                     color: Colors.grey.withOpacity(0.8),
@@ -87,13 +88,15 @@ class _ReAuthPageState extends State<ReAuthPage>{
                       padding: const EdgeInsets.all(20),
                       child: Column(
                         children: [
+
                           //Description
                           const Padding(
                             padding: EdgeInsets.symmetric(vertical: 5.0),
                             child: Text("You need to sign in again before changing the password",
-                              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17),
                             ),
                           ),
+                          
                           TextFormField(
                             controller: _email,
                             decoration: const InputDecoration(
@@ -114,7 +117,9 @@ class _ReAuthPageState extends State<ReAuthPage>{
                               }
                             },
                           ),
-                          const SizedBox(height: 20),
+
+                          const SizedBox(height: 10),
+
                           TextFormField(
                             controller: _password,
                             obscureText: true,
@@ -136,6 +141,7 @@ class _ReAuthPageState extends State<ReAuthPage>{
                               }
                             },
                           ),
+
                           const SizedBox(height: 20),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.end,

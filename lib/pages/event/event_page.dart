@@ -81,75 +81,77 @@ class _EventPageState extends State<EventPage> {
         child: Stack(
           children: [
 
-            // Forum
+           //Post Forum text
             Container(
               margin: const EdgeInsets.only(right: 0, left: 0),
-              child: Container(
-                height: 300,
-                width: 500,
-                color: Colors.red,
-                child: Container(
-                  padding: const EdgeInsets.only(left: 140, top: 30),
-                  // padding: EdgeInsets.symmetric(vertical: 20.0),
-                  child: const Text("Events",
-                    style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: 40),
-                  ),
-                ),
-              ),
-            ),
+              height: 300,
+              color: Colors.red,
+              child: Center(
+                child: Column(
+                  children: [
 
-            Center(
-              child: Container (                                  
-                height: 40,
-                width: 350,
-                // margin: const EdgeInsets.only(top: 50, left: 20, right: 20, bottom: 0),
-                margin: const EdgeInsets.only(top: 100),
-                alignment: Alignment.centerLeft,
-                padding: const EdgeInsets.symmetric(horizontal: 10),
-                child: TextFormField(
-                  focusNode: fieldnode,
-                  onChanged: (value) {
-                      setState((){
-                        searchString = value; 
-                      });
-                  },
-                  controller: searchController,
-                  decoration: InputDecoration(
-                    hintText: "Search Event..",
-                    hintStyle: const TextStyle(
-                      color: Colors.grey, // <-- Change this
-                      fontWeight: FontWeight.w600,
-                      fontStyle: FontStyle.normal,
+                    const SizedBox(height: 30),
+
+                    const Text("Events", 
+                      style: TextStyle(fontSize: 40, fontWeight: FontWeight.bold, color: Colors.white),
                     ),
-                    contentPadding: const EdgeInsets.only(bottom: 10),
-                    enabledBorder: OutlineInputBorder(
-                      borderSide: const BorderSide(
-                        color: Colors.transparent,
+
+                    const SizedBox(height: 10),
+
+                    Container (                                  
+                      height: 40,
+                      width: 350,
+                      // margin: const EdgeInsets.only(top: 50, left: 20, right: 20, bottom: 0),
+                      //margin: const EdgeInsets.only(top: 100),
+                      alignment: Alignment.centerLeft,
+                      padding: const EdgeInsets.symmetric(horizontal: 10),
+                      child: TextFormField(
+                        focusNode: fieldnode,
+                        onChanged: (value) {
+                            setState((){
+                              searchString = value; 
+                            });
+                        },
+                        controller: searchController,
+                        decoration: InputDecoration(
+                          hintText: "Search Event..",
+                          hintStyle: const TextStyle(
+                            color: Colors.grey, // <-- Change this
+                            fontWeight: FontWeight.w600,
+                            fontStyle: FontStyle.normal,
+                          ),
+                          contentPadding: const EdgeInsets.only(bottom: 10),
+                          enabledBorder: OutlineInputBorder(
+                            borderSide: const BorderSide(
+                              color: Colors.transparent,
+                            ),
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderSide: const BorderSide(
+                              color: Colors.transparent,
+                            ),
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          // prefixIcon: const Icon(Icons.search, color: Colors.grey),
+                          prefixIcon: Icon(Icons.search,
+                                color: fieldnode.hasFocus 
+                                ? Theme.of(context).primaryColor
+                                : Colors.grey),
+                        ),
                       ),
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderSide: const BorderSide(
-                        color: Colors.transparent,
+                      decoration: BoxDecoration(
+                        border: Border.all(color: Colors.grey.shade300),
+                        borderRadius: BorderRadius.circular(20),
+                        color: Colors.white,
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.7),
+                            blurRadius: 3.0,
+                            offset: const Offset(0.0, 4.0),
+                          ),
+                        ],
                       ),
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    // prefixIcon: const Icon(Icons.search, color: Colors.grey),
-                    prefixIcon: Icon(Icons.search,
-                          color: fieldnode.hasFocus 
-                          ? Theme.of(context).primaryColor
-                          : Colors.grey),
-                  ),
-                ),
-                decoration: BoxDecoration(
-                  border: Border.all(color: Colors.grey.shade300),
-                  borderRadius: BorderRadius.circular(20),
-                  color: Colors.white,
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.7),
-                      blurRadius: 3.0,
-                      offset: const Offset(0.0, 4.0),
                     ),
                   ],
                 ),
@@ -238,7 +240,7 @@ class _EventPageState extends State<EventPage> {
                                               child: Text(snapshot.data![index].name,
                                                 overflow: TextOverflow.ellipsis,
                                                 style: const TextStyle(
-                                                  fontSize: 20.0,
+                                                  fontSize: 25.0,
                                                   fontWeight: FontWeight.bold,
                                                 ),
                                               ),
@@ -255,7 +257,7 @@ class _EventPageState extends State<EventPage> {
                                               ),
                                             ),
 
-                                            const SizedBox(height: 10),
+                                            //const SizedBox(height: 10),
                                             
                                             Padding(
                                               padding: const EdgeInsets.symmetric(horizontal: 10),
@@ -361,7 +363,7 @@ class _EventPageState extends State<EventPage> {
                                               child: Text(snapshot.data![index].name,
                                                 overflow: TextOverflow.ellipsis,
                                                 style: const TextStyle(
-                                                  fontSize: 20.0,
+                                                  fontSize: 25.0,
                                                   fontWeight: FontWeight.bold,
                                                 ),
                                               ),
@@ -378,7 +380,7 @@ class _EventPageState extends State<EventPage> {
                                               ),
                                             ),
 
-                                            const SizedBox(height: 10),
+                                            //const SizedBox(height: 10),
                                             
                                             Padding(
                                               padding: const EdgeInsets.symmetric(horizontal: 10),
@@ -426,419 +428,7 @@ class _EventPageState extends State<EventPage> {
       ), 
     );
   }
-  // @override
-  // Widget build(BuildContext context) {
-  //   return Scaffold(
-  //     // appBar: AppBar(
-  //     //   centerTitle: true,
-  //     //   title: const Text(
-  //     //     "Event",
-  //     //     style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: 25),
-  //     //   ),
-  //     //   actions: <Widget>[Container()],
-  //     // ),
-  //     body: SafeArea(
-  //     child: SingleChildScrollView(
-  //       child: Stack(
-  //         children: [
-  //           // Thumbnail Image
-  //           Container(
-  //             margin: const EdgeInsets.only(right: 0, left: 0),
-  //             child: Container(
-  //               height: 300,
-  //               width: 500,
-  //               color: Colors.red,
-  //               child: Container(
-  //                 padding: const EdgeInsets.only(left: 130, top: 30),
-  //                 // padding: EdgeInsets.symmetric(vertical: 20.0),
-  //                 child: const Text("Events",
-  //                   style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: 40),
-  //                 ),
-  //               ),
-  //             ),
-  //           ),
-
-  //           Center(
-  //             child: Container (                                  
-  //               height: 40,
-  //               width: 350,
-  //               // margin: const EdgeInsets.only(top: 50, left: 20, right: 20, bottom: 0),
-  //               margin: const EdgeInsets.only(top: 100),
-  //               alignment: Alignment.centerLeft,
-  //               padding: const EdgeInsets.symmetric(horizontal: 10),
-  //               child: TextFormField(
-  //                 focusNode: fieldnode,
-  //                 onChanged: (value) {
-  //                     setState((){
-  //                       searchString = value; 
-  //                     });
-  //                 },
-                  
-  //                 controller: searchController,
-  //                 decoration: InputDecoration(
-  //                   hintText: "Search Event..",
-  //                   hintStyle: const TextStyle(
-  //                     color: Colors.grey, // <-- Change this
-  //                     fontWeight: FontWeight.w600,
-  //                     fontStyle: FontStyle.normal,
-  //                   ),
-  //                   contentPadding: const EdgeInsets.only(bottom: 10),
-  //                   enabledBorder: OutlineInputBorder(
-  //                     borderSide: const BorderSide(
-  //                       color: Colors.transparent,
-  //                     ),
-  //                     borderRadius: BorderRadius.circular(10),
-  //                   ),
-  //                   focusedBorder: OutlineInputBorder(
-  //                     borderSide: const BorderSide(
-  //                       color: Colors.transparent,
-  //                     ),
-  //                     borderRadius: BorderRadius.circular(10),
-  //                   ),
-                    
-  //                   // prefixIcon: const Icon(Icons.search, color: Colors.grey),
-  //                   prefixIcon: Icon(Icons.search,
-  //                         color: fieldnode.hasFocus 
-  //                         ? Theme.of(context).primaryColor
-  //                         : Colors.grey),
-  //                 ),
-                  
-  //               ),
-  //               decoration: BoxDecoration(
-  //                 border: Border.all(color: Colors.grey.shade300),
-  //                 borderRadius: BorderRadius.circular(20),
-  //                 color: Colors.white,
-  //                 boxShadow: [
-  //                   BoxShadow(
-  //                     color: Colors.black.withOpacity(0.7),
-  //                     blurRadius: 3.0,
-  //                     offset: const Offset(0.0, 4.0),
-  //                   ),
-  //                 ],
-  //               ),
-  //             ),
-  //           ),
-      
-  //           // Iconbutton back
-  //           // Container(
-  //           //   margin: const EdgeInsets.only(top: 20, left: 20),
-  //           //   child: Container(
-  //           //     decoration: BoxDecoration(
-  //           //       color: Colors.grey.withOpacity(0.8),
-  //           //       shape: BoxShape.circle,
-  //           //     ),
-  //           //     child: IconButton(
-  //           //       visualDensity: VisualDensity.compact,
-  //           //       icon: const Icon(Icons.arrow_back),
-  //           //       iconSize: 30,
-  //           //       color: Colors.white,
-  //           //       onPressed: () {
-  //           //         Navigator.pop(context);
-  //           //       },
-  //           //     ),
-  //           //   ),   
-  //           // ),
-      
-  //           // Content
-  //           Container(          
-  //             margin: const EdgeInsets.only(top: 160, left: 0, right: 0, bottom: 0),
-  //             child: Container(
-  //               height: 150,
-  //               padding: const EdgeInsets.only(left: 20, right: 20, top: 20),
-  //               width: MediaQuery.of(context).size.width,
-  //               decoration: const BoxDecoration(
-  //                 color: Colors.white,
-  //                 borderRadius: BorderRadius.only(
-  //                   topLeft: Radius.circular(20),
-  //                   topRight: Radius.circular(20),
-  //                 ),
-  //               ),
-  //             )
-  //           ),
-
-  //           Column(
-  //               children: [
-  //                 //Trending Event
-  //                 Container(
-  //                   margin: const EdgeInsets.only(top: 170, left: 20, right: 20),
-  //                   // margin: const EdgeInsets.all(10),
-  //                   child: Row(
-  //                     children: [
-  //                       const Text("Trending Event",
-  //                         style: TextStyle(fontWeight: FontWeight.bold, color: Colors.red, fontSize: 22),
-  //                       ),
-  //                       const Spacer(),
-  //                       TextButton(
-  //                         onPressed: () {
-  //                         // Navigator.pushNamed(context, 'forumAllPage', arguments: _futureForum).then(refreshPage);
-  //                         Navigator.push(
-  //                           context,
-  //                           MaterialPageRoute(
-  //                             builder: (context) => EventAllPage(value: searchString),
-  //                             settings: RouteSettings(
-  //                               arguments: trendingEvent,
-  //                             ),
-  //                           )
-  //                         ).then(refreshPage);
-  //                       }, 
-  //                       child: const Text("See all")),
-  //                     ],
-  //                   ),
-  //                 ),
-
-  //                 //Event Box
-  //                 Container(
-  //                   // margin: const EdgeInsets.only(left: 0),
-  //                   height: 150,
-  //                   width: double.maxFinite,
-  //                   child: FutureBuilder<List<Event>>(
-  //                     future: trendingEvent,
-  //                     builder: (BuildContext context, AsyncSnapshot<List<Event>> snapshot) { 
-  //                       if(snapshot.hasData) {
-  //                         snapshot.data!.sort((b, a) => (a.interestedAmount).compareTo((b.interestedAmount)));
-  //                         return ListView.builder(
-  //                           itemCount: (snapshot.data!.length <= 5) ? snapshot.data!.length : 5, // number of item to display
-  //                           scrollDirection: Axis.horizontal,
-  //                           itemBuilder: (BuildContext context, int index) {
-  //                             var dt = DateTime.parse(snapshot.data![index].eventDate).toLocal();
-  //                             String dateEvent = DateFormat('MMMM dd, yyyy').format(dt);
-  //                             var contained = searchEvent(snapshot.data![index], searchString);
-  //                             return contained ? InkWell(
-  //                               child: ClipRRect(
-  //                                 borderRadius: BorderRadius.circular(20),
-  //                                 child: BackdropFilter(
-  //                                   filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-  //                                   child: Container(
-  //                                     margin: const EdgeInsets.all(10),
-  //                                     width: 350,
-  //                                     decoration: BoxDecoration(
-  //                                       borderRadius: BorderRadius.circular(20),
-  //                                       gradient: LinearGradient(colors: [
-  //                                         Colors.lightBlue.withOpacity(0.2),
-  //                                         Colors.lightBlue.withOpacity(0.05),
-  //                                       ], begin: Alignment.topLeft, end: Alignment.bottomRight),
-  //                                       border: Border.all(
-  //                                         color: Colors.lightBlue.withOpacity(0.08),
-  //                                       ),
-  //                                     ),
-  //                                     child: Stack(
-  //                                       children: [
-
-  //                                         //Cover Photo
-  //                                         Positioned(
-  //                                           top: 0,
-  //                                           left: 0,
-  //                                           child: Container(
-  //                                             height: 130,
-  //                                             width: 100,
-  //                                             decoration: BoxDecoration(
-  //                                               borderRadius: const BorderRadius.only(
-  //                                                 topLeft: Radius.circular(20),
-  //                                                 bottomLeft: Radius.circular(20),
-  //                                               ),
-  //                                               image: DecorationImage(
-  //                                                 fit: BoxFit.fitHeight,
-  //                                                 image: NetworkImage(snapshot.data![index].thumbnail) // Event Image
-  //                                               ),
-  //                                             ),
-  //                                           )
-  //                                         ),
-
-  //                                         //Text
-  //                                         Container(
-  //                                           margin: const EdgeInsets.only(top: 0, left: 120, right: 0, bottom: 0),
-  //                                           padding: const EdgeInsets.all(10),
-  //                                           child: Column(
-  //                                             crossAxisAlignment: CrossAxisAlignment.start,
-  //                                             children: [
-  //                                               Text(
-  //                                                 snapshot.data![index].name,
-  //                                                 style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-  //                                                 overflow: TextOverflow.ellipsis, // Event name
-  //                                               ),
-  //                                               Text(
-  //                                                 dateEvent,
-  //                                                 style: const TextStyle(fontSize: 15), // Event date
-  //                                                 overflow: TextOverflow.ellipsis,
-  //                                               ),
-  //                                               Text(
-  //                                                 snapshot.data![index].location,
-  //                                                 style: const TextStyle(fontSize: 15),
-  //                                                 overflow: TextOverflow.ellipsis, // Event loca
-  //                                               ),
-  //                                             ],
-  //                                           )
-  //                                         )
-  //                                       ],
-  //                                     ),
-  //                                   ),
-  //                                 ),
-  //                               ),
-
-  //                               onTap: () {
-  //                                 Navigator.push(
-  //                                   context,
-  //                                   MaterialPageRoute(
-  //                                     builder: (context) => const EventDetailPage(),
-  //                                     settings: RouteSettings(
-  //                                       arguments: snapshot.data![index],
-  //                                     ),
-  //                                   )
-  //                                 ).then(refreshPage);
-  //                               },
-  //                             ) : Container();
-  //                           }
-  //                         );
-  //                       }
-  //                       else {
-  //                         return const CircularProgressIndicator();
-  //                       }
-  //                     }
-  //                   ),
-  //                 ),
-
-  //                 //Newest Event
-  //                 Container(
-  //                   margin: const EdgeInsets.only(left: 20, right: 20),
-  //                   // margin: const EdgeInsets.all(10),
-  //                   child: Row(
-  //                     children: [
-  //                       const Text("Newest Event",
-  //                         style: TextStyle(fontWeight: FontWeight.bold, color: Colors.red, fontSize: 22),
-  //                       ),
-  //                       const Spacer(),
-  //                       TextButton(
-  //                         onPressed: () {
-  //                         Navigator.push(
-  //                           context,
-  //                           MaterialPageRoute(
-  //                             builder: (context) => EventAllPage(value: '',),
-  //                             settings: RouteSettings(
-  //                               arguments: newestEvent,
-  //                             ),
-  //                           )
-  //                         ).then(refreshPage);
-  //                       }, 
-  //                       child: const Text("See all")),
-  //                     ],
-  //                   ),
-  //                 ),
-  //                 Container(
-  //                   // margin: const EdgeInsets.only(left: 0),
-  //                   height: 150,
-  //                   width: double.maxFinite,
-  //                   child: FutureBuilder<List<Event>>(
-  //                     future: newestEvent,
-  //                     builder: (BuildContext context, AsyncSnapshot<List<Event>> snapshot) { 
-  //                       if(snapshot.hasData) {
-  //                         snapshot.data!.sort((b, a) => (a.createDate).compareTo((b.createDate)));
-  //                         return ListView.builder(
-  //                           itemCount: (snapshot.data!.length <= 5) ? snapshot.data!.length : 5, // number of item to display
-  //                           scrollDirection: Axis.horizontal,
-  //                           itemBuilder: (BuildContext context, int index) {
-  //                             var dt = DateTime.parse(snapshot.data![index].eventDate).toLocal();
-  //                             String dateEvent = DateFormat('MMMM dd, yyyy').format(dt);
-  //                             var contained = searchEvent(snapshot.data![index], searchString);
-  //                             return contained ? InkWell(
-  //                               child: ClipRRect(
-  //                                 borderRadius: BorderRadius.circular(20),
-  //                                 child: BackdropFilter(
-  //                                   filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-  //                                   child: Container(
-  //                                     margin: const EdgeInsets.all(10),
-  //                                     width: 350,
-  //                                     decoration: BoxDecoration(
-  //                                       borderRadius: BorderRadius.circular(20),
-  //                                       gradient: LinearGradient(colors: [
-  //                                         Colors.lightBlue.withOpacity(0.2),
-  //                                         Colors.lightBlue.withOpacity(0.05),
-  //                                       ], begin: Alignment.topLeft, end: Alignment.bottomRight),
-  //                                       border: Border.all(
-  //                                         color: Colors.lightBlue.withOpacity(0.08),
-  //                                       ),
-  //                                     ),
-  //                                     child: Stack(
-  //                                       children: [
-
-  //                                         //Cover Photo
-  //                                         Positioned(
-  //                                           top: 0,
-  //                                           left: 0,
-  //                                           child: Container(
-  //                                             height: 130,
-  //                                             width: 100,
-  //                                             decoration: BoxDecoration(
-  //                                               borderRadius: const BorderRadius.only(
-  //                                                 topLeft: Radius.circular(20),
-  //                                                 bottomLeft: Radius.circular(20),
-  //                                               ),
-  //                                               image: DecorationImage(
-  //                                                 fit: BoxFit.fitHeight,
-  //                                                 image: NetworkImage(snapshot.data![index].thumbnail) // Event Image
-  //                                               ),
-  //                                             ),
-  //                                           )
-  //                                         ),
-
-  //                                         //Text
-  //                                         Container(
-  //                                           margin: const EdgeInsets.only(top: 0, left: 120, right: 0, bottom: 0),
-  //                                           padding: const EdgeInsets.all(10),
-  //                                           child: Column(
-  //                                             crossAxisAlignment: CrossAxisAlignment.start,
-  //                                             children: [
-  //                                               Text(
-  //                                                 snapshot.data![index].name,
-  //                                                 style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-  //                                                 overflow: TextOverflow.ellipsis, // Event name
-  //                                               ),
-  //                                               Text(
-  //                                                 dateEvent,
-  //                                                 style: const TextStyle(fontSize: 15), // Event date
-  //                                                 overflow: TextOverflow.ellipsis,
-  //                                               ),
-  //                                               Text(
-  //                                                 snapshot.data![index].location,
-  //                                                 style: const TextStyle(fontSize: 15),
-  //                                                 overflow: TextOverflow.ellipsis, // Event loca
-  //                                               ),
-  //                                             ],
-  //                                           )
-  //                                         )
-  //                                       ],
-  //                                     ),
-  //                                   ),
-  //                                 ),
-  //                               ),
-
-  //                               onTap: () {
-  //                                 Navigator.push(
-  //                                   context,
-  //                                   MaterialPageRoute(
-  //                                     builder: (context) => const EventDetailPage(),
-  //                                     settings: RouteSettings(
-  //                                       arguments: snapshot.data![index],
-  //                                     ),
-  //                                   )
-  //                                 ).then(refreshPage);
-  //                               },
-  //                             ) : Container();
-  //                           }
-  //                         );
-  //                       }
-  //                       else {
-  //                         return const CircularProgressIndicator();
-  //                       }
-  //                     }
-  //                   ),
-  //                 ),
-  //               ],
-  //             ),
-  //         ],
-  //       ),
-  //     ), 
-  //   ),  
-  }
+}
 
   Future<List<Event>> getEvents() async {
     final response = await http.get(Uri.parse('http://10.0.2.2:3000/events'));

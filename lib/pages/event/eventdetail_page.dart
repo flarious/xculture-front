@@ -206,35 +206,67 @@ class _EventDetailPageState extends State<EventDetailPage> {
                                 ),
                               ),
 
-                              //Date Event
+                              //Event Date
                               Padding(
                                 padding: EdgeInsets.symmetric(vertical: 5.0),
                                 child: Text(dateEvent,
-                                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                                  style: TextStyle(fontWeight: FontWeight.bold),
+                                ),
+                              ),
+                              
+                              //Location
+                              Padding(
+                                padding: const EdgeInsets.symmetric(vertical: 5.0),
+                                child: RichText(
+                                  text: TextSpan(
+                                    style: const TextStyle(
+                                      fontSize: 15,
+                                      color: Colors.black,
+                                      fontFamily: 'Poppins',
+                                    ),
+                                    children: <TextSpan>[
+                                      const TextSpan(text: 'At  ', style: TextStyle(fontWeight: FontWeight.bold)),
+                                      TextSpan(text: '${snapshot.data!.location}'),
+                                    ],
+                                  ),
                                 ),
                               ),
 
-                              //Location
-                              Padding(
-                                padding: EdgeInsets.symmetric(vertical: 5.0),
-                                child: Text(snapshot.data!.location,
-                                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-                                ),
-                              ),
+                              const SizedBox(height: 20),
 
                               //Host Name
                               Padding(
-                                padding: EdgeInsets.symmetric(vertical: 5.0),
-                                child: Text(snapshot.data!.host.name,
-                                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                                padding: const EdgeInsets.symmetric(vertical: 5.0),
+                                child: RichText(
+                                  text: TextSpan(
+                                    style: const TextStyle(
+                                      fontSize: 15,
+                                      color: Colors.black,
+                                      fontFamily: 'Poppins',
+                                    ),
+                                    children: <TextSpan>[
+                                      const TextSpan(text: 'Created by  ', style: TextStyle(fontWeight: FontWeight.bold)),
+                                      TextSpan(text: '${snapshot.data!.host.name}'),
+                                    ],
+                                  ),
                                 ),
                               ),
 
                               //Interested Count
                               Padding(
-                                padding: EdgeInsets.symmetric(vertical: 5.0),
-                                child: Text("Interested : ${snapshot.data!.interestedAmount.toString()}",
-                                  style: TextStyle(fontSize: 15),
+                                padding: const EdgeInsets.symmetric(vertical: 5.0),
+                                child: RichText(
+                                  text: TextSpan(
+                                    style: const TextStyle(
+                                      fontSize: 15,
+                                      color: Colors.black,
+                                      fontFamily: 'Poppins',
+                                    ),
+                                    children: <TextSpan>[
+                                      const TextSpan(text: 'Interested  ', style: TextStyle(fontWeight: FontWeight.bold)),
+                                      TextSpan(text: '${snapshot.data!.interestedAmount.toString()}'),
+                                    ],
+                                  ),
                                 ),
                               ),
 
@@ -252,7 +284,7 @@ class _EventDetailPageState extends State<EventDetailPage> {
                               const Padding(
                                 padding: EdgeInsets.symmetric(vertical: 5.0),
                                 child: Text("Description",
-                                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                                  style: TextStyle(fontWeight: FontWeight.bold),
                                 ),
                               ),
 
@@ -308,9 +340,10 @@ class _EventDetailPageState extends State<EventDetailPage> {
                                   width: double.infinity,
                                   height: 50,
                                   child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
                                     children: const [
                                       Icon(Icons.star),
-                                      SizedBox(width: 5),
+                                      SizedBox(width: 10),
                                       Text("Interested"),
                                     ],
                                   ),
@@ -333,7 +366,7 @@ class _EventDetailPageState extends State<EventDetailPage> {
                                     children: const [
                                       Icon(Icons.star_border),
                                       SizedBox(width: 5),
-                                      Text("Interest"),
+                                      Center(child: Text("Interest")),
                                     ],
                                   ),
                                 ),

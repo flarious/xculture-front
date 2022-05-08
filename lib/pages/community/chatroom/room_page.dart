@@ -23,6 +23,13 @@ class _RoomPageState extends State<RoomPage> {
 
   Future<List<Room>>? rooms;
 
+  // Change color (prefix icon)
+  FocusNode fieldnode = FocusNode();
+
+  // Search Function
+  String searchString = "";
+  TextEditingController searchController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     final commu = ModalRoute.of(context)!.settings.arguments as Community;
@@ -40,21 +47,87 @@ class _RoomPageState extends State<RoomPage> {
               if (snapshot.hasData) {
                 return Stack(
                   children: [
+                    
                     //Post Forum text
                     Container(
                       margin: const EdgeInsets.only(right: 0, left: 0),
-                      height: 180,
-                      color: Color.fromRGBO(220, 71, 47, 1),
+                      height: 300,
+                      color: Colors.red,
                       child: Center(
-                        child: Text("Rooms", 
-                          style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold, color: Colors.white),
+                        child: Column(
+                          children: [
+
+                            const SizedBox(height: 30),
+
+                            const Text("Rooms", 
+                              style: TextStyle(fontSize: 40, fontWeight: FontWeight.bold, color: Colors.white),
+                            ),
+
+                            const SizedBox(height: 10),
+
+                            Container (                                  
+                              height: 40,
+                              width: 350,
+                              // margin: const EdgeInsets.only(top: 50, left: 20, right: 20, bottom: 0),
+                              //margin: const EdgeInsets.only(top: 100),
+                              alignment: Alignment.centerLeft,
+                              padding: const EdgeInsets.symmetric(horizontal: 10),
+                              child: TextFormField(
+                                focusNode: fieldnode,
+                                onChanged: (value) {
+                                    setState((){
+                                      searchString = value; 
+                                    });
+                                },
+                                controller: searchController,
+                                decoration: InputDecoration(
+                                  hintText: "Search Room..",
+                                  hintStyle: const TextStyle(
+                                    color: Colors.grey, // <-- Change this
+                                    fontWeight: FontWeight.w600,
+                                    fontStyle: FontStyle.normal,
+                                  ),
+                                  contentPadding: const EdgeInsets.only(bottom: 10),
+                                  enabledBorder: OutlineInputBorder(
+                                    borderSide: const BorderSide(
+                                      color: Colors.transparent,
+                                    ),
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                  focusedBorder: OutlineInputBorder(
+                                    borderSide: const BorderSide(
+                                      color: Colors.transparent,
+                                    ),
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                  // prefixIcon: const Icon(Icons.search, color: Colors.grey),
+                                  prefixIcon: Icon(Icons.search,
+                                        color: fieldnode.hasFocus 
+                                        ? Theme.of(context).primaryColor
+                                        : Colors.grey),
+                                ),
+                              ),
+                              decoration: BoxDecoration(
+                                border: Border.all(color: Colors.grey.shade300),
+                                borderRadius: BorderRadius.circular(20),
+                                color: Colors.white,
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black.withOpacity(0.7),
+                                    blurRadius: 3.0,
+                                    offset: const Offset(0.0, 4.0),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                     ),
               
                     //Back Icon
                     Container(
-                      margin: const EdgeInsets.only(top: 40, left: 20),
+                      margin: const EdgeInsets.only(top: 20, left: 20),
                       child: Container(
                         decoration: BoxDecoration(
                           color: Colors.grey.withOpacity(0.8),
@@ -76,7 +149,7 @@ class _RoomPageState extends State<RoomPage> {
                     // Iconbutton menu
                     Container(
                       alignment: Alignment.centerRight,
-                      margin: const EdgeInsets.only(top: 40, right: 20),
+                      margin: const EdgeInsets.only(top: 20, right: 20),
                       child: Container(
                         padding: const EdgeInsets.all(8),
                         decoration: BoxDecoration(
@@ -133,7 +206,7 @@ class _RoomPageState extends State<RoomPage> {
                                             Fluttertoast.showToast(msg: "Action not allowed");
                                           }
                                         }, 
-                                        child: Text("Yes", style: TextStyle(color: Colors.deepOrange)),
+                                        child: Text("Yes", style: TextStyle(color: Colors.red)),
                                       ),
                                     ],
                                     elevation: 24.0,
@@ -152,7 +225,7 @@ class _RoomPageState extends State<RoomPage> {
                     ),
               
                     Container(
-                      margin: const EdgeInsets.only(top: 150, left: 0, right: 0, bottom: 0),
+                      margin: const EdgeInsets.only(top: 160, left: 0, right: 0, bottom: 0),
                       child: Container(
                         padding: const EdgeInsets.only(left: 20, right: 20, top: 20),
                         width: MediaQuery.of(context).size.width,
@@ -163,69 +236,63 @@ class _RoomPageState extends State<RoomPage> {
                             topRight: Radius.circular(20),
                           ),
                         ),
-                        child: Container(
-                          padding: const EdgeInsets.all(10),
+                        child: Padding(
+                          padding: const EdgeInsets.all(5),
                           child: Column(
                             children: [
                               ListView.builder(
                                 shrinkWrap: true,
+                                physics: const ClampingScrollPhysics(),
                                 itemCount: snapshot.data!.length,
                                 itemBuilder: (context, index) {
-                                  return Column(
+                                  var contained = searchRoom(snapshot.data![index], searchString);
+                                  return contained ? Column(
                                     children: [
-                                      InkWell(
-                                        child: ClipRRect(
-                                          borderRadius: BorderRadius.circular(20),
-                                          child: BackdropFilter(
-                                            filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-                                            child: Container(
-                                              height: 70,
-                                              width: double.maxFinite,
-                                              decoration: BoxDecoration(
-                                                gradient: LinearGradient(colors: [
-                                                  Colors.lightBlue.withOpacity(0.2),
-                                                  Colors.lightBlue.withOpacity(0.05),
-                                                ], begin: Alignment.topLeft, end: Alignment.bottomRight),
-                                                borderRadius: BorderRadius.circular(20)
-                                              ),
-                                              child: Row(
-                                                children: [
-                                                  const SizedBox(width: 30),
-                                                  Text("# ${snapshot.data![index].name}",
-                                                    overflow: TextOverflow.ellipsis,
-                                                    style: TextStyle(fontSize: 20.0),
+                                      Card(
+                                        clipBehavior: Clip.antiAlias,
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(20)
+                                        ),
+                                        child: InkWell(
+                                          child: SizedBox(
+                                            height: 70,
+                                            child: Row(
+                                              children: [
+                                                const SizedBox(width: 30),
+                                                Text("# ${snapshot.data![index].name}",
+                                                  overflow: TextOverflow.ellipsis,
+                                                  style: TextStyle(fontSize: 20.0),
+                                                ),
+                                                const Spacer(),
+                                                const Padding(
+                                                  padding: EdgeInsets.symmetric(horizontal: 20),
+                                                  child: Icon(
+                                                    Icons.arrow_forward_ios,
                                                   ),
-                                                  Spacer(),
-                                                  Padding(
-                                                    padding: EdgeInsets.symmetric(horizontal: 20),
-                                                    child: Icon(
-                                                      Icons.arrow_forward_ios,
-                                                    ),
-                                                  ),
-                                                ]
-                                              ),
+                                                ),
+                                              ]
                                             ),
                                           ),
-                                        ),
-                                        onTap: () async {
-                                          await Navigator.push(
-                                            context, 
-                                            MaterialPageRoute(
-                                              builder: (context) => const ChatRoomPage(),
-                                              settings: RouteSettings(
-                                                arguments: ChatRoomArguments(commu: commu, room: snapshot.data![index])
+                                          onTap: () async {
+                                            await Navigator.push(
+                                              context, 
+                                              MaterialPageRoute(
+                                                builder: (context) => const ChatRoomPage(),
+                                                settings: RouteSettings(
+                                                  arguments: ChatRoomArguments(commu: commu, room: snapshot.data![index])
+                                                )
                                               )
-                                            )
-                                          );
-                                          setState(() {
-                                            
-                                          });
-                                        },
+                                            );
+                                            setState(() {
+                                              
+                                            });
+                                          },
+                                        ),
                                       ),
                       
                                       const SizedBox(height: 20),
                                     ],
-                                  );
+                                  ): Container(); 
                                 }
                               ),
                             
@@ -278,7 +345,7 @@ class _RoomPageState extends State<RoomPage> {
                                                 if (success) {
                                                   Fluttertoast.showToast(msg: "Your community have been created.");
                                                   setState(() {
-                                                    
+                                                    isPost = !isPost;
                                                   });
                                                 }
                                               }
@@ -310,7 +377,7 @@ class _RoomPageState extends State<RoomPage> {
                                       height: 50,
                                       alignment: Alignment.center,
                                       decoration: BoxDecoration(
-                                        color: Color.fromRGBO(220, 71, 47, 1),
+                                        color: Colors.red,
                                         borderRadius: BorderRadius.circular(20)
                                       ),
                                       child: Icon(
@@ -327,6 +394,7 @@ class _RoomPageState extends State<RoomPage> {
                                   });
                                 },
                               ),
+                              const SizedBox(height: 20),
                             ],
                           ),
                         ),
@@ -398,5 +466,17 @@ class _RoomPageState extends State<RoomPage> {
       Fluttertoast.showToast(msg: ServerResponse.fromJson(jsonDecode(response.body)).message);
       return false;
     }
+  }
+
+    // Function Search Forum
+  bool searchRoom(Room data, String search) {
+    var isContain = false;
+
+    if (data.name.toLowerCase().contains(search.toLowerCase())) {
+      isContain = true;
+    }
+
+    return isContain;
+
   }
 }

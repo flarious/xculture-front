@@ -30,14 +30,24 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
-          elevation: 5.0,
-          backgroundColor: const Color.fromRGBO(220, 71, 47, 1),
+          // elevation: 5.0,
+          // backgroundColor: Colors.red,
+          // title: Text("# ${args.room.name}"),
+          // leading: IconButton(
+          //   icon: Icon(Icons.arrow_back),
+          //   onPressed: (){
+          //     Navigator.pop(context, args.commu.id);
+          //   },
+          // ),
+          elevation: 0.0,
+          backgroundColor: Colors.transparent,
+          toolbarHeight: 90,
           title: Text("# ${args.room.name}"),
-          leading: IconButton(
-            icon: Icon(Icons.arrow_back),
-            onPressed: (){
-              Navigator.pop(context, args.commu.id);
-            },
+          flexibleSpace: Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.only(bottomLeft: Radius.circular(30),bottomRight: Radius.circular(30)),
+              color: Colors.red,
+            ),
           ),
           actions: [
             Padding(
@@ -137,7 +147,7 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
                             children: [
                               Card(
                                 elevation: 8,
-                                color: const Color.fromRGBO(220, 71, 47, 1),
+                                color: Colors.red,
                                 shape: const RoundedRectangleBorder(
                                   borderRadius: BorderRadius.only(topLeft: Radius.circular(20), bottomLeft: Radius.circular(20), bottomRight: Radius.circular(20)),
                                 ),

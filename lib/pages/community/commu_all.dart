@@ -230,7 +230,7 @@ class _CommuAllPageState extends State<CommuAllPage> {
                                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                                       children: [
                                                 
-                                        Text(snapshot.data![index].desc,
+                                        Text(snapshot.data![index].name,
                                           maxLines: 2,
                                           overflow: TextOverflow.ellipsis,
                                           style: const TextStyle(

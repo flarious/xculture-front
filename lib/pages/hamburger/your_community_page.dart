@@ -116,6 +116,7 @@ class _YourCommuPageState extends State<YourCommuPage> with TickerProviderStateM
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
+
                                 Container (                                  
                                   height: 40,
                                   margin: const EdgeInsets.only(top: 20),
@@ -181,192 +182,195 @@ class _YourCommuPageState extends State<YourCommuPage> with TickerProviderStateM
                                   child: TabBarView(
                                     controller: _tabController,
                                     children: [ 
+
+                                      // Communities
                                       FutureBuilder<List<Community>>(
-                                        builder: (BuildContext context, AsyncSnapshot<List<Community>> snapshot) {
-                                          if (snapshot.hasData) {
-                                            // snapshot.data!.sort((b, a) => (a.viewed + a.favorited).compareTo((b.viewed + b.favorited)));
-                                            return ListView.builder(
-                                              itemCount: (snapshot.data!.length <= 5) ? snapshot.data!.length : 5,
-                                              scrollDirection: Axis.vertical,
-                                              itemBuilder: (BuildContext context, int index) {
-                                                var contained = searchCommunity(snapshot.data![index], searchString);
-                                                return contained ? InkWell(
-                                                  child: Container(
-                                                    margin: const EdgeInsets.all(10),
-                                                    // margin: const EdgeInsets.only(left: 10, right: 10, top: 10),
-                                                    width: 100,
-                                                    height: 240,
-                                                    decoration: BoxDecoration(
-                                                      borderRadius: BorderRadius.circular(20),
-                                                      color: Colors.lightBlue[100],
-                                                      boxShadow: [
-                                                        BoxShadow(
-                                                          color: Colors.grey.withOpacity(0.7),
-                                                          blurRadius: 5.0,
-                                                          offset: const Offset(0.0, 5.0),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                    child: Stack(
-                                                      children: [
-                                                        Container(
-                                                          height: 120,
-                                                          width: 350,
-                                                          decoration: BoxDecoration(
-                                                            borderRadius: const BorderRadius.only(
-                                                              topLeft: Radius.circular(20),
-                                                              topRight: Radius.circular(20),
-                                                            ),
-                                                            image: DecorationImage(
-                                                              fit: BoxFit.fill,
-                                                              image: NetworkImage(snapshot.data![index].thumbnail) // Forum Image
-                                                            ),
-                                                          ),
-                                                        ),
-                                                        Container(
-                                                          height: 200,
-                                                          margin: const EdgeInsets.only(top: 140, left: 20, right: 0, bottom: 20),
-                                                          child: Column(
-                                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                                            children: [
-                                                              Text(snapshot.data![index].name,
-                                                                overflow: TextOverflow.ellipsis,
-                                                                style: const TextStyle(
-                                                                  fontSize: 20.0,
-                                                                  fontWeight: FontWeight.bold,
-                                                                ),
-                                                              ),
-                                                              Text(snapshot.data![index].shortdesc,
-                                                                overflow: TextOverflow.ellipsis,
-                                                                style: const TextStyle(
-                                                                  fontSize: 15.0,
-                                                                  color: Colors.black,
-                                                                ),
-                                                              ),
-                                                              Text(
-                                                                "Members : ${snapshot.data![index].memberAmount.toString()}",
-                                                                style: const TextStyle(fontSize: 15), // Community Subtitle
-                                                              ),
-                                                            ],
-                                                          ),
-                                                        )
-                                                      ],
-                                                    ),
-                                                  ),
-                                                  onTap: () {
-                                                    Navigator.push(
-                                                      context,
-                                                      MaterialPageRoute(
-                                                        builder: (context) => const CommuDetailPage(),
-                                                        settings: RouteSettings(
-                                                          arguments: snapshot.data![index],
-                                                        ),
-                                                      )
-                                                    ).then(refreshPage);
-                                                  },
-                                                ) : Container();
-                                              }
-                                            );
-                                          }
-                                          else {
-                                            return const CircularProgressIndicator();
-                                          }
-                                        },
                                         future: _futureUserCommu,
-                                      ),
-                                      FutureBuilder<List<Community>>(
-                                        builder: (BuildContext context, AsyncSnapshot<List<Community>> snapshot) {
+                                        builder: (BuildContext context, AsyncSnapshot<List<Community>> snapshot){
                                           if (snapshot.hasData) {
-                                            return ListView.builder(
-                                              itemCount: (snapshot.data!.length <= 5) ? snapshot.data!.length : 5,
+                                            //snapshot.data!.sort((b, a) => (a.memberAmount).compareTo((b.memberAmount)));
+                                            return ListView.separated(
+                                              itemCount: snapshot.data!.length,
                                               scrollDirection: Axis.vertical,
+                                              separatorBuilder: (BuildContext context, int index) { 
+                                                return const SizedBox(width: 15); 
+                                              },
                                               itemBuilder: (BuildContext context, int index) {
                                                 var contained = searchCommunity(snapshot.data![index], searchString);
-                                                return contained ? InkWell(
-                                                  child: Container(
-                                                    margin: const EdgeInsets.all(10),
-                                                    // margin: const EdgeInsets.only(left: 10, right: 10, top: 10),
-                                                    width: 100,
-                                                    height: 240,
-                                                    decoration: BoxDecoration(
-                                                      borderRadius: BorderRadius.circular(20),
-                                                      color: Colors.lightBlue[100],
-                                                      boxShadow: [
-                                                        BoxShadow(
-                                                          color: Colors.grey.withOpacity(0.7),
-                                                          blurRadius: 5.0,
-                                                          offset: const Offset(0.0, 5.0),
-                                                        ),
-                                                      ],
+                                                return contained ? Card(
+                                                    //elevation: 4.0,
+                                                    clipBehavior: Clip.antiAlias,
+                                                    shape: RoundedRectangleBorder(
+                                                      borderRadius: BorderRadius.circular(20)
                                                     ),
-                                                    child: Stack(
-                                                      children: [
-                                                        Container(
-                                                          height: 120,
-                                                          width: 350,
-                                                          decoration: BoxDecoration(
-                                                            borderRadius: const BorderRadius.only(
-                                                              topLeft: Radius.circular(20),
-                                                              topRight: Radius.circular(20),
+                                                    child: InkWell(
+                                                      child: SizedBox(
+                                                        width: double.maxFinite,
+                                                        child: Column(
+                                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                                          children: [
+
+                                                            Ink.image(
+                                                              image: NetworkImage(snapshot.data![index].thumbnail),
+                                                              height: 150,
+                                                              fit: BoxFit.cover,
                                                             ),
-                                                            image: DecorationImage(
-                                                              fit: BoxFit.fill,
-                                                              image: NetworkImage(snapshot.data![index].thumbnail) // Event Image
-                                                            ),
-                                                          ),
-                                                        ),
-                                                        Container(
-                                                          height: 200,
-                                                          margin: const EdgeInsets.only(top: 140, left: 20, right: 0, bottom: 20),
-                                                          child: Column(
-                                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                                            children: [
-                                                              Text(
-                                                                snapshot.data![index].name,
+
+                                                            Padding(
+                                                              padding: const EdgeInsets.all(10.0),
+                                                              child: Text(snapshot.data![index].name,
                                                                 overflow: TextOverflow.ellipsis,
                                                                 style: const TextStyle(
-                                                                  fontSize: 20.0,
+                                                                  fontSize: 25.0,
                                                                   fontWeight: FontWeight.bold,
                                                                 ),
                                                               ),
-                                                              Text(
-                                                                snapshot.data![index].shortdesc,    // Event location
+                                                            ),
+
+                                                            Padding(
+                                                              padding: const EdgeInsets.symmetric(horizontal: 10),
+                                                              child: Text(snapshot.data![index].shortdesc,
                                                                 overflow: TextOverflow.ellipsis,
                                                                 style: const TextStyle(
                                                                   fontSize: 15.0,
                                                                   color: Colors.black,
-                                                                )
+                                                                ),
                                                               ),
-                                                              Text(
-                                                                "Members : ${snapshot.data![index].memberAmount.toString()}",
-                                                                style: const TextStyle(fontSize: 15), // Community Subtitle
+                                                            ),
+
+                                                            //const SizedBox(height: 10),
+
+                                                            Padding(
+                                                              padding: const EdgeInsets.symmetric(horizontal: 10),
+                                                              child: Text("Members : ${snapshot.data![index].memberAmount.toString()}",
+                                                                overflow: TextOverflow.ellipsis,
+                                                                style: const TextStyle(
+                                                                  fontSize: 15.0,
+                                                                  color: Colors.black,
+                                                                ),
                                                               ),
-                                                            ],
-                                                          ),
-                                                        )
-                                                      ],
-                                                    ),
-                                                  ),
-                                                  onTap: () {
-                                                    Navigator.push(
-                                                      context,
-                                                      MaterialPageRoute(
-                                                        builder: (context) => const CommuDetailPage(),
-                                                        settings: RouteSettings(
-                                                          arguments: snapshot.data![index],
+                                                            ),
+
+                                                            const SizedBox(height: 10),
+                                                          ],
                                                         ),
-                                                      )
-                                                    ).then(refreshPage);
-                                                  },
-                                                ) : Container();
-                                              }
+                                                      ),
+
+                                                      onTap: () {
+                                                        Navigator.push(
+                                                          context,
+                                                          MaterialPageRoute(
+                                                            builder: (context) => const CommuDetailPage(),
+                                                            settings: RouteSettings(
+                                                              arguments: snapshot.data![index],
+                                                            ),
+                                                          )
+                                                        ).then(refreshPage);
+                                                      },
+                                                    ), 
+                                                  ): Container();
+                                              },
                                             );
                                           }
                                           else {
-                                            return const CircularProgressIndicator();
+                                              return const CircularProgressIndicator();
                                           }
                                         },
+                                      ),
+
+                                      // Communities
+                                      FutureBuilder<List<Community>>(
                                         future: _futureUserJoinedCommu,
+                                        builder: (BuildContext context, AsyncSnapshot<List<Community>> snapshot){
+                                          if (snapshot.hasData) {
+                                            //snapshot.data!.sort((b, a) => (a.memberAmount).compareTo((b.memberAmount)));
+                                            return ListView.separated(
+                                              itemCount: snapshot.data!.length,
+                                              scrollDirection: Axis.vertical,
+                                              separatorBuilder: (BuildContext context, int index) { 
+                                                return const SizedBox(width: 15); 
+                                              },
+                                              itemBuilder: (BuildContext context, int index) {
+                                                var contained = searchCommunity(snapshot.data![index], searchString);
+                                                return contained ? Card(
+                                                    //elevation: 4.0,
+                                                    clipBehavior: Clip.antiAlias,
+                                                    shape: RoundedRectangleBorder(
+                                                      borderRadius: BorderRadius.circular(20)
+                                                    ),
+                                                    child: InkWell(
+                                                      child: SizedBox(
+                                                        width: double.maxFinite,
+                                                        child: Column(
+                                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                                          children: [
+
+                                                            Ink.image(
+                                                              image: NetworkImage(snapshot.data![index].thumbnail),
+                                                              height: 150,
+                                                              fit: BoxFit.cover,
+                                                            ),
+
+                                                            Padding(
+                                                              padding: const EdgeInsets.all(10.0),
+                                                              child: Text(snapshot.data![index].name,
+                                                                overflow: TextOverflow.ellipsis,
+                                                                style: const TextStyle(
+                                                                  fontSize: 25.0,
+                                                                  fontWeight: FontWeight.bold,
+                                                                ),
+                                                              ),
+                                                            ),
+
+                                                            Padding(
+                                                              padding: const EdgeInsets.symmetric(horizontal: 10),
+                                                              child: Text(snapshot.data![index].shortdesc,
+                                                                overflow: TextOverflow.ellipsis,
+                                                                style: const TextStyle(
+                                                                  fontSize: 15.0,
+                                                                  color: Colors.black,
+                                                                ),
+                                                              ),
+                                                            ),
+
+                                                            //const SizedBox(height: 10),
+
+                                                            Padding(
+                                                              padding: const EdgeInsets.symmetric(horizontal: 10),
+                                                              child: Text("Members : ${snapshot.data![index].memberAmount.toString()}",
+                                                                overflow: TextOverflow.ellipsis,
+                                                                style: const TextStyle(
+                                                                  fontSize: 15.0,
+                                                                  color: Colors.black,
+                                                                ),
+                                                              ),
+                                                            ),
+
+                                                            const SizedBox(height: 10),
+                                                          ],
+                                                        ),
+                                                      ),
+
+                                                      onTap: () {
+                                                        Navigator.push(
+                                                          context,
+                                                          MaterialPageRoute(
+                                                            builder: (context) => const CommuDetailPage(),
+                                                            settings: RouteSettings(
+                                                              arguments: snapshot.data![index],
+                                                            ),
+                                                          )
+                                                        ).then(refreshPage);
+                                                      },
+                                                    ), 
+                                                  ): Container();
+                                              },
+                                            );
+                                          }
+                                          else {
+                                              return const CircularProgressIndicator();
+                                          }
+                                        },
                                       ),
                                     ],
                                   )
@@ -377,41 +381,43 @@ class _YourCommuPageState extends State<YourCommuPage> with TickerProviderStateM
                       ),
                       
                       // Tab bar
-                      Container(
-                        height: 45,
-                        width: 260,
-                        margin: const EdgeInsets.only(top: 195, left: 65),
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          border: Border.all(color: Colors.red, width: 3.0),
-                          borderRadius: const BorderRadius.only(
-                            topLeft: Radius.circular(15),
-                            topRight: Radius.circular(15),
-                            bottomLeft: Radius.circular(15),
-                            bottomRight: Radius.circular(15),
-                          ),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.grey.withOpacity(0.7),
-                              blurRadius: 3.0,
-                              offset: const Offset(0.0, 4.0),
+                      Center(
+                        child: Container(
+                          height: 45,
+                          width: 260,
+                          margin: const EdgeInsets.only(top: 195, left: 65, right: 65),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            border: Border.all(color: Colors.red, width: 3.0),
+                            borderRadius: const BorderRadius.only(
+                              topLeft: Radius.circular(15),
+                              topRight: Radius.circular(15),
+                              bottomLeft: Radius.circular(15),
+                              bottomRight: Radius.circular(15),
                             ),
-                          ],
-                        ),
-                        child: TabBar(
-                          controller: _tabController,
-                          labelColor: Colors.black,
-                          labelStyle: const TextStyle(fontWeight: FontWeight.bold),
-                          unselectedLabelColor: Colors.grey,
-                          indicatorSize: TabBarIndicatorSize.label,
-                          indicatorColor: Colors.transparent,
-                          labelPadding: const EdgeInsets.all(0),
-                          indicatorPadding: const EdgeInsets.all(0),
-                          tabs: [
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.grey.withOpacity(0.7),
+                                blurRadius: 3.0,
+                                offset: const Offset(0.0, 4.0),
+                              ),
+                            ],
+                          ),
+                          child: TabBar(
+                            controller: _tabController,
+                            labelColor: Colors.black,
+                            labelStyle: const TextStyle(fontWeight: FontWeight.bold),
+                            unselectedLabelColor: Colors.grey,
+                            indicatorSize: TabBarIndicatorSize.label,
+                            indicatorColor: Colors.transparent,
+                            labelPadding: const EdgeInsets.all(0),
+                            indicatorPadding: const EdgeInsets.all(0),
+                            tabs: [
 
-                            _individualTab("Owned"),
-                            const Tab(text: "Joined")
-                          ],
+                              _individualTab("Owned"),
+                              const Tab(text: "Joined")
+                            ],
+                          ),
                         ),
                       ),
                     ],
