@@ -137,16 +137,11 @@ class _CommuDetailPageState extends State<CommuDetailPage> {
                                           ),
                                           TextButton(
                                             onPressed: () async {
-                                              if(snapshot.data!.owner.id == AuthHelper.auth.currentUser!.uid) {
-                                                var success = await deleteCommu(snapshot.data!.id);
-                                                if (success) {
-                                                  Fluttertoast.showToast(msg: "Deleted");
-                                                  Navigator.pop(context);
-                                                  Navigator.pop(context);
-                                                }
-                                              } 
-                                              else {
-                                                Fluttertoast.showToast(msg: "You are not the owner");
+                                              var success = await deleteCommu(snapshot.data!.id);
+                                              if (success) {
+                                                Fluttertoast.showToast(msg: "Deleted");
+                                                Navigator.pop(context);
+                                                Navigator.pop(context);
                                               }
                                             }, 
                                             child: const Text("Yes", style: TextStyle(color: Colors.red)),
@@ -164,6 +159,7 @@ class _CommuDetailPageState extends State<CommuDetailPage> {
                             PopupMenuItem(
                               child: const Text("Report"),
                               onTap: () async {
+                                if (AuthHelper.checkAuth() && snapshot.data!.owner.id != AuthHelper.auth.currentUser!.uid) {
                                   await Future.delayed(const Duration(milliseconds: 1));
                                   Navigator.push(
                                     context, 
@@ -175,6 +171,10 @@ class _CommuDetailPageState extends State<CommuDetailPage> {
                                     )
                                   ).then(refreshPage);
                                 }
+                                else {
+                                  Fluttertoast.showToast(msg: "The owner can't report their community");
+                                }
+                              }
                             ),
                           ],
                           child: const Icon(

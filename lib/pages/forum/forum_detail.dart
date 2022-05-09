@@ -184,16 +184,11 @@ class _ForumDetailPageState extends State<ForumDetailPage> {
                                           ),
                                           TextButton(
                                             onPressed: () async {
-                                              if(snapshot.data!.author.id == AuthHelper.auth.currentUser!.uid) {
-                                                var success = await deleteForum(snapshot.data!.id);
-                                                if (success) {
-                                                  Fluttertoast.showToast(msg: "Deleted");
-                                                  Navigator.pop(context);
-                                                  Navigator.pop(context);
-                                                }
-                                              } 
-                                              else {
-                                                Fluttertoast.showToast(msg: "You are not the owner");
+                                              var success = await deleteForum(snapshot.data!.id);
+                                              if (success) {
+                                                Fluttertoast.showToast(msg: "Deleted");
+                                                Navigator.pop(context);
+                                                Navigator.pop(context);
                                               }
                                             }, 
                                             child: const Text("Yes", style: TextStyle(color: Colors.red)),
@@ -211,16 +206,20 @@ class _ForumDetailPageState extends State<ForumDetailPage> {
                               PopupMenuItem(
                                 child: const Text("Report"),
                                 onTap: () async {
-                                  await Future.delayed(const Duration(milliseconds: 1));
-                                  Navigator.push(
-                                    context, 
-                                    MaterialPageRoute(
-                                      builder: (context) => const ReportPage(),
-                                      settings: RouteSettings(
-                                        arguments: snapshot.data!.id,
-                                      ),
-                                    )
-                                  ).then(refreshPage);
+                                  if (AuthHelper.checkAuth() && snapshot.data!.author.id != AuthHelper.auth.currentUser!.uid) {
+                                    await Future.delayed(const Duration(milliseconds: 1));
+                                    Navigator.push(
+                                      context, 
+                                      MaterialPageRoute(
+                                        builder: (context) => const ReportPage(),
+                                        settings: RouteSettings(
+                                          arguments: snapshot.data!.id,
+                                        ),
+                                      )
+                                    ).then(refreshPage);
+                                  } else {
+                                    Fluttertoast.showToast(msg: "The owner can't report their fourm");
+                                  }
                                 }
                               ),
                             ],
