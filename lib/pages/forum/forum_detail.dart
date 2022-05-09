@@ -12,6 +12,7 @@ import 'package:xculturetestapi/pages/forum/forum_edit.dart';
 import 'package:xculturetestapi/pages/reply/reply_edit.dart';
 import 'package:xculturetestapi/pages/comments/comment_edit.dart';
 import 'package:xculturetestapi/navbar.dart';
+import 'package:xculturetestapi/widgets/guesthamburger_widget.dart';
 
 import '../../widgets/hamburger_widget.dart';
 import '../report/report_page.dart';
@@ -147,9 +148,7 @@ class _ForumDetailPageState extends State<ForumDetailPage> {
                                 child: const Text("Edit"),
                                 onTap: () async {
                                   if (AuthHelper.checkAuth() && snapshot.data!.author.id == AuthHelper.auth.currentUser!.uid) {
-                                    await Future.delayed(
-                                      const Duration(milliseconds: 1)
-                                    );
+                                    await Future.delayed(const Duration(milliseconds: 1));
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(
@@ -168,23 +167,60 @@ class _ForumDetailPageState extends State<ForumDetailPage> {
                               PopupMenuItem(
                                 child: const Text("Delete"),
                                 onTap: () async {
-                                    
-                                  },
+                                  if (AuthHelper.checkAuth() && snapshot.data!.author.id == AuthHelper.auth.currentUser!.uid) {
+                                    await Future.delayed(const Duration(milliseconds: 1));
+                                    showDialog(
+                                      context: context,
+                                      builder: (context) => AlertDialog(
+                                        title: const Text("Delete"),
+                                        content: const Text("Do you really want to delete this event?"),
+                                        actions: [
+                                          TextButton(
+                                            onPressed: (){
+                                              //No
+                                              Navigator.pop(context);
+                                            }, 
+                                            child: const Text("No", style: TextStyle(color: Colors.grey)),
+                                          ),
+                                          TextButton(
+                                            onPressed: () async {
+                                              var success = await deleteForum(snapshot.data!.id);
+                                              if (success) {
+                                                Fluttertoast.showToast(msg: "Deleted");
+                                                Navigator.pop(context);
+                                                Navigator.pop(context);
+                                              }
+                                            }, 
+                                            child: const Text("Yes", style: TextStyle(color: Colors.red)),
+                                          ),
+                                        ],
+                                        elevation: 24.0,
+                                      ),
+                                    ); 
+                                  }
+                                  else {
+                                    Fluttertoast.showToast(msg: "You are not the owner");
+                                  }
+                                },
                               ),
                               PopupMenuItem(
                                 child: const Text("Report"),
                                 onTap: () async {
-                                    // await Future.delayed(const Duration(milliseconds: 1));
-                                    // Navigator.push(
-                                    //   context, 
-                                    //   MaterialPageRoute(
-                                    //     builder: (context) => const ReportPage(),
-                                    //     settings: RouteSettings(
-                                    //       arguments: snapshot.data!.id,
-                                    //     ),
-                                    //   )
-                                    // ).then(refreshPage);
+                                  if (AuthHelper.checkAuth() && snapshot.data!.author.id != AuthHelper.auth.currentUser!.uid) {
+                                    await Future.delayed(const Duration(milliseconds: 1));
+                                    Navigator.push(
+                                      context, 
+                                      MaterialPageRoute(
+                                        builder: (context) => const ReportPage(),
+                                        settings: RouteSettings(
+                                          arguments: snapshot.data!.id,
+                                        ),
+                                      )
+                                    ).then(refreshPage);
+                                  } else {
+                                    Fluttertoast.showToast(msg: "The owner can't report their fourm");
                                   }
+                                }
                               ),
                             ],
                             child: const Icon(
@@ -438,9 +474,9 @@ class _ForumDetailPageState extends State<ForumDetailPage> {
                                           children: [
 
                                             ListTile(
-                                              leading: const CircleAvatar(
+                                              leading: CircleAvatar(
                                                 radius: 20,
-                                                backgroundImage: AssetImage("assets/images/User_icon.jpg"),
+                                                backgroundImage: snapshot.data!.comments[index].author.profilePic == "" ? const AssetImage("assets/images/User_icon.jpg") : NetworkImage(snapshot.data!.author.profilePic) as ImageProvider,
                                               ),
                                               title: Row(
                                                 children: [
@@ -656,9 +692,9 @@ class _ForumDetailPageState extends State<ForumDetailPage> {
                                                   children: [
                                                     
                                                     ListTile(
-                                                      leading: const CircleAvatar(
+                                                      leading: CircleAvatar(
                                                         radius: 20,
-                                                        backgroundImage: AssetImage("assets/images/User_icon.jpg"),
+                                                        backgroundImage: snapshot.data!.comments[index].replies[index2].author.profilePic == "" ? const AssetImage("assets/images/User_icon.jpg") : NetworkImage(snapshot.data!.author.profilePic) as ImageProvider,
                                                       ),
                                                       title: Row(
                                                         children: [
@@ -761,7 +797,7 @@ class _ForumDetailPageState extends State<ForumDetailPage> {
             }
           ),
         ),
-        endDrawer: const NavigationDrawerWidget(),
+        endDrawer: AuthHelper.checkAuth() ? const NavigationDrawerWidget() : const GuestHamburger(),
         bottomNavigationBar: const Navbar(currentIndex: 2),
       ),
     );
@@ -782,7 +818,7 @@ class _ForumDetailPageState extends State<ForumDetailPage> {
     } else {
       Fluttertoast.showToast(msg: ServerResponse.fromJson(jsonDecode(response.body)).message);
       Navigator.pop(context);
-      return Forum(id: "", title: "", subtitle: "", content: "", thumbnail: "", author: User(id: "", name: "", profilePic: "", bio: "", email: "", tags: []), 
+      return Forum(id: "", title: "", subtitle: "", content: "", thumbnail: "", author: User(id: "", name: "", profilePic: "", bio: "", email: "", lastBanned: "", userType: "", bannedAmount: 0, tags: []), 
       incognito: false, viewed: 0, favorited: 0, createDate: DateTime.now().toString(), updateDate: DateTime.now().toString(), comments: [], tags: [], favoritedBy: []);
     }
   }

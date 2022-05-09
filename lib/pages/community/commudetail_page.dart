@@ -9,6 +9,7 @@ import 'package:xculturetestapi/helper/auth.dart';
 import 'package:xculturetestapi/pages/community/chatroom/room_page.dart';
 import 'package:xculturetestapi/pages/community/commuedit_page.dart';
 import 'package:xculturetestapi/pages/community/private/question_page.dart';
+import 'package:xculturetestapi/widgets/guesthamburger_widget.dart';
 
 import '../../navbar.dart';
 import '../../widgets/hamburger_widget.dart';
@@ -136,16 +137,11 @@ class _CommuDetailPageState extends State<CommuDetailPage> {
                                           ),
                                           TextButton(
                                             onPressed: () async {
-                                              if(snapshot.data!.owner.id == AuthHelper.auth.currentUser!.uid) {
-                                                var success = await deleteCommu(snapshot.data!.id);
-                                                if (success) {
-                                                  Fluttertoast.showToast(msg: "Deleted");
-                                                  Navigator.pop(context);
-                                                  Navigator.pop(context);
-                                                }
-                                              } 
-                                              else {
-                                                Fluttertoast.showToast(msg: "You are not the owner");
+                                              var success = await deleteCommu(snapshot.data!.id);
+                                              if (success) {
+                                                Fluttertoast.showToast(msg: "Deleted");
+                                                Navigator.pop(context);
+                                                Navigator.pop(context);
                                               }
                                             }, 
                                             child: const Text("Yes", style: TextStyle(color: Colors.red)),
@@ -163,6 +159,7 @@ class _CommuDetailPageState extends State<CommuDetailPage> {
                             PopupMenuItem(
                               child: const Text("Report"),
                               onTap: () async {
+                                if (AuthHelper.checkAuth() && snapshot.data!.owner.id != AuthHelper.auth.currentUser!.uid) {
                                   await Future.delayed(const Duration(milliseconds: 1));
                                   Navigator.push(
                                     context, 
@@ -174,6 +171,10 @@ class _CommuDetailPageState extends State<CommuDetailPage> {
                                     )
                                   ).then(refreshPage);
                                 }
+                                else {
+                                  Fluttertoast.showToast(msg: "The owner can't report their community");
+                                }
+                              }
                             ),
                           ],
                           child: const Icon(
@@ -436,7 +437,7 @@ class _CommuDetailPageState extends State<CommuDetailPage> {
             },
           ),
         ),
-        endDrawer: const NavigationDrawerWidget(),
+        endDrawer: AuthHelper.checkAuth() ? const NavigationDrawerWidget() : const GuestHamburger(),
         bottomNavigationBar: const Navbar(currentIndex: 3), 
       ),
     );
@@ -457,7 +458,8 @@ class _CommuDetailPageState extends State<CommuDetailPage> {
     } else {
       Fluttertoast.showToast(msg: ServerResponse.fromJson(jsonDecode(response.body)).message);
       Navigator.pop(context);
-      return Community(id: "", name: "", shortdesc: "", desc: "", thumbnail: "", memberAmount: 0, createDate: DateTime.now().toString(), updateDate: DateTime.now().toString(), owner: User(id: "", name: "", profilePic: "", bio: "", email: "", tags: []), members: [], type: "", questions: []);
+      return Community(id: "", name: "", shortdesc: "", desc: "", thumbnail: "", memberAmount: 0, createDate: DateTime.now().toString(), updateDate: DateTime.now().toString(), 
+      owner: User(id: "", name: "", profilePic: "", bio: "", email: "", lastBanned: "", userType: "", bannedAmount: 0, tags: []), members: [], type: "", questions: []);
     }
   }
 

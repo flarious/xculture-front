@@ -9,6 +9,7 @@ import 'package:xculturetestapi/pages/community/commu_all.dart';
 import 'package:xculturetestapi/pages/community/commudetail_page.dart';
 import 'package:xculturetestapi/pages/community/commupost_page.dart';
 import 'package:http/http.dart' as http;
+import 'package:xculturetestapi/widgets/guesthamburger_widget.dart';
 import '../../data.dart';
 import '../../helper/auth.dart';
 import '../../widgets/hamburger_widget.dart';
@@ -52,10 +53,7 @@ class _CommuPageState extends State<CommuPage> {
               MaterialPageRoute(
                 builder: (context) => const CommuPostPage(),
               )
-            );
-            setState(() {
-              
-            });
+            ).then(refreshPage);
           }
           else {
             Fluttertoast.showToast(msg: "You are not signed in");
@@ -63,7 +61,7 @@ class _CommuPageState extends State<CommuPage> {
         },
         child: const Icon(Icons.group_add_outlined)
       ),
-      endDrawer: const NavigationDrawerWidget(),
+      endDrawer: AuthHelper.checkAuth() ? const NavigationDrawerWidget() : const GuestHamburger(),
       bottomNavigationBar: const Navbar(currentIndex: 3),
     );
   }
@@ -323,7 +321,7 @@ class _CommuPageState extends State<CommuPage> {
                     SizedBox(
                       height: 270,
                       child: FutureBuilder<List<Community>>(
-                        future: trendingCommu,
+                        future: newestCommu,
                         builder: (BuildContext context, AsyncSnapshot<List<Community>> snapshot){
                           if (snapshot.hasData) {
                             snapshot.data!.sort((b, a) => (a.createDate).compareTo((b.createDate)));

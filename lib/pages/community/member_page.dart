@@ -109,7 +109,7 @@ class _MemberPageState extends State<MemberPage> with TickerProviderStateMixin{
                                           return snapshot.data!.members[index].type == "member" ? ListTile(
                                             leading: CircleAvatar(
                                               radius: 20,
-                                              backgroundImage: NetworkImage(snapshot.data!.members[index].member.profilePic),
+                                              backgroundImage: snapshot.data!.members[index].member.profilePic == "" ? const AssetImage("assets/images/User_icon.jpg") : NetworkImage(snapshot.data!.members[index].member.profilePic) as ImageProvider,
                                             ),
                                             title: Text(snapshot.data!.members[index].member.name),
                                             //subtitle: Text("Score : 99"),
@@ -158,7 +158,7 @@ class _MemberPageState extends State<MemberPage> with TickerProviderStateMixin{
                                           return snapshot.data!.members[index].type == "pending" ? ListTile(
                                             leading: CircleAvatar(
                                               radius: 20,
-                                              backgroundImage: NetworkImage(snapshot.data!.members[index].member.profilePic),
+                                              backgroundImage: snapshot.data!.members[index].member.profilePic == "" ? const AssetImage("assets/images/User_icon.jpg") : NetworkImage(snapshot.data!.members[index].member.profilePic) as ImageProvider,
                                             ),
                                             title: Text(snapshot.data!.members[index].member.name),
                                             //subtitle: Text("Score : 99"),
@@ -257,7 +257,8 @@ class _MemberPageState extends State<MemberPage> with TickerProviderStateMixin{
     } else {
       Fluttertoast.showToast(msg: ServerResponse.fromJson(jsonDecode(response.body)).message);
       Navigator.pop(context);
-      return Community(id: "", name: "", shortdesc: "", desc: "", thumbnail: "", memberAmount: 0, createDate: DateTime.now().toString(), updateDate: DateTime.now().toString(), owner: User(id: "", name: "", profilePic: "", bio: "", email: "", tags: []), members: [], type: "", questions: []);
+      return Community(id: "", name: "", shortdesc: "", desc: "", thumbnail: "", memberAmount: 0, createDate: DateTime.now().toString(), updateDate: DateTime.now().toString(), 
+      owner: User(id: "", name: "", profilePic: "", bio: "", email: "", lastBanned: "", userType: "", bannedAmount: 0, tags: []), members: [], type: "", questions: []);
     }
   }
 }

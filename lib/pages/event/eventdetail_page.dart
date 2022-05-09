@@ -8,6 +8,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:xculturetestapi/helper/auth.dart';
 import 'package:xculturetestapi/pages/event/event_edit.dart';
 import 'package:xculturetestapi/pages/report/report_page.dart';
+import 'package:xculturetestapi/widgets/guesthamburger_widget.dart';
 
 import '../../navbar.dart';
 import '../../widgets/hamburger_widget.dart';
@@ -132,16 +133,11 @@ class _EventDetailPageState extends State<EventDetailPage> {
                                           ),
                                           TextButton(
                                             onPressed: () async {
-                                              if(snapshot.data!.host.id == AuthHelper.auth.currentUser!.uid) {
-                                                var success = await deleteEvent(snapshot.data!.id);
-                                                if (success) {
-                                                  Fluttertoast.showToast(msg: "Deleted");
-                                                  Navigator.pop(context);
-                                                  Navigator.pop(context);
-                                                }
-                                              } 
-                                              else {
-                                                Fluttertoast.showToast(msg: "You are not the owner");
+                                              var success = await deleteEvent(snapshot.data!.id);
+                                              if (success) {
+                                                Fluttertoast.showToast(msg: "Deleted");
+                                                Navigator.pop(context);
+                                                Navigator.pop(context);
                                               }
                                             }, 
                                             child: const Text("Yes", style: TextStyle(color: Colors.red)),
@@ -159,16 +155,21 @@ class _EventDetailPageState extends State<EventDetailPage> {
                               PopupMenuItem(
                                 child: const Text("Report"),
                                 onTap: () async {
-                                  await Future.delayed(const Duration(milliseconds: 1));
-                                  Navigator.push(
-                                    context, 
-                                    MaterialPageRoute(
-                                      builder: (context) => const ReportPage(),
-                                      settings: RouteSettings(
-                                        arguments: snapshot.data!.id,
-                                      ),
-                                    )
-                                  ).then(refreshPage);
+                                  if (AuthHelper.checkAuth() && snapshot.data!.host.id != AuthHelper.auth.currentUser!.uid) {
+                                    await Future.delayed(const Duration(milliseconds: 1));
+                                    Navigator.push(
+                                      context, 
+                                      MaterialPageRoute(
+                                        builder: (context) => const ReportPage(),
+                                        settings: RouteSettings(
+                                          arguments: snapshot.data!.id,
+                                        ),
+                                      )
+                                    ).then(refreshPage);
+                                  }
+                                  else {
+                                    Fluttertoast.showToast(msg: "The owner can't report their event");
+                                  }
                                 },
                               ),
                             ],
@@ -385,7 +386,7 @@ class _EventDetailPageState extends State<EventDetailPage> {
             }
           ),
         ),
-      endDrawer: const NavigationDrawerWidget(),
+      endDrawer: AuthHelper.checkAuth() ? const NavigationDrawerWidget() : const GuestHamburger(),
       bottomNavigationBar: const Navbar(currentIndex: 0),
       ),
     );
@@ -406,7 +407,8 @@ class _EventDetailPageState extends State<EventDetailPage> {
     } else {
       Fluttertoast.showToast(msg: ServerResponse.fromJson(jsonDecode(response.body)).message);
       Navigator.pop(context);
-      return Event(id: "", name: "", body: "", interestedAmount: 0, thumbnail: "", location: "", createDate: DateTime.now().toString(), updateDate: DateTime.now().toString(), eventDate: DateTime.now().toString(), host: User(id: "", name: "", profilePic: "", bio: "", email: "", tags: []), members: []);
+      return Event(id: "", name: "", body: "", interestedAmount: 0, thumbnail: "", location: "", createDate: DateTime.now().toString(), updateDate: DateTime.now().toString(), eventDate: DateTime.now().toString(), 
+      host: User(id: "", name: "", profilePic: "", bio: "", email: "", lastBanned: "", userType: "", bannedAmount: 0, tags: []), members: []);
     }
   }
 

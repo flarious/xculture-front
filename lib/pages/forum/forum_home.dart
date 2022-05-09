@@ -9,6 +9,7 @@ import 'package:http/http.dart' as http;
 import 'package:xculturetestapi/pages/forum/forum_new.dart';
 import 'package:xculturetestapi/pages/forum/forum_all.dart';
 import 'package:xculturetestapi/pages/forum/forum_detail.dart';
+import 'package:xculturetestapi/widgets/guesthamburger_widget.dart';
 import 'package:xculturetestapi/widgets/hamburger_widget.dart';
 
 
@@ -60,7 +61,7 @@ class _ForumPageState extends State<ForumPage> {
         },
         child: const Icon(Icons.post_add)
       ),
-      endDrawer: const NavigationDrawerWidget(),
+      endDrawer: AuthHelper.checkAuth() ? const NavigationDrawerWidget() : const GuestHamburger(),
       bottomNavigationBar: const Navbar(currentIndex: 2),
     );
   }

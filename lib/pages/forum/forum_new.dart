@@ -8,6 +8,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:find_dropdown/find_dropdown.dart';
 import 'package:xculturetestapi/helper/auth.dart';
 import 'package:xculturetestapi/navbar.dart';
+import 'package:xculturetestapi/widgets/guesthamburger_widget.dart';
 import '../../widgets/hamburger_widget.dart';
 
 // image
@@ -428,15 +429,22 @@ class _NewForumPageState extends State<NewForumPage> {
                                         onPressed: () async {
                                           if (_formKey.currentState!.validate()) {
                                             final path = image?.path;
-                                            final fileName = DateTime.now().toString() + '_' + _title.text + '.jpg';
-                                            firebase_storage.uploadForum(path!, fileName).then((value) async {
-                                              var success = await sendForumDetail(_title.text, _subtitle.text, value, _content.text, incognito, arr);
-                                              if(success) {
-                                                Fluttertoast.showToast(msg: "Your post has been created.");
-                                                Navigator.pop(context);
-                                                Navigator.pop(context);
-                                              }
-                                            });
+                                            if (path != null) {
+                                              final fileName = DateTime.now().toString() + '_' + _title.text + '.jpg';
+                                              firebase_storage.uploadForum(path, fileName).then((value) async {
+                                                var success = await sendForumDetail(_title.text, _subtitle.text, value, _content.text, incognito, arr);
+                                                if(success) {
+                                                  Fluttertoast.showToast(msg: "Your post has been created.");
+                                                  Navigator.pop(context);
+                                                  Navigator.pop(context);
+                                                }
+                                              });
+                                            }
+                                            else {
+                                              Fluttertoast.showToast(msg: "Please upload an image");
+                                              Navigator.pop(context);
+                                            }
+                                            
                                             // var success =  await sendForumDetail(_title.text, _subtitle.text, _thumbnail.text, _content.text, incognito, arr);
                                             // if(success) {
                                             //   Fluttertoast.showToast(msg: "Your post has been created.");
@@ -464,7 +472,7 @@ class _NewForumPageState extends State<NewForumPage> {
             ),
           ),
         ),
-        endDrawer: const NavigationDrawerWidget(),
+        endDrawer: AuthHelper.checkAuth() ? const NavigationDrawerWidget() : const GuestHamburger(),
         bottomNavigationBar: const Navbar(currentIndex: 2),
       ),
     );

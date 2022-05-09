@@ -5,6 +5,7 @@ import 'package:xculturetestapi/navbar.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:xculturetestapi/pages/forum/forum_new.dart';
 import 'package:xculturetestapi/pages/forum/forum_detail.dart';
+import 'package:xculturetestapi/widgets/guesthamburger_widget.dart';
 
 
 import '../../helper/auth.dart';
@@ -64,7 +65,7 @@ class _ForumAllPageState extends State<ForumAllPage> {
         },
         child: const Icon(Icons.post_add)
       ),
-      endDrawer: const NavigationDrawerWidget(),
+      endDrawer: AuthHelper.checkAuth() ? const NavigationDrawerWidget() : const GuestHamburger(),
       bottomNavigationBar: const Navbar(currentIndex: 2),
     );
   }

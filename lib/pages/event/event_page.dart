@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:ui';
 import 'package:intl/intl.dart';
 import 'package:xculturetestapi/pages/event/event_all.dart';
+import 'package:xculturetestapi/widgets/guesthamburger_widget.dart';
 
 import '../../data.dart';
 import 'package:http/http.dart' as http;
@@ -63,7 +64,7 @@ class _EventPageState extends State<EventPage> {
         },
         child: const Icon(Icons.add_location_alt_outlined)
       ),
-      endDrawer: const NavigationDrawerWidget(),
+      endDrawer: AuthHelper.checkAuth() ? const NavigationDrawerWidget() : const GuestHamburger(),
       bottomNavigationBar: const Navbar(currentIndex: 0),
     );
   }

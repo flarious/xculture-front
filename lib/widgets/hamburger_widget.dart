@@ -332,7 +332,7 @@ class _NavigationDrawerWidgetState extends State<NavigationDrawerWidget> with Ti
           child: Row(
             children: [
               SizedBox(width: 25),
-              CircleAvatar(radius: 30, backgroundImage: NetworkImage(urlImage)),
+              CircleAvatar(radius: 30, backgroundImage: urlImage == "" ? const AssetImage("assets/images/User_icon.jpg") : NetworkImage(urlImage) as ImageProvider),
               SizedBox(width: 25),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -428,7 +428,7 @@ class _NavigationDrawerWidgetState extends State<NavigationDrawerWidget> with Ti
       return User.formJson(jsonDecode(response.body));
     } else {
       Fluttertoast.showToast(msg: "error");
-      return User(id: "", name: "", profilePic: "", bio: "", email: "", tags: []);
+      return User(id: "", name: "", profilePic: "", bio: "", email: "", lastBanned: "", userType: "", bannedAmount: 0, tags: []);
     }
   }
 
