@@ -53,10 +53,7 @@ class _CommuPageState extends State<CommuPage> {
               MaterialPageRoute(
                 builder: (context) => const CommuPostPage(),
               )
-            );
-            setState(() {
-              
-            });
+            ).then(refreshPage);
           }
           else {
             Fluttertoast.showToast(msg: "You are not signed in");
@@ -324,7 +321,7 @@ class _CommuPageState extends State<CommuPage> {
                     SizedBox(
                       height: 270,
                       child: FutureBuilder<List<Community>>(
-                        future: trendingCommu,
+                        future: newestCommu,
                         builder: (BuildContext context, AsyncSnapshot<List<Community>> snapshot){
                           if (snapshot.hasData) {
                             snapshot.data!.sort((b, a) => (a.createDate).compareTo((b.createDate)));
