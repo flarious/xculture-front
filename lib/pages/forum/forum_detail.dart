@@ -148,9 +148,7 @@ class _ForumDetailPageState extends State<ForumDetailPage> {
                                 child: const Text("Edit"),
                                 onTap: () async {
                                   if (AuthHelper.checkAuth() && snapshot.data!.author.id == AuthHelper.auth.currentUser!.uid) {
-                                    await Future.delayed(
-                                      const Duration(milliseconds: 1)
-                                    );
+                                    await Future.delayed(const Duration(milliseconds: 1));
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(
@@ -169,23 +167,61 @@ class _ForumDetailPageState extends State<ForumDetailPage> {
                               PopupMenuItem(
                                 child: const Text("Delete"),
                                 onTap: () async {
-                                    
-                                  },
+                                  if (AuthHelper.checkAuth() && snapshot.data!.author.id == AuthHelper.auth.currentUser!.uid) {
+                                    await Future.delayed(const Duration(milliseconds: 1));
+                                    showDialog(
+                                      context: context,
+                                      builder: (context) => AlertDialog(
+                                        title: const Text("Delete"),
+                                        content: const Text("Do you really want to delete this event?"),
+                                        actions: [
+                                          TextButton(
+                                            onPressed: (){
+                                              //No
+                                              Navigator.pop(context);
+                                            }, 
+                                            child: const Text("No", style: TextStyle(color: Colors.grey)),
+                                          ),
+                                          TextButton(
+                                            onPressed: () async {
+                                              if(snapshot.data!.author.id == AuthHelper.auth.currentUser!.uid) {
+                                                var success = await deleteForum(snapshot.data!.id);
+                                                if (success) {
+                                                  Fluttertoast.showToast(msg: "Deleted");
+                                                  Navigator.pop(context);
+                                                  Navigator.pop(context);
+                                                }
+                                              } 
+                                              else {
+                                                Fluttertoast.showToast(msg: "You are not the owner");
+                                              }
+                                            }, 
+                                            child: const Text("Yes", style: TextStyle(color: Colors.red)),
+                                          ),
+                                        ],
+                                        elevation: 24.0,
+                                      ),
+                                    ); 
+                                  }
+                                  else {
+                                    Fluttertoast.showToast(msg: "You are not the owner");
+                                  }
+                                },
                               ),
                               PopupMenuItem(
                                 child: const Text("Report"),
                                 onTap: () async {
-                                    // await Future.delayed(const Duration(milliseconds: 1));
-                                    // Navigator.push(
-                                    //   context, 
-                                    //   MaterialPageRoute(
-                                    //     builder: (context) => const ReportPage(),
-                                    //     settings: RouteSettings(
-                                    //       arguments: snapshot.data!.id,
-                                    //     ),
-                                    //   )
-                                    // ).then(refreshPage);
-                                  }
+                                  await Future.delayed(const Duration(milliseconds: 1));
+                                  Navigator.push(
+                                    context, 
+                                    MaterialPageRoute(
+                                      builder: (context) => const ReportPage(),
+                                      settings: RouteSettings(
+                                        arguments: snapshot.data!.id,
+                                      ),
+                                    )
+                                  ).then(refreshPage);
+                                }
                               ),
                             ],
                             child: const Icon(
