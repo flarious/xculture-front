@@ -1,9 +1,15 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:xculturetestapi/constants.dart';
+import 'package:xculturetestapi/data.dart';
 import 'package:xculturetestapi/helper/auth.dart';
 import 'package:xculturetestapi/pages/forum/forum_home.dart';
 import 'package:xculturetestapi/pages/sign_in/sign_in_screen.dart';
 import 'package:xculturetestapi/size_config.dart';
+import 'package:http/http.dart' as http;
+import 'package:intl/intl.dart';
 
 // This is the best practice
 import '../components/splash_content.dart';
@@ -65,12 +71,15 @@ class _BodyState extends State<Body> {
                       text: "Continue",
                       press: () async {
                         if (AuthHelper.checkAuth()) {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => const ForumPage(),
-                            )
-                          );
+                          var success = await isNotBanned();
+                          if (success) {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const ForumPage(),
+                              )
+                            );
+                          }
                         }
                         else {
                           Navigator.push(
@@ -105,5 +114,62 @@ class _BodyState extends State<Body> {
         borderRadius: BorderRadius.circular(3),
       ),
     );
+  }
+
+  Future<bool> isNotBanned() async {
+    final userToken = await AuthHelper.getToken();
+    final response = await http.get(
+      Uri.parse("http://10.0.2.2:3000/user"),
+      headers: <String, String> {
+        'Authorization': 'bearer $userToken'
+      }
+    );
+
+    if (response.statusCode == 200) {
+      final user = User.formJson(jsonDecode(response.body));
+      if(user.userType != "banned") {
+        return true;
+      }
+      else {
+        final banExpired = DateTime.parse(user.lastBanned!).toLocal().add(Duration(hours: user.bannedAmount!));
+        final formattedBanExpired = DateFormat('MMMM dd, yyyy – HH:mm a').format(banExpired);
+        if (!banExpired.isAfter(DateTime.now())) {
+          var success = await unbanByExpired();
+          if (success) {
+            return true;
+          }
+          else {
+            return false;
+          }
+        }
+        else {
+          Fluttertoast.showToast(msg: "You are banned. The ban will be lifted in $formattedBanExpired");
+          return false;
+        }
+      }
+    }
+    else {
+      Fluttertoast.showToast(msg: ServerResponse.fromJson(jsonDecode(response.body)).message);
+      print(1);
+      return false;
+    }
+  }
+
+  Future<bool> unbanByExpired() async {
+    final userToken = await AuthHelper.getToken();
+    final response = await http.put(
+      Uri.parse("http://10.0.2.2:3000/user/unban"),
+      headers: <String, String> {
+        'Authorization': 'bearer $userToken'
+      }
+    );
+
+    if (response.statusCode == 200) {
+      return true;
+    } 
+    else {
+      Fluttertoast.showToast(msg: ServerResponse.fromJson(jsonDecode(response.body)).message);
+      return false;
+    }
   }
 }

@@ -237,6 +237,9 @@ class User {
   final String profilePic;
   final String? bio;
   final String? email;
+  final String? userType;
+  final int? bannedAmount;
+  final String? lastBanned;
   final List<Tag>? tags;
 
   User({
@@ -245,6 +248,9 @@ class User {
     required this.profilePic,
     required this.bio,
     required this.email,
+    required this.userType,
+    required this.bannedAmount,
+    required this.lastBanned,
     required this.tags
   });
 
@@ -254,6 +260,9 @@ class User {
       name: json['name'],
       bio: json['bio'],
       email: json['email'],
+      userType: json['userType'],
+      bannedAmount: json['banned_amount'],
+      lastBanned: json['last_banned'],
       profilePic: json['profile_pic'],
       tags: getTagsFromJson(json['tags'])
     );
@@ -265,6 +274,9 @@ class User {
       name: json['member']['name'],
       bio: json['member']['bio'],
       email: json['member']['email'],
+      userType: json['member']['userType'],
+      bannedAmount: json['member']['banned_amount'],
+      lastBanned: json['member']['last_banned'],
       profilePic: json['member']['profile_pic'],
       tags: getTagsFromJson(json['member']['tags'])
     );

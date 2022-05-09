@@ -458,7 +458,8 @@ class _CommuDetailPageState extends State<CommuDetailPage> {
     } else {
       Fluttertoast.showToast(msg: ServerResponse.fromJson(jsonDecode(response.body)).message);
       Navigator.pop(context);
-      return Community(id: "", name: "", shortdesc: "", desc: "", thumbnail: "", memberAmount: 0, createDate: DateTime.now().toString(), updateDate: DateTime.now().toString(), owner: User(id: "", name: "", profilePic: "", bio: "", email: "", tags: []), members: [], type: "", questions: []);
+      return Community(id: "", name: "", shortdesc: "", desc: "", thumbnail: "", memberAmount: 0, createDate: DateTime.now().toString(), updateDate: DateTime.now().toString(), 
+      owner: User(id: "", name: "", profilePic: "", bio: "", email: "", lastBanned: "", userType: "", bannedAmount: 0, tags: []), members: [], type: "", questions: []);
     }
   }
 

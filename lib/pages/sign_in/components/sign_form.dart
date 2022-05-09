@@ -1,4 +1,9 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:intl/intl.dart';
+import 'package:xculturetestapi/data.dart';
 import 'package:xculturetestapi/helper/auth.dart';
 import 'package:xculturetestapi/helper/keyboard.dart';
 import 'package:xculturetestapi/pages/forum/forum_home.dart';
@@ -15,6 +20,7 @@ import 'package:xculturetestapi/widgets/form_error.dart';
 // import '../../../components/default_button.dart';
 import '../../../constants.dart';
 import '../../../size_config.dart';
+import 'package:http/http.dart' as http;
 
 class SignForm extends StatefulWidget {
   @override
@@ -63,13 +69,18 @@ class _SignFormState extends State<SignForm> {
                 KeyboardUtil.hideKeyboard(context);
                 var success = await AuthHelper.signIn(email!, password!);
                 if (success) {
-                  print(await AuthHelper.getToken());
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const ForumPage(),
-                    )
-                  );
+                  var success2 = await isNotBanned();
+                  if (success2) {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const ForumPage(),
+                      )
+                    );
+                  }
+                  else {
+                    AuthHelper.signOut();
+                  }
                 }
                 
                   // Navigator.pushNamed(context, ProfileScreen.routeName);//Go to forum page
@@ -145,5 +156,61 @@ class _SignFormState extends State<SignForm> {
         suffixIcon: CustomSurffixIcon(svgIcon: "assets/icons/Mail.svg"),
       ),
     );
+  }
+  
+  Future<bool> isNotBanned() async {
+    final userToken = await AuthHelper.getToken();
+    final response = await http.get(
+      Uri.parse("http://10.0.2.2:3000/user"),
+      headers: <String, String> {
+        'Authorization': 'bearer $userToken'
+      }
+    );
+
+    if (response.statusCode == 200) {
+      final user = User.formJson(jsonDecode(response.body));
+      if(user.userType != "banned") {
+        return true;
+      }
+      else {
+        final banExpired = DateTime.parse(user.lastBanned!).toLocal().add(Duration(hours: user.bannedAmount!));
+        final formattedBanExpired = DateFormat('MMMM dd, yyyy – HH:mm a').format(banExpired);
+        if (!banExpired.isAfter(DateTime.now())) {
+          var success = await unbanByExpired();
+          if (success) {
+            return true;
+          }
+          else {
+            return false;
+          }
+        }
+        else {
+          Fluttertoast.showToast(msg: "You are banned. The ban will be lifted in $formattedBanExpired");
+          return false;
+        }
+      }
+    }
+    else {
+      Fluttertoast.showToast(msg: ServerResponse.fromJson(jsonDecode(response.body)).message);
+      return false;
+    }
+  }
+
+  Future<bool> unbanByExpired() async {
+    final userToken = await AuthHelper.getToken();
+    final response = await http.put(
+      Uri.parse("http://10.0.2.2:3000/user/unban"),
+      headers: <String, String> {
+        'Authorization': 'bearer $userToken'
+      }
+    );
+
+    if (response.statusCode == 200) {
+      return true;
+    } 
+    else {
+      Fluttertoast.showToast(msg: ServerResponse.fromJson(jsonDecode(response.body)).message);
+      return false;
+    }
   }
 }

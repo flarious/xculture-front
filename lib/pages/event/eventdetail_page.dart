@@ -407,7 +407,8 @@ class _EventDetailPageState extends State<EventDetailPage> {
     } else {
       Fluttertoast.showToast(msg: ServerResponse.fromJson(jsonDecode(response.body)).message);
       Navigator.pop(context);
-      return Event(id: "", name: "", body: "", interestedAmount: 0, thumbnail: "", location: "", createDate: DateTime.now().toString(), updateDate: DateTime.now().toString(), eventDate: DateTime.now().toString(), host: User(id: "", name: "", profilePic: "", bio: "", email: "", tags: []), members: []);
+      return Event(id: "", name: "", body: "", interestedAmount: 0, thumbnail: "", location: "", createDate: DateTime.now().toString(), updateDate: DateTime.now().toString(), eventDate: DateTime.now().toString(), 
+      host: User(id: "", name: "", profilePic: "", bio: "", email: "", lastBanned: "", userType: "", bannedAmount: 0, tags: []), members: []);
     }
   }
 
