@@ -811,7 +811,7 @@ class _ForumDetailPageState extends State<ForumDetailPage> {
 
   Future<Forum> getFullDetail(forumID) async {
     final response =
-        await http.get(Uri.parse('http://10.0.2.2:3000/forums/$forumID'));
+        await http.get(Uri.parse('https://xculture-server.herokuapp.com/forums/$forumID'));
 
     if (response.statusCode == 200) {
       return Forum.fromJson(jsonDecode(response.body));
@@ -825,7 +825,7 @@ class _ForumDetailPageState extends State<ForumDetailPage> {
   
   Future<bool> forumViewed(forumID) async {
     final response = await http.put(
-      Uri.parse('http://10.0.2.2:3000/forums/$forumID/viewed'));
+      Uri.parse('https://xculture-server.herokuapp.com/forums/$forumID/viewed'));
   
     if (response.statusCode == 200) {
       return true;
@@ -840,7 +840,7 @@ class _ForumDetailPageState extends State<ForumDetailPage> {
     final userToken = await AuthHelper.getToken();
 
     final response = await http.put(
-      Uri.parse('http://10.0.2.2:3000/forums/$forumID/favorite'), 
+      Uri.parse('https://xculture-server.herokuapp.com/forums/$forumID/favorite'), 
       headers: <String, String> {
         'Authorization': 'bearer $userToken'
       }
@@ -859,7 +859,7 @@ class _ForumDetailPageState extends State<ForumDetailPage> {
     final userToken = await AuthHelper.getToken();
 
     final response = await http.put(
-      Uri.parse('http://10.0.2.2:3000/forums/$forumID/unfavorite'),
+      Uri.parse('https://xculture-server.herokuapp.com/forums/$forumID/unfavorite'),
       headers: <String, String> {
         'Authorization': 'bearer $userToken'
       }
@@ -877,7 +877,7 @@ class _ForumDetailPageState extends State<ForumDetailPage> {
   Future<bool> deleteForum(forumID) async {
     final userToken = await AuthHelper.getToken();
     final response = await http.delete(
-      Uri.parse("http://10.0.2.2:3000/forums/$forumID"),
+      Uri.parse("https://xculture-server.herokuapp.com/forums/$forumID"),
       headers: <String, String> {
         'Authorization' : 'bearer $userToken'
       }
@@ -896,7 +896,7 @@ class _ForumDetailPageState extends State<ForumDetailPage> {
     final userToken = await AuthHelper.getToken();
 
     final response = await http.post(
-      Uri.parse('http://10.0.2.2:3000/forums/$forumID/comments'),
+      Uri.parse('https://xculture-server.herokuapp.com/forums/$forumID/comments'),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
         'Authorization': 'bearer $userToken',
@@ -920,7 +920,7 @@ class _ForumDetailPageState extends State<ForumDetailPage> {
     final userToken = await AuthHelper.getToken();
 
     final response = await http.put(
-      Uri.parse('http://10.0.2.2:3000/forums/$forumID/comments/$commentID/favorite'),
+      Uri.parse('https://xculture-server.herokuapp.com/forums/$forumID/comments/$commentID/favorite'),
       headers: <String, String> {
         'Authorization': 'bearer $userToken'
       }
@@ -939,7 +939,7 @@ class _ForumDetailPageState extends State<ForumDetailPage> {
     final userToken = await AuthHelper.getToken();
 
     final response = await http.put(
-      Uri.parse('http://10.0.2.2:3000/forums/$forumID/comments/$commentID/unfavorite'),
+      Uri.parse('https://xculture-server.herokuapp.com/forums/$forumID/comments/$commentID/unfavorite'),
       headers: <String, String> {
         'Authorization': 'bearer $userToken'
       }
@@ -957,7 +957,7 @@ class _ForumDetailPageState extends State<ForumDetailPage> {
   Future<bool> sendReplyDetail(forumID, commentID, content, incognito) async {
     final userToken = await AuthHelper.getToken();
     final response = await http.post(
-      Uri.parse('http://10.0.2.2:3000/forums/$forumID/comments/$commentID/replies'),
+      Uri.parse('https://xculture-server.herokuapp.com/forums/$forumID/comments/$commentID/replies'),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
         'Authorization': 'bearer $userToken'
@@ -981,7 +981,7 @@ class _ForumDetailPageState extends State<ForumDetailPage> {
   Future<bool> replyFavorited(forumID, commentID, replyID) async {
     final userToken = await AuthHelper.getToken();
     final response = await http.put(
-      Uri.parse('http://10.0.2.2:3000/forums/$forumID/comments/$commentID/replies/$replyID/favorite'),
+      Uri.parse('https://xculture-server.herokuapp.com/forums/$forumID/comments/$commentID/replies/$replyID/favorite'),
       headers: <String, String> {
         'Authorization': 'bearer $userToken'
       }
@@ -999,7 +999,7 @@ class _ForumDetailPageState extends State<ForumDetailPage> {
   Future<bool> replyUnfavorited(forumID, commentID, replyID) async {
     final userToken = await AuthHelper.getToken();
     final response = await http.put(
-      Uri.parse('http://10.0.2.2:3000/forums/$forumID/comments/$commentID/replies/$replyID/unfavorite'),
+      Uri.parse('https://xculture-server.herokuapp.com/forums/$forumID/comments/$commentID/replies/$replyID/unfavorite'),
       headers: <String, String> {
         'Authorization': 'bearer $userToken'
       }

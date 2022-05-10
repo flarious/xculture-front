@@ -441,7 +441,7 @@ class _YourForumPageState extends State<YourForumPage> with TickerProviderStateM
   Future<User> getUserProfile() async {
     final userToken = await AuthHelper.getToken();
     final response = await http.get(
-      Uri.parse("http://10.0.2.2:3000/user"),
+      Uri.parse("https://xculture-server.herokuapp.com/user"),
       headers: <String, String> {
         'Authorization': 'bearer $userToken'
       }
@@ -462,7 +462,7 @@ class _YourForumPageState extends State<YourForumPage> with TickerProviderStateM
 
     final userToken = await AuthHelper.getToken();
     final response = await http.get(
-      Uri.parse('http://10.0.2.2:3000/user/forums'),
+      Uri.parse('https://xculture-server.herokuapp.com/user/forums'),
       headers: <String, String> {
         'Authorization': 'bearer $userToken'
       }
@@ -486,7 +486,7 @@ class _YourForumPageState extends State<YourForumPage> with TickerProviderStateM
 
     final userToken = await AuthHelper.getToken();
     final response = await http.get(
-      Uri.parse('http://10.0.2.2:3000/user/forums/favorites'),
+      Uri.parse('https://xculture-server.herokuapp.com/user/forums/favorites'),
       headers: <String, String> {
         'Authorization': 'bearer $userToken'
       }

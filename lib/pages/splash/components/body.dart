@@ -119,7 +119,7 @@ class _BodyState extends State<Body> {
   Future<bool> isNotBanned() async {
     final userToken = await AuthHelper.getToken();
     final response = await http.get(
-      Uri.parse("http://10.0.2.2:3000/user"),
+      Uri.parse("https://xculture-server.herokuapp.com/user"),
       headers: <String, String> {
         'Authorization': 'bearer $userToken'
       }
@@ -158,7 +158,7 @@ class _BodyState extends State<Body> {
   Future<bool> unbanByExpired() async {
     final userToken = await AuthHelper.getToken();
     final response = await http.put(
-      Uri.parse("http://10.0.2.2:3000/user/unban"),
+      Uri.parse("https://xculture-server.herokuapp.com/user/unban"),
       headers: <String, String> {
         'Authorization': 'bearer $userToken'
       }

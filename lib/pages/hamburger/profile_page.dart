@@ -710,7 +710,7 @@ class _ProfilePageState extends State<ProfilePage> with TickerProviderStateMixin
   Future<User> getUserProfile() async {
     final userToken = await AuthHelper.getToken();
     final response = await http.get(
-      Uri.parse("http://10.0.2.2:3000/user"),
+      Uri.parse("https://xculture-server.herokuapp.com/user"),
       headers: <String, String> {
         'Authorization': 'bearer $userToken'
       }
@@ -732,7 +732,7 @@ class _ProfilePageState extends State<ProfilePage> with TickerProviderStateMixin
 
     final userToken = await AuthHelper.getToken();
     final response = await http.get(
-      Uri.parse('http://10.0.2.2:3000/user/forums'),
+      Uri.parse('https://xculture-server.herokuapp.com/user/forums'),
       headers: <String, String> {
         'Authorization': 'bearer $userToken'
       }
@@ -757,7 +757,7 @@ class _ProfilePageState extends State<ProfilePage> with TickerProviderStateMixin
 
     final userToken = await AuthHelper.getToken();
     final response = await http.get(
-      Uri.parse('http://10.0.2.2:3000/user/events'),
+      Uri.parse('https://xculture-server.herokuapp.com/user/events'),
       headers: <String, String> {
         'Authorization': 'bearer $userToken'
       }
@@ -783,7 +783,7 @@ class _ProfilePageState extends State<ProfilePage> with TickerProviderStateMixin
 
     final userToken = await AuthHelper.getToken();
     final response = await http.get(
-      Uri.parse('http://10.0.2.2:3000/user/communities'),
+      Uri.parse('https://xculture-server.herokuapp.com/user/communities'),
       headers: <String, String> {
         'Authorization': 'bearer $userToken'
       }
@@ -808,7 +808,7 @@ class _ProfilePageState extends State<ProfilePage> with TickerProviderStateMixin
 
     final userToken = await AuthHelper.getToken();
     final response = await http.get(
-      Uri.parse('http://10.0.2.2:3000/user/communities/joined'),
+      Uri.parse('https://xculture-server.herokuapp.com/user/communities/joined'),
       headers: <String, String> {
         'Authorization': 'bearer $userToken'
       }

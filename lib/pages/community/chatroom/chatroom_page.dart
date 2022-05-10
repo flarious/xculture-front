@@ -121,6 +121,7 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
           future: _messages,
           builder: (context, AsyncSnapshot<List<Message>> snapshot) {
             if (snapshot.hasData) {
+              snapshot.data!.sort((a, b) => (a.sentDate).compareTo((b.sentDate)));
               return Column(
                 children: [
                   Expanded(
@@ -142,6 +143,7 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
                         ),
                       ),
                       itemBuilder: (context, Message message) {
+                        
                         return (AuthHelper.checkAuth() && message.sender.id == AuthHelper.auth.currentUser!.uid) ? Column(
                           crossAxisAlignment: CrossAxisAlignment.end,
                             children: [
@@ -302,7 +304,7 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
   }
 
   Future<List<Message>> getRoomMessages(commuId, roomId) async {
-    final response = await http.get(Uri.parse("http://10.0.2.2:3000/communities/$commuId/rooms/$roomId/messages"));
+    final response = await http.get(Uri.parse("https://xculture-server.herokuapp.com/communities/$commuId/rooms/$roomId/messages"));
     List<Message> messageList = [];
 
     if(response.statusCode == 200) {
@@ -319,7 +321,7 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
   Future<bool> sendMessage(commuId, roomId, message, repliedTo) async {
     final userToken = await AuthHelper.getToken();
     final response = await http.post(
-      Uri.parse("http://10.0.2.2:3000/communities/$commuId/rooms/$roomId/messages"),
+      Uri.parse("https://xculture-server.herokuapp.com/communities/$commuId/rooms/$roomId/messages"),
       headers: <String, String> {
         'Content-Type': 'application/json; charset=UTF-8',
         'Authorization': 'bearer $userToken',
@@ -342,7 +344,7 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
   Future<bool> deleteRoom(commuId, roomId) async {
     final userToken = await AuthHelper.getToken();
     final response = await http.delete(
-      Uri.parse("http://10.0.2.2:3000/communities/$commuId/rooms/$roomId"),
+      Uri.parse("https://xculture-server.herokuapp.com/communities/$commuId/rooms/$roomId"),
       headers: <String, String> {
         'Authorization' : 'bearer $userToken'
       }

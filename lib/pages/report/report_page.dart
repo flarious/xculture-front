@@ -221,7 +221,7 @@ class _ReportPageState extends State<ReportPage> {
   }
 
   Future<List<ReportCategory>> getReportCategories() async {
-    final response = await http.get(Uri.parse("http://10.0.2.2:3000/report"));
+    final response = await http.get(Uri.parse("https://xculture-server.herokuapp.com/report"));
     final List<ReportCategory> categoryList = [];
     if(response.statusCode == 200) {
       var decoded = jsonDecode(response.body);
@@ -252,7 +252,7 @@ class _ReportPageState extends State<ReportPage> {
 
     final userToken = await AuthHelper.getToken();
     final response = await http.post(
-      Uri.parse("http://10.0.2.2:3000/report/$reportedId"),
+      Uri.parse("https://xculture-server.herokuapp.com/report/$reportedId"),
       headers: <String, String> {
         'Content-Type' : 'application/json; charset=UTF-8',
         'Authorization' : 'bearer $userToken'
