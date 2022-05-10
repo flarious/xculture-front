@@ -45,28 +45,30 @@ class _ForumAllPageState extends State<ForumAllPage> {
     final forumList =
         ModalRoute.of(context)!.settings.arguments as Future<List<Forum>>;
 
-    return Scaffold(
-      backgroundColor: Colors.white,
-      body: showAllForum(forumList),
-      // bottomNavigationBar: BottomNavigationBar(const NavBar()),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          if (AuthHelper.checkAuth()) {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => const NewForumPage(),
-              )
-            );
-          }
-          else {
-            Fluttertoast.showToast(msg: "You are not signed in");
-          }
-        },
-        child: const Icon(Icons.post_add)
+    return SafeArea(
+      child: Scaffold(
+        backgroundColor: Colors.white,
+        body: showAllForum(forumList),
+        // bottomNavigationBar: BottomNavigationBar(const NavBar()),
+        floatingActionButton: FloatingActionButton(
+          onPressed: () {
+            if (AuthHelper.checkAuth()) {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const NewForumPage(),
+                )
+              );
+            }
+            else {
+              Fluttertoast.showToast(msg: "You are not signed in");
+            }
+          },
+          child: const Icon(Icons.post_add)
+        ),
+        endDrawer: AuthHelper.checkAuth() ? const NavigationDrawerWidget() : const GuestHamburger(),
+        bottomNavigationBar: const Navbar(currentIndex: 2),
       ),
-      endDrawer: AuthHelper.checkAuth() ? const NavigationDrawerWidget() : const GuestHamburger(),
-      bottomNavigationBar: const Navbar(currentIndex: 2),
     );
   }
 

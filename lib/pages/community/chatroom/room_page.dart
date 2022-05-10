@@ -10,6 +10,8 @@ import 'package:http/http.dart' as http;
 import 'package:xculturetestapi/pages/community/chatroom/chatroom_page.dart';
 import 'package:xculturetestapi/pages/community/member_page.dart';
 
+import '../../../size_config.dart';
+
 class RoomPage extends StatefulWidget {
   const RoomPage({ Key? key }) : super(key: key);
 
@@ -48,86 +50,21 @@ class _RoomPageState extends State<RoomPage> {
                 return Stack(
                   children: [
                     
-                    //Post Forum text
+                    //Room text
                     Container(
-                      margin: const EdgeInsets.only(right: 0, left: 0),
-                      height: 300,
+                      //margin: const EdgeInsets.only(right: 0, left: 0),
+                      height: getProportionateScreenHeight(180),
                       color: Colors.red,
                       child: Center(
-                        child: Column(
-                          children: [
-
-                            const SizedBox(height: 30),
-
-                            const Text("Rooms", 
-                              style: TextStyle(fontSize: 40, fontWeight: FontWeight.bold, color: Colors.white),
-                            ),
-
-                            const SizedBox(height: 10),
-
-                            Container (                                  
-                              height: 40,
-                              width: 350,
-                              // margin: const EdgeInsets.only(top: 50, left: 20, right: 20, bottom: 0),
-                              //margin: const EdgeInsets.only(top: 100),
-                              alignment: Alignment.centerLeft,
-                              padding: const EdgeInsets.symmetric(horizontal: 10),
-                              child: TextFormField(
-                                focusNode: fieldnode,
-                                onChanged: (value) {
-                                    setState((){
-                                      searchString = value; 
-                                    });
-                                },
-                                controller: searchController,
-                                decoration: InputDecoration(
-                                  hintText: "Search Room..",
-                                  hintStyle: const TextStyle(
-                                    color: Colors.grey, // <-- Change this
-                                    fontWeight: FontWeight.w600,
-                                    fontStyle: FontStyle.normal,
-                                  ),
-                                  contentPadding: const EdgeInsets.only(bottom: 10),
-                                  enabledBorder: OutlineInputBorder(
-                                    borderSide: const BorderSide(
-                                      color: Colors.transparent,
-                                    ),
-                                    borderRadius: BorderRadius.circular(10),
-                                  ),
-                                  focusedBorder: OutlineInputBorder(
-                                    borderSide: const BorderSide(
-                                      color: Colors.transparent,
-                                    ),
-                                    borderRadius: BorderRadius.circular(10),
-                                  ),
-                                  // prefixIcon: const Icon(Icons.search, color: Colors.grey),
-                                  prefixIcon: Icon(Icons.search,
-                                        color: fieldnode.hasFocus 
-                                        ? Theme.of(context).primaryColor
-                                        : Colors.grey),
-                                ),
-                              ),
-                              decoration: BoxDecoration(
-                                border: Border.all(color: Colors.grey.shade300),
-                                borderRadius: BorderRadius.circular(20),
-                                color: Colors.white,
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Colors.black.withOpacity(0.7),
-                                    blurRadius: 3.0,
-                                    offset: const Offset(0.0, 4.0),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
+                        child: Text("Rooms", 
+                          style: TextStyle(fontSize: getProportionateScreenWidth(30), fontWeight: FontWeight.bold, color: Colors.white),
                         ),
                       ),
                     ),
               
                     //Back Icon
                     Container(
-                      margin: const EdgeInsets.only(top: 20, left: 20),
+                      margin: EdgeInsets.only(top: getProportionateScreenHeight(40), left: getProportionateScreenWidth(20)),
                       child: Container(
                         decoration: BoxDecoration(
                           color: Colors.grey.withOpacity(0.8),
@@ -149,7 +86,7 @@ class _RoomPageState extends State<RoomPage> {
                     // Iconbutton menu
                     Container(
                       alignment: Alignment.centerRight,
-                      margin: const EdgeInsets.only(top: 20, right: 20),
+                      margin: EdgeInsets.only(top: getProportionateScreenHeight(40), right: getProportionateScreenWidth(20)),
                       child: Container(
                         padding: const EdgeInsets.all(8),
                         decoration: BoxDecoration(
@@ -225,9 +162,9 @@ class _RoomPageState extends State<RoomPage> {
                     ),
               
                     Container(
-                      margin: const EdgeInsets.only(top: 160, left: 0, right: 0, bottom: 0),
+                      margin: EdgeInsets.only(top: getProportionateScreenHeight(150)),
                       child: Container(
-                        padding: const EdgeInsets.only(left: 20, right: 20, top: 20),
+                        padding: const EdgeInsets.all(20),
                         width: MediaQuery.of(context).size.width,
                         decoration: const BoxDecoration(
                           color: Colors.white,
@@ -236,167 +173,224 @@ class _RoomPageState extends State<RoomPage> {
                             topRight: Radius.circular(20),
                           ),
                         ),
-                        child: Padding(
-                          padding: const EdgeInsets.all(5),
-                          child: Column(
-                            children: [
-                              ListView.builder(
-                                shrinkWrap: true,
-                                physics: const ClampingScrollPhysics(),
-                                itemCount: snapshot.data!.length,
-                                itemBuilder: (context, index) {
-                                  var contained = searchRoom(snapshot.data![index], searchString);
-                                  return contained ? Column(
-                                    children: [
-                                      Card(
-                                        clipBehavior: Clip.antiAlias,
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(20)
-                                        ),
-                                        child: InkWell(
-                                          child: SizedBox(
-                                            height: 70,
-                                            child: Row(
-                                              children: [
-                                                const SizedBox(width: 30),
-                                                Text("# ${snapshot.data![index].name}",
-                                                  overflow: TextOverflow.ellipsis,
-                                                  style: TextStyle(fontSize: 20.0),
-                                                ),
-                                                const Spacer(),
-                                                const Padding(
-                                                  padding: EdgeInsets.symmetric(horizontal: 20),
-                                                  child: Icon(
-                                                    Icons.arrow_forward_ios,
-                                                  ),
-                                                ),
-                                              ]
-                                            ),
-                                          ),
-                                          onTap: () async {
-                                            await Navigator.push(
-                                              context, 
-                                              MaterialPageRoute(
-                                                builder: (context) => const ChatRoomPage(),
-                                                settings: RouteSettings(
-                                                  arguments: ChatRoomArguments(commu: commu, room: snapshot.data![index])
-                                                )
-                                              )
-                                            );
-                                            setState(() {
-                                              
-                                            });
-                                          },
-                                        ),
-                                      ),
-                      
-                                      const SizedBox(height: 20),
-                                    ],
-                                  ): Container(); 
-                                }
-                              ),
-                            
-                              Visibility(
-                                visible: isPost,
-                                child: Padding(
-                                  padding: const EdgeInsets.only(bottom: 20),
-                                  child: Row(
-                                    children: [
-                                      Expanded(
-                                        child: Container(
-                                          height: 50,
-                                          decoration: BoxDecoration(
-                                            color: Colors.grey[200],
-                                            borderRadius: BorderRadius.circular(20)
-                                          ),
-                                          child: Align(
-                                            alignment: Alignment.centerLeft,
-                                            child: TextFormField(
-                                              controller: _roomName,
-                                              decoration: InputDecoration(
-                                                contentPadding: const EdgeInsets.only(left: 30),
-                                                hintText: "Enter room name",
-                                                border: InputBorder.none,
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                      Material(
-                                        color: Colors.white,
-                                        child: IconButton(
-                                          onPressed: () {
-                                            setState(() {
-                                              isPost = !isPost;
-                                            });
-                                          }, 
-                                          icon: Icon(Icons.close),
-                                          color: Colors.red,
-                                          splashRadius: 20,
-                                        ),
-                                      ),
-                                      Material(
-                                        color: Colors.white,
-                                        child: IconButton(
-                                          onPressed: () async {
-                                            if (_roomName.text != "") {
-                                              if (AuthHelper.checkAuth() && commu.members.any((member) => member.member.id == AuthHelper.auth.currentUser!.uid)) {
-                                                var success = await sendRoomDetail(commu.id, _roomName.text); 
-                                                if (success) {
-                                                  Fluttertoast.showToast(msg: "Your community have been created.");
-                                                  setState(() {
-                                                    isPost = !isPost;
-                                                  });
-                                                }
-                                              }
-                                              else {
-                                                Fluttertoast.showToast(msg: "Only members can create room");
-                                              }
-                                              
-                                            } 
-                                            else {
-                                              Fluttertoast.showToast(msg: "You need a name to create a room");
-                                            }
-                                          }, 
-                                          icon: Icon(Icons.done),
-                                          color: Colors.green,
-                                          splashRadius: 20,
-                                        ),
-                                      ),
-                                    ],
+                        child: Column(
+                          children: [
+
+                            Container (                                  
+                              height: getProportionateScreenHeight(50),
+                              margin: const EdgeInsets.only(top: 20),
+                              alignment: Alignment.centerLeft,
+                              padding: const EdgeInsets.symmetric(horizontal: 10),
+                              child: TextFormField(
+                                focusNode: fieldnode,
+                                onChanged: (value) {
+                                    setState((){
+                                      searchString = value; 
+                                    });
+                                },
+                                
+                                controller: searchController,
+                                decoration: InputDecoration(
+                                  hintText: "Search Room..",
+                                  hintStyle: const TextStyle(
+                                    color: Colors.grey, // <-- Change this
+                                    fontWeight: FontWeight.w600,
+                                    fontStyle: FontStyle.normal,
                                   ),
+                                  contentPadding: const EdgeInsets.only(bottom: 10),
+                                  enabledBorder: OutlineInputBorder(
+                                    borderSide: const BorderSide(
+                                      color: Colors.transparent,
+                                    ),
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                  focusedBorder: OutlineInputBorder(
+                                    borderSide: const BorderSide(
+                                      color: Colors.transparent,
+                                    ),
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                  
+                                  // prefixIcon: const Icon(Icons.search, color: Colors.grey),
+                                  prefixIcon: Icon(Icons.search,
+                                        color: fieldnode.hasFocus 
+                                        ? Theme.of(context).primaryColor
+                                        : Colors.grey),
                                 ),
+                                
                               ),
-                              
-                              InkWell(
-                                child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(20),
-                                  child: BackdropFilter(
-                                    filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-                                    child: Container(
-                                      height: 50,
-                                      alignment: Alignment.center,
-                                      decoration: BoxDecoration(
-                                        color: Colors.red,
+                              decoration: BoxDecoration(
+                                border: Border.all(color: Colors.grey.shade300),
+                                borderRadius: BorderRadius.circular(20),
+                                color: Colors.white,
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.grey.withOpacity(0.7),
+                                    blurRadius: 3.0,
+                                    offset: const Offset(0.0, 4.0),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            
+                            SizedBox(height: getProportionateScreenHeight(20)),
+
+                            ListView.builder(
+                              shrinkWrap: true,
+                              physics: const ClampingScrollPhysics(),
+                              itemCount: snapshot.data!.length,
+                              itemBuilder: (context, index) {
+                                var contained = searchRoom(snapshot.data![index], searchString);
+                                return contained ? Column(
+                                  children: [
+
+                                    Card(
+                                      clipBehavior: Clip.antiAlias,
+                                      shape: RoundedRectangleBorder(
                                         borderRadius: BorderRadius.circular(20)
                                       ),
-                                      child: Icon(
-                                        Icons.add_circle,
-                                        color: Colors.white,
-                                        size: 37,
+                                      child: InkWell(
+                                        child: SizedBox(
+                                          height: getProportionateScreenHeight(80),
+                                          child: Row(
+                                            children: [
+                                              
+                                              Padding(
+                                                padding: const EdgeInsets.all(20),
+                                                child: Text("# ${snapshot.data![index].name}",
+                                                  overflow: TextOverflow.ellipsis,
+                                                  style: TextStyle(fontSize: getProportionateScreenWidth(20)),
+                                                ),
+                                              ),
+
+                                              const Spacer(),
+
+                                              const Padding(
+                                                padding: EdgeInsets.symmetric(horizontal: 20),
+                                                child: Icon(
+                                                  Icons.arrow_forward_ios,
+                                                ),
+                                              ),
+                                            ]
+                                          ),
+                                        ),
+                                        onTap: () async {
+                                          await Navigator.push(
+                                            context, 
+                                            MaterialPageRoute(
+                                              builder: (context) => const ChatRoomPage(),
+                                              settings: RouteSettings(
+                                                arguments: ChatRoomArguments(commu: commu, room: snapshot.data![index])
+                                              )
+                                            )
+                                          );
+                                          setState(() {
+                                            
+                                          });
+                                        },
                                       ),
                                     ),
-                                  ),
+
+                                    SizedBox(height: getProportionateScreenHeight(20)),
+                                  ],
+                                ): Container(); 
+                              }
+                            ),
+                          
+                            Visibility(
+                              visible: isPost,
+                              child: Padding(
+                                padding: const EdgeInsets.only(bottom: 20),
+                                child: Row(
+                                  children: [
+
+                                    Expanded(
+                                      child: Container(
+                                        height: getProportionateScreenHeight(70),
+                                        decoration: BoxDecoration(
+                                          color: Colors.grey[200],
+                                          borderRadius: BorderRadius.circular(20)
+                                        ),
+                                        child: Align(
+                                          alignment: Alignment.centerLeft,
+                                          child: TextFormField(
+                                            controller: _roomName,
+                                            decoration: const InputDecoration(
+                                              contentPadding: EdgeInsets.only(left: 20),
+                                              hintText: "Enter room name",
+                                              border: InputBorder.none,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                    Material(
+                                      color: Colors.white,
+                                      child: IconButton(
+                                        onPressed: () {
+                                          setState(() {
+                                            isPost = !isPost;
+                                          });
+                                        }, 
+                                        icon: const Icon(Icons.close),
+                                        color: Colors.red,
+                                        splashRadius: 20,
+                                      ),
+                                    ),
+                                    Material(
+                                      color: Colors.white,
+                                      child: IconButton(
+                                        onPressed: () async {
+                                          if (_roomName.text != "") {
+                                            if (AuthHelper.checkAuth() && commu.members.any((member) => member.member.id == AuthHelper.auth.currentUser!.uid)) {
+                                              var success = await sendRoomDetail(commu.id, _roomName.text); 
+                                              if (success) {
+                                                Fluttertoast.showToast(msg: "Your community have been created.");
+                                                setState(() {
+                                                  isPost = !isPost;
+                                                });
+                                              }
+                                            }
+                                            else {
+                                              Fluttertoast.showToast(msg: "Only members can create room");
+                                            }
+                                            
+                                          } 
+                                          else {
+                                            Fluttertoast.showToast(msg: "You need a name to create a room");
+                                          }
+                                        }, 
+                                        icon: const Icon(Icons.done),
+                                        color: Colors.green,
+                                        splashRadius: 20,
+                                      ),
+                                    ),
+                                  ],
                                 ),
-                                onTap: (){
-                                  setState(() {
-                                    isPost = !isPost;
-                                  });
-                                },
                               ),
-                              const SizedBox(height: 20),
-                            ],
-                          ),
+                            ),
+                            
+                            InkWell(
+                              child: Container(
+                                height: getProportionateScreenHeight(60),
+                                alignment: Alignment.center,
+                                decoration: BoxDecoration(
+                                  color: Colors.red,
+                                  borderRadius: BorderRadius.circular(20)
+                                ),
+                                child: const Icon(
+                                  Icons.add_circle,
+                                  color: Colors.white,
+                                  size: 37,
+                                ),
+                              ),
+                              onTap: (){
+                                setState(() {
+                                  isPost = !isPost;
+                                });
+                              },
+                            ),
+                          ],
                         ),
                       ),
                     ),

@@ -87,6 +87,7 @@ class _FilterPageState extends State<FilterPage> {
                               itemCount: args.commu.questions.length,
                               itemBuilder: (context, index) {
                                 return Column(
+                                  mainAxisAlignment: MainAxisAlignment.start,
                                   children: [
                                     //Question
                                     Padding(

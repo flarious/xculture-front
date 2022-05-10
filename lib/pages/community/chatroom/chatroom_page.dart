@@ -10,6 +10,8 @@ import 'package:http/http.dart' as http;
 import 'package:xculturetestapi/helper/auth.dart';
 import 'package:xculturetestapi/pages/community/chatroom/roomedit_page.dart';
 
+import '../../../size_config.dart';
+
 class ChatRoomPage extends StatefulWidget {
   const ChatRoomPage({ Key? key }) : super(key: key);
 
@@ -41,10 +43,10 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
           // ),
           elevation: 0.0,
           backgroundColor: Colors.transparent,
-          toolbarHeight: 90,
+          toolbarHeight: getProportionateScreenHeight(80),
           title: Text("# ${args.room.name}"),
           flexibleSpace: Container(
-            decoration: BoxDecoration(
+            decoration: const BoxDecoration(
               borderRadius: BorderRadius.only(bottomLeft: Radius.circular(30),bottomRight: Radius.circular(30)),
               color: Colors.red,
             ),
@@ -54,6 +56,7 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
               padding: const EdgeInsets.symmetric(horizontal: 15.0),
               child: PopupMenuButton(
                 itemBuilder: (context) => [
+
                   PopupMenuItem(
                     child: const Text("Edit"),
                     onTap: () async {
@@ -67,11 +70,9 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
                             arguments: ChatRoomArguments(commu: args.commu, room: args.room)),
                         )
                       );
-                      setState(() {
-
-                      });
                     },
                   ),
+                  
                   PopupMenuItem(
                     child: const Text("Delete"),
                     onTap: () async {

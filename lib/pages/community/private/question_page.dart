@@ -93,6 +93,7 @@ class _QuestionPageState extends State<QuestionPage> {
                     child: Padding(
                       padding: const EdgeInsets.all(20),
                       child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
                         children: [
 
                           ListView.builder(

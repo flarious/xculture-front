@@ -43,27 +43,29 @@ class _EventAllPageState extends State<EventAllPage> {
     final eventList =
         ModalRoute.of(context)!.settings.arguments as Future<List<Event>>;
 
-    return Scaffold(
-      backgroundColor: Colors.white,
-      body: showAllEvent(eventList),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          if (AuthHelper.checkAuth()) {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => const NewForumPage(),
-              )
-            );
-          }
-          else {
-            Fluttertoast.showToast(msg: "You are not signed in");
-          }
-        },
-        child: const Icon(Icons.post_add)
+    return SafeArea(
+      child: Scaffold(
+        backgroundColor: Colors.white,
+        body: showAllEvent(eventList),
+        floatingActionButton: FloatingActionButton(
+          onPressed: () {
+            if (AuthHelper.checkAuth()) {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const NewForumPage(),
+                )
+              );
+            }
+            else {
+              Fluttertoast.showToast(msg: "You are not signed in");
+            }
+          },
+          child: const Icon(Icons.post_add)
+        ),
+        endDrawer: AuthHelper.checkAuth() ? const NavigationDrawerWidget() : const GuestHamburger(),
+        bottomNavigationBar: const Navbar(currentIndex: 0),
       ),
-      endDrawer: AuthHelper.checkAuth() ? const NavigationDrawerWidget() : const GuestHamburger(),
-      bottomNavigationBar: const Navbar(currentIndex: 0),
     );
   }
 

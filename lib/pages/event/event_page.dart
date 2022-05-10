@@ -14,6 +14,7 @@ import 'package:xculturetestapi/pages/event/eventpost_page.dart';
 import 'package:xculturetestapi/pages/event/eventdetail_page.dart';
 
 import '../../helper/auth.dart';
+import '../../size_config.dart';
 import '../../widgets/hamburger_widget.dart';
 
 class EventPage extends StatefulWidget {
@@ -84,24 +85,24 @@ class _EventPageState extends State<EventPage> {
 
            //Post Forum text
             Container(
-              margin: const EdgeInsets.only(right: 0, left: 0),
-              height: 300,
+              //margin: const EdgeInsets.only(right: 0, left: 0),
+              height: getProportionateScreenHeight(300),
               color: Colors.red,
               child: Center(
                 child: Column(
                   children: [
 
-                    const SizedBox(height: 30),
+                    SizedBox(height: getProportionateScreenHeight(30)),
 
-                    const Text("Events", 
-                      style: TextStyle(fontSize: 40, fontWeight: FontWeight.bold, color: Colors.white),
+                    Text("Events", 
+                      style: TextStyle(fontSize: getProportionateScreenWidth(40), fontWeight: FontWeight.bold, color: Colors.white),
                     ),
 
-                    const SizedBox(height: 10),
+                    SizedBox(height: getProportionateScreenHeight(10)),
 
                     Container (                                  
-                      height: 40,
-                      width: 350,
+                      height: getProportionateScreenHeight(40),
+                      width: getProportionateScreenWidth(330),
                       // margin: const EdgeInsets.only(top: 50, left: 20, right: 20, bottom: 0),
                       //margin: const EdgeInsets.only(top: 100),
                       alignment: Alignment.centerLeft,
@@ -161,7 +162,7 @@ class _EventPageState extends State<EventPage> {
       
             // Content
             Container(          
-              margin: const EdgeInsets.only(top: 160, left: 0, right: 0, bottom: 0),
+              margin: EdgeInsets.only(top: getProportionateScreenHeight(180)),
               child: Container(
                 width: MediaQuery.of(context).size.width,
                 decoration: const BoxDecoration(
@@ -178,8 +179,8 @@ class _EventPageState extends State<EventPage> {
                       padding: const EdgeInsets.all(10.0),
                       child: Row(
                         children: [
-                          const Text("Trending Event",
-                            style: TextStyle(fontWeight: FontWeight.bold, color: Colors.red, fontSize: 22),
+                          Text("Trending Event",
+                            style: TextStyle(fontWeight: FontWeight.bold, color: Colors.red, fontSize: getProportionateScreenWidth(22)),
                           ),
                           const Spacer(),
                           TextButton(
@@ -201,7 +202,7 @@ class _EventPageState extends State<EventPage> {
                     ),
 
                     SizedBox(
-                      height: 270,
+                      height: getProportionateScreenHeight(300),
                       child: FutureBuilder<List<Event>>(
                         future: trendingEvent,
                         builder: (BuildContext context, AsyncSnapshot<List<Event>> snapshot){
@@ -211,7 +212,7 @@ class _EventPageState extends State<EventPage> {
                               itemCount: (snapshot.data!.length <= 5) ? snapshot.data!.length : 5,
                               scrollDirection: Axis.horizontal,
                               separatorBuilder: (BuildContext context, int index) { 
-                                return const SizedBox(width: 15); 
+                                return SizedBox(width: getProportionateScreenWidth(15)); 
                               },
                               itemBuilder: (BuildContext context, int index) {
                                 var dt = DateTime.parse(snapshot.data![index].eventDate).toLocal();
@@ -225,14 +226,14 @@ class _EventPageState extends State<EventPage> {
                                     ),
                                     child: InkWell(
                                       child: SizedBox(
-                                        width: 300,
+                                        width: getProportionateScreenWidth(280),
                                         child: Column(
                                           crossAxisAlignment: CrossAxisAlignment.start,
                                           children: [
 
                                             Ink.image(
                                               image: NetworkImage(snapshot.data![index].thumbnail),
-                                              height: 150,
+                                              height: getProportionateScreenHeight(170),
                                               fit: BoxFit.cover,
                                             ),
 
@@ -240,8 +241,8 @@ class _EventPageState extends State<EventPage> {
                                               padding: const EdgeInsets.all(10.0),
                                               child: Text(snapshot.data![index].name,
                                                 overflow: TextOverflow.ellipsis,
-                                                style: const TextStyle(
-                                                  fontSize: 25.0,
+                                                style: TextStyle(
+                                                  fontSize: getProportionateScreenWidth(23),
                                                   fontWeight: FontWeight.bold,
                                                 ),
                                               ),
@@ -251,8 +252,8 @@ class _EventPageState extends State<EventPage> {
                                               padding: const EdgeInsets.symmetric(horizontal: 10),
                                               child: Text(dateEvent,
                                                 overflow: TextOverflow.ellipsis,
-                                                style: const TextStyle(
-                                                  fontSize: 15.0,
+                                                style: TextStyle(
+                                                  fontSize: getProportionateScreenWidth(13),
                                                   color: Colors.black,
                                                 ),
                                               ),
@@ -264,8 +265,8 @@ class _EventPageState extends State<EventPage> {
                                               padding: const EdgeInsets.symmetric(horizontal: 10),
                                               child: Text(snapshot.data![index].location,
                                                 overflow: TextOverflow.ellipsis,
-                                                style: const TextStyle(
-                                                  fontSize: 15.0,
+                                                style: TextStyle(
+                                                  fontSize: getProportionateScreenWidth(13),
                                                   color: Colors.black,
                                                 ),
                                               ),
@@ -301,8 +302,8 @@ class _EventPageState extends State<EventPage> {
                       padding: const EdgeInsets.all(10.0),
                       child: Row(
                         children: [
-                          const Text("Newest Event",
-                            style: TextStyle(fontWeight: FontWeight.bold, color: Colors.red, fontSize: 22),
+                         Text("Newest Event",
+                            style: TextStyle(fontWeight: FontWeight.bold, color: Colors.red, fontSize: getProportionateScreenWidth(22)),
                           ),
                           const Spacer(),
                           TextButton(
@@ -324,7 +325,7 @@ class _EventPageState extends State<EventPage> {
                     ),
 
                     SizedBox(
-                      height: 270,
+                      height: getProportionateScreenHeight(300),
                       child: FutureBuilder<List<Event>>(
                         future: newestEvent,
                         builder: (BuildContext context, AsyncSnapshot<List<Event>> snapshot){
@@ -334,7 +335,7 @@ class _EventPageState extends State<EventPage> {
                               itemCount: (snapshot.data!.length <= 5) ? snapshot.data!.length : 5,
                               scrollDirection: Axis.horizontal,
                               separatorBuilder: (BuildContext context, int index) { 
-                                return const SizedBox(width: 15); 
+                                return SizedBox(width: getProportionateScreenWidth(15)); 
                               },
                               itemBuilder: (BuildContext context, int index) {
                                 var dt = DateTime.parse(snapshot.data![index].eventDate).toLocal();
@@ -348,14 +349,14 @@ class _EventPageState extends State<EventPage> {
                                     ),
                                     child: InkWell(
                                       child: SizedBox(
-                                        width: 300,
+                                        width: getProportionateScreenWidth(280),
                                         child: Column(
                                           crossAxisAlignment: CrossAxisAlignment.start,
                                           children: [
 
                                             Ink.image(
                                               image: NetworkImage(snapshot.data![index].thumbnail),
-                                              height: 150,
+                                              height: getProportionateScreenHeight(170),
                                               fit: BoxFit.cover,
                                             ),
 
@@ -363,8 +364,8 @@ class _EventPageState extends State<EventPage> {
                                               padding: const EdgeInsets.all(10.0),
                                               child: Text(snapshot.data![index].name,
                                                 overflow: TextOverflow.ellipsis,
-                                                style: const TextStyle(
-                                                  fontSize: 25.0,
+                                                style: TextStyle(
+                                                  fontSize: getProportionateScreenWidth(23),
                                                   fontWeight: FontWeight.bold,
                                                 ),
                                               ),
@@ -374,8 +375,8 @@ class _EventPageState extends State<EventPage> {
                                               padding: const EdgeInsets.symmetric(horizontal: 10),
                                               child: Text(dateEvent,
                                                 overflow: TextOverflow.ellipsis,
-                                                style: const TextStyle(
-                                                  fontSize: 15.0,
+                                                style: TextStyle(
+                                                  fontSize: getProportionateScreenWidth(13),
                                                   color: Colors.black,
                                                 ),
                                               ),
@@ -387,8 +388,8 @@ class _EventPageState extends State<EventPage> {
                                               padding: const EdgeInsets.symmetric(horizontal: 10),
                                               child: Text(snapshot.data![index].location,
                                                 overflow: TextOverflow.ellipsis,
-                                                style: const TextStyle(
-                                                  fontSize: 15.0,
+                                                style: TextStyle(
+                                                  fontSize: getProportionateScreenWidth(13),
                                                   color: Colors.black,
                                                 ),
                                               ),
@@ -419,7 +420,7 @@ class _EventPageState extends State<EventPage> {
                         },
                       ),
                     ),
-                    const SizedBox(height: 20),
+                    SizedBox(height: getProportionateScreenHeight(20)),
                   ],
                 ),
               ),

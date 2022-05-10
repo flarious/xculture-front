@@ -5,6 +5,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:xculturetestapi/arguments.dart';
 import 'package:http/http.dart' as http;
 import 'package:xculturetestapi/pages/community/private/seeanswer_page.dart';
+import 'package:xculturetestapi/size_config.dart';
 import '../../data.dart';
 
 class MemberPage extends StatefulWidget {
@@ -32,6 +33,7 @@ class _MemberPageState extends State<MemberPage> with TickerProviderStateMixin{
 
     return SafeArea(
       child: Scaffold(
+        backgroundColor: Colors.white,
         body: WillPopScope(
           onWillPop: () async {
             Navigator.pop(context);
@@ -47,19 +49,19 @@ class _MemberPageState extends State<MemberPage> with TickerProviderStateMixin{
                       
                       //Members text
                       Container(
-                        margin: const EdgeInsets.only(right: 0, left: 0),
-                        height: 190,
+                        //margin: const EdgeInsets.only(right: 0, left: 0),
+                        height: getProportionateScreenHeight(200),
                         color: Colors.red,
-                        child: const Center(
+                        child: Center(
                           child: Text("Members", 
-                            style: TextStyle(fontSize: 35, fontWeight: FontWeight.bold, color: Colors.white),
+                            style: TextStyle(fontSize: getProportionateScreenWidth(30), fontWeight: FontWeight.bold, color: Colors.white),
                           ),
                         ),
                       ),
                         
                       //Back Icon
                       Container(
-                        margin: const EdgeInsets.only(top: 40, left: 20),
+                        margin: EdgeInsets.only(top: getProportionateScreenHeight(40), left: getProportionateScreenWidth(20)),
                         child: Container(
                           decoration: BoxDecoration(
                             color: Colors.grey.withOpacity(0.8),
@@ -80,9 +82,9 @@ class _MemberPageState extends State<MemberPage> with TickerProviderStateMixin{
                         
                       //White box(content)
                       Container(
-                        margin: const EdgeInsets.only(top: 170, left: 0, right: 0, bottom: 0),
+                        margin: EdgeInsets.only(top: getProportionateScreenWidth(140)),
                         child: Container(
-                          padding: const EdgeInsets.only(left: 20, right: 20, top: 20),
+                          padding: EdgeInsets.only(top: getProportionateScreenHeight(20)),
                           width: MediaQuery.of(context).size.width,
                           decoration: const BoxDecoration(
                             color: Colors.white,
@@ -92,12 +94,12 @@ class _MemberPageState extends State<MemberPage> with TickerProviderStateMixin{
                             ),
                           ),
                           child: Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+                            padding: const EdgeInsets.symmetric(vertical: 20),
                             child: Column(
                               children: [
                                 //Member list
                                 SizedBox(
-                                  height: 490,
+                                  height: getProportionateScreenHeight(490),
                                   child: TabBarView(
                                     controller: _tabController,
                                     children: [
@@ -105,6 +107,7 @@ class _MemberPageState extends State<MemberPage> with TickerProviderStateMixin{
                                       ListView.builder(
                                         itemCount: snapshot.data!.members.length,
                                         shrinkWrap: true,
+                                        physics: const ClampingScrollPhysics(),
                                         itemBuilder: (BuildContext context, index) {
                                           return snapshot.data!.members[index].type == "member" ? ListTile(
                                             leading: CircleAvatar(
@@ -154,6 +157,7 @@ class _MemberPageState extends State<MemberPage> with TickerProviderStateMixin{
                                       ListView.builder(
                                         itemCount: snapshot.data!.members.length,
                                         shrinkWrap: true,
+                                        physics: const ClampingScrollPhysics(),
                                         itemBuilder: (BuildContext context, index) {
                                           return snapshot.data!.members[index].type == "pending" ? ListTile(
                                             leading: CircleAvatar(
@@ -199,9 +203,9 @@ class _MemberPageState extends State<MemberPage> with TickerProviderStateMixin{
                         
                       //Tabbar
                       Container(
-                        height: 45,
-                        width: 260,
-                        margin: const EdgeInsets.only(top: 150, left: 75),
+                        height: getProportionateScreenHeight(45),
+                        width: getProportionateScreenHeight(260),
+                        margin: EdgeInsets.only(top: getProportionateScreenHeight(150), left: getProportionateScreenWidth(75)),
                         decoration: BoxDecoration(
                           color: Colors.white,
                           border: Border.all(color: Colors.red, width: 3.0),
