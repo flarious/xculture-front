@@ -487,7 +487,7 @@ class _NewForumPageState extends State<NewForumPage> {
     final userToken = await AuthHelper.getToken();
 
     final response = await http.post(
-      Uri.parse('http://10.0.2.2:3000/forums'),
+      Uri.parse('https://xculture-server.herokuapp.com/forums'),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
         'Authorization': 'bearer $userToken',
@@ -511,7 +511,7 @@ class _NewForumPageState extends State<NewForumPage> {
   }
 
   Future<List<Tag>> getTags() async {
-    final response = await http.get(Uri.parse('http://10.0.2.2:3000/tags'));
+    final response = await http.get(Uri.parse('https://xculture-server.herokuapp.com/tags'));
     final List<Tag> tagList = [];
     if(response.statusCode == 200) {
       var decoded = jsonDecode(response.body);

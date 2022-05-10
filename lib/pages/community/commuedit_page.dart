@@ -511,7 +511,7 @@ class _EditCommuPageState extends State<EditCommuPage>{
     
     final userToken = await AuthHelper.getToken();
     final response = await http.put(
-      Uri.parse('http://10.0.2.2:3000/communities/$commuID'),
+      Uri.parse('https://xculture-server.herokuapp.com/communities/$commuID'),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
         'Authorization': 'bearer $userToken'

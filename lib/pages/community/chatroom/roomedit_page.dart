@@ -175,7 +175,7 @@ class _EditRoomPageState extends State<EditRoomPage> {
   Future<bool> updateRoomDetail(commuId, roomId, name) async {
     final userToken = await AuthHelper.getToken();
     final response = await http.put(
-      Uri.parse("http://10.0.2.2:3000/communities/$commuId/rooms/$roomId"),
+      Uri.parse("https://xculture-server.herokuapp.com/communities/$commuId/rooms/$roomId"),
       headers: <String, String> {
         'Content-Type': 'application/json; charset=UTF-8',
         'Authorization': 'bearer $userToken'

@@ -556,10 +556,10 @@ class _SearchPageState extends State<SearchPage> {
 
     http.Response response;
     if (userToken == "") {
-      response = await http.get(Uri.parse('http://10.0.2.2:3000/forums'));
+      response = await http.get(Uri.parse('https://xculture-server.herokuapp.com/forums'));
     }
     else {
-      response = await http.get(Uri.parse('http://10.0.2.2:3000/forums/recommendation'),
+      response = await http.get(Uri.parse('https://xculture-server.herokuapp.com/forums/recommendation'),
         headers: <String, String> {
           'Authorization' : 'bearer $userToken'
         }
@@ -586,10 +586,10 @@ class _SearchPageState extends State<SearchPage> {
 
     http.Response response;
     if (userToken == "") {
-      response = await http.get(Uri.parse('http://10.0.2.2:3000/events'));
+      response = await http.get(Uri.parse('https://xculture-server.herokuapp.com/events'));
     }
     else {
-      response = await http.get(Uri.parse('http://10.0.2.2:3000/events/recommendation'),
+      response = await http.get(Uri.parse('https://xculture-server.herokuapp.com/events/recommendation'),
         headers: <String, String> {
           'Authorization' : 'bearer $userToken'
         }
@@ -616,10 +616,10 @@ class _SearchPageState extends State<SearchPage> {
 
     http.Response response;
     if (userToken == "") {
-      response = await http.get(Uri.parse('http://10.0.2.2:3000/communities'));
+      response = await http.get(Uri.parse('https://xculture-server.herokuapp.com/communities'));
     }
     else {
-      response = await http.get(Uri.parse('http://10.0.2.2:3000/communities/recommendation'),
+      response = await http.get(Uri.parse('https://xculture-server.herokuapp.com/communities/recommendation'),
         headers: <String, String> {
           'Authorization' : 'bearer $userToken'
         }

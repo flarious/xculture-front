@@ -418,7 +418,7 @@ class _NavigationDrawerWidgetState extends State<NavigationDrawerWidget> with Ti
   Future<User> getUserProfile() async {
     final userToken = await AuthHelper.getToken();
     final response = await http.get(
-      Uri.parse("http://10.0.2.2:3000/user"),
+      Uri.parse("https://xculture-server.herokuapp.com/user"),
       headers: <String, String> {
         'Authorization': 'bearer $userToken'
       }
@@ -427,14 +427,14 @@ class _NavigationDrawerWidgetState extends State<NavigationDrawerWidget> with Ti
     if(response.statusCode == 200) {
       return User.formJson(jsonDecode(response.body));
     } else {
-      Fluttertoast.showToast(msg: "error");
+      Fluttertoast.showToast(msg: ServerResponse.fromJson(jsonDecode(response.body)).message);
       return User(id: "", name: "", profilePic: "", bio: "", email: "", lastBanned: "", userType: "", bannedAmount: 0, tags: []);
     }
   }
 
 
   Future<List<Forum>> getForums() async {
-    final response = await http.get(Uri.parse('http://10.0.2.2:3000/forums'));
+    final response = await http.get(Uri.parse('https://xculture-server.herokuapp.com/forums'));
     final List<Forum> forumList = [];
 
     if(response.statusCode == 200) {
@@ -447,39 +447,4 @@ class _NavigationDrawerWidgetState extends State<NavigationDrawerWidget> with Ti
       return forumList;
     }
   } 
-
-  // Future<Forum> getUserForums(uid) async {
-  //   final response =
-  //       await http.get(Uri.parse('http://10.0.2.2:3000/user/$uid'));
-
-  //   if (response.statusCode == 200) {
-  //     return Forum.fromJson(jsonDecode(response.body));
-  //   } else {
-  //     Fluttertoast.showToast(msg: ServerResponse.fromJson(jsonDecode(response.body)).message);
-  //     Navigator.pop(context);
-  //     return Forum(id: "", title: "", subtitle: "", content: "", thumbnail: "", author: User(id: "", name: "", profilePic: "", bio: ""), 
-  //     incognito: false, viewed: 0, favorited: 0, date: DateTime.now().toString(), updateDate: DateTime.now().toString(), comments: [], tags: []);
-  //   }
-  // }
-
-
-  // Function Search Forum
-  bool searchForum(Forum data, String search) {
-    var isContain = false;
-
-    if (data.title.toLowerCase().contains(search.toLowerCase())) {
-      isContain = true;
-    }
-    else if (data.tags.isNotEmpty) {
-      for (var tag in data.tags) {
-        if(tag.name.toLowerCase().contains(search.toLowerCase())) {
-          isContain = true;
-        }
-      }
-    }
-
-    return isContain;
-
-  }
-
 }

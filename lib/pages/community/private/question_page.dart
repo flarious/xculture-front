@@ -202,7 +202,7 @@ class _QuestionPageState extends State<QuestionPage> {
     final userToken = await AuthHelper.getToken();
 
     final response = await http.post(
-      Uri.parse('http://10.0.2.2:3000/communities/$commuId/answers'),
+      Uri.parse('https://xculture-server.herokuapp.com/communities/$commuId/answers'),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
         'Authorization': 'bearer $userToken',
@@ -225,7 +225,7 @@ class _QuestionPageState extends State<QuestionPage> {
   Future<bool> joinCommu(commuID) async {
     final userToken = await AuthHelper.getToken();
     final response = await http.put(
-      Uri.parse('http://10.0.2.2:3000/communities/$commuID/join'),
+      Uri.parse('https://xculture-server.herokuapp.com/communities/$commuID/join'),
       headers: <String, String> {
         'Authorization' : 'bearer $userToken'
       }

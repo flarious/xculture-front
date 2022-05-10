@@ -221,7 +221,7 @@ class _SignUpFormState extends State<SignUpForm> {
   Future<bool> createUserProfile(name) async {
     final userToken = await AuthHelper.getToken();
     final response = await http.post(
-      Uri.parse("http://10.0.2.2:3000/user"),
+      Uri.parse("https://xculture-server.herokuapp.com/user"),
       headers: <String, String> {
         'Content-Type': 'application/json; charset=UTF-8',
         'Authorization': 'bearer $userToken'

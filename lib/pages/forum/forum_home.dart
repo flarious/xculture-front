@@ -426,7 +426,7 @@ class _ForumPageState extends State<ForumPage> {
   }
 
   Future<List<Forum>> getForums() async {
-    final response = await http.get(Uri.parse('http://10.0.2.2:3000/forums'));
+    final response = await http.get(Uri.parse('https://xculture-server.herokuapp.com/forums'));
     final List<Forum> forumList = [];
 
     if(response.statusCode == 200) {

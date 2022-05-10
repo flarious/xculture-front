@@ -250,7 +250,7 @@ class _MemberPageState extends State<MemberPage> with TickerProviderStateMixin{
 
   Future<Community> getCommu(commuID) async {
     final response =
-        await http.get(Uri.parse('http://10.0.2.2:3000/communities/$commuID'));
+        await http.get(Uri.parse('https://xculture-server.herokuapp.com/communities/$commuID'));
 
     if (response.statusCode == 200) {
       return Community.fromJson(jsonDecode(response.body));

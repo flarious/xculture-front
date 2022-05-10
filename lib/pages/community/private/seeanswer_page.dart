@@ -208,7 +208,7 @@ class _FilterPageState extends State<FilterPage> {
   }
 
   Future<List<Answer>> getAnswers(commuId, userId) async {
-    final response = await http.get(Uri.parse("http://10.0.2.2:3000/communities/$commuId/answers/$userId"));
+    final response = await http.get(Uri.parse("https://xculture-server.herokuapp.com/communities/$commuId/answers/$userId"));
     final List<Answer> answerList = [];
 
     if (response.statusCode == 200) {
@@ -226,7 +226,7 @@ class _FilterPageState extends State<FilterPage> {
   Future<bool> acceptMember(commuId, userId) async {
     final userToken = await AuthHelper.getToken();
     final response = await http.put(
-      Uri.parse("http://10.0.2.2:3000/communities/$commuId/members/$userId/accept"),
+      Uri.parse("https://xculture-server.herokuapp.com/communities/$commuId/members/$userId/accept"),
       headers: <String, String> {
         'Authorization' : 'bearer $userToken'
       }
@@ -244,7 +244,7 @@ class _FilterPageState extends State<FilterPage> {
   Future<bool> declineMember(commuId, userId) async {
     final userToken = await AuthHelper.getToken();
     final response = await http.delete(
-      Uri.parse("http://10.0.2.2:3000/communities/$commuId/members/$userId/decline"),
+      Uri.parse("https://xculture-server.herokuapp.com/communities/$commuId/members/$userId/decline"),
       headers: <String, String> {
         'Authorization' : 'bearer $userToken'
       }
