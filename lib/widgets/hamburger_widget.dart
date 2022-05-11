@@ -330,23 +330,26 @@ class _NavigationDrawerWidgetState extends State<NavigationDrawerWidget> with Ti
           // color: Colors.amber,
           // padding: const EdgeInsets.symmetric(vertical: 40),
           child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              SizedBox(width: 25),
+              SizedBox(width: 20),
               CircleAvatar(radius: 30, backgroundImage: urlImage == "" ? const AssetImage("assets/images/User_icon.jpg") : NetworkImage(urlImage) as ImageProvider),
-              SizedBox(width: 25),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    name,
-                    style: const TextStyle(fontSize: 25, color: Colors.red),
-                  ),
-                  const SizedBox(height: 3),
-                  Text(
-                    email,
-                    style: const TextStyle(fontSize: 13, color: Colors.red),
-                  ),
-                ],
+              SizedBox(width: 20),
+              Flexible(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      name,
+                      style: const TextStyle(fontSize: 25, color: Colors.red),
+                    ),
+                    const SizedBox(height: 3),
+                    Text(
+                      email,
+                      style: const TextStyle(fontSize: 13, color: Colors.red),
+                    ),
+                  ],
+                ),
               ),
             ],
           ),

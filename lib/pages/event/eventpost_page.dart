@@ -217,7 +217,7 @@ class _EventPostPageState extends State<EventPostPage>{
                 Container(
                   margin: const EdgeInsets.only(right: 0, left: 0),
                   height: 180,
-                  color: Color.fromRGBO(220, 71, 47, 1),
+                  color: Colors.red,
                   child: const Center(
                     child: Text("Post Event", 
                       style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold, color: Colors.white),
@@ -342,10 +342,18 @@ class _EventPostPageState extends State<EventPostPage>{
                               maxLines: 10,
                               keyboardType: TextInputType.multiline,
                               controller: _desc,
-                              decoration: const InputDecoration(
-                                hintText: "Description",
-                                hintStyle: TextStyle(color: Colors.grey),
-                                enabledBorder: UnderlineInputBorder(
+                              decoration: InputDecoration(
+                                label: Text("Description"),
+                                labelStyle: TextStyle(color: Colors.grey),
+                                alignLabelWithHint: true,
+                                enabledBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(20),
+                                  borderSide: BorderSide(
+                                    color: Colors.grey
+                                  ),
+                                ),
+                                focusedBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(20),
                                   borderSide: BorderSide(
                                     color: Colors.grey
                                   ),

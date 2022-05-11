@@ -346,10 +346,18 @@ class _EditCommuPageState extends State<EditCommuPage>{
                               maxLines: 10,
                               keyboardType: TextInputType.multiline,
                               controller: _desc,
-                              decoration: const InputDecoration(
-                                hintText: "Description",
-                                hintStyle: TextStyle(color: Colors.grey),
+                              decoration: InputDecoration(
+                                label: Text("Description"),
+                                labelStyle: TextStyle(color: Colors.grey),
+                                alignLabelWithHint: true,
                                 enabledBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(20),
+                                  borderSide: BorderSide(
+                                    color: Colors.grey
+                                  ),
+                                ),
+                                focusedBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(20),
                                   borderSide: BorderSide(
                                     color: Colors.grey
                                   ),

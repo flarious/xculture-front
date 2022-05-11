@@ -1,4 +1,6 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:xculturetestapi/constants.dart';
 import 'package:xculturetestapi/widgets/guesthamburger_widget.dart';
 import 'package:xculturetestapi/widgets/textform_widget.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -328,10 +330,18 @@ class _CommuPostPageState extends State<CommuPostPage> {
                               maxLines: 10,
                               keyboardType: TextInputType.multiline,
                               controller: _desc,
-                              decoration: const InputDecoration(
-                                hintText: "Description",
-                                hintStyle: TextStyle(color: Colors.grey),
-                                enabledBorder: UnderlineInputBorder(
+                              decoration: InputDecoration(
+                                label: Text("Description"),
+                                labelStyle: TextStyle(color: Colors.grey),
+                                alignLabelWithHint: true,
+                                enabledBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(20),
+                                  borderSide: BorderSide(
+                                    color: Colors.grey
+                                  ),
+                                ),
+                                focusedBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(20),
                                   borderSide: BorderSide(
                                     color: Colors.grey
                                   ),
