@@ -433,7 +433,7 @@ class _EventPageState extends State<EventPage> {
 }
 
   Future<List<Event>> getEvents() async {
-    final response = await http.get(Uri.parse('http://10.0.2.2:3000/events'));
+    final response = await http.get(Uri.parse('https://xculture-server.herokuapp.com/events'));
     final List<Event> eventList = [];
 
     if(response.statusCode == 200) {

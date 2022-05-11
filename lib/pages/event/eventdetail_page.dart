@@ -400,7 +400,7 @@ class _EventDetailPageState extends State<EventDetailPage> {
 
   Future<Event> getEvent(eventID) async {
     final response =
-        await http.get(Uri.parse('http://10.0.2.2:3000/events/$eventID'));
+        await http.get(Uri.parse('https://xculture-server.herokuapp.com/events/$eventID'));
 
     if (response.statusCode == 200) {
       return Event.fromJson(jsonDecode(response.body));
@@ -415,7 +415,7 @@ class _EventDetailPageState extends State<EventDetailPage> {
   Future<bool> joinEvent(eventID) async {
     final userToken = await AuthHelper.getToken();
     final response = await http.put(
-      Uri.parse('http://10.0.2.2:3000/events/$eventID/join'),
+      Uri.parse('https://xculture-server.herokuapp.com/events/$eventID/join'),
       headers: <String, String> {
         'Authorization' : 'bearer $userToken'
       }
@@ -433,7 +433,7 @@ class _EventDetailPageState extends State<EventDetailPage> {
   Future<bool> unjoinEvent(eventID) async {
     final userToken = await AuthHelper.getToken();
     final response = await http.put(
-      Uri.parse('http://10.0.2.2:3000/events/$eventID/unjoin'),
+      Uri.parse('https://xculture-server.herokuapp.com/events/$eventID/unjoin'),
       headers: <String, String> {
         'Authorization' : 'bearer $userToken'
       }
@@ -451,7 +451,7 @@ class _EventDetailPageState extends State<EventDetailPage> {
   Future<bool> deleteEvent(eventID) async {
     final userToken = await AuthHelper.getToken();
     final response = await http.delete(
-      Uri.parse("http://10.0.2.2:3000/events/$eventID"),
+      Uri.parse("https://xculture-server.herokuapp.com/events/$eventID"),
       headers: <String, String> {
         'Authorization' : 'bearer $userToken'
       }

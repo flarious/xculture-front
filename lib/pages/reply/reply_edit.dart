@@ -109,7 +109,7 @@ class _EditReplyPageState extends State<EditReplyPage> {
   updateReplyDetail(forumID, commentID, replyID, content, incognito) async {
     final userToken = await AuthHelper.getToken();
     final response = await http.put(
-      Uri.parse('http://10.0.2.2:3000/forums/$forumID/comments/$commentID/replies/$replyID'),
+      Uri.parse('https://xculture-server.herokuapp.com/forums/$forumID/comments/$commentID/replies/$replyID'),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
         'Authorization': 'bearer $userToken'

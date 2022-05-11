@@ -87,7 +87,7 @@ class _EditForumPageState extends State<EditForumPage>{
                     color: Colors.transparent,
                     borderRadius: BorderRadius.circular(0)
                 ),
-                child: Flexible(
+                child: Container(
                   child: Image.file(
                     image!,
                     width: 200,
@@ -512,7 +512,7 @@ class _EditForumPageState extends State<EditForumPage>{
     final userToken = await AuthHelper.getToken();
 
     final response = await http.put(
-      Uri.parse('http://10.0.2.2:3000/forums/$forumID'),
+      Uri.parse('https://xculture-server.herokuapp.com/forums/$forumID'),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
         'Authorization': 'bearer $userToken',
@@ -537,7 +537,7 @@ class _EditForumPageState extends State<EditForumPage>{
   }
 
   Future<List<Tag>> getTags() async {
-    final response = await http.get(Uri.parse('http://10.0.2.2:3000/tags'));
+    final response = await http.get(Uri.parse('https://xculture-server.herokuapp.com/tags'));
     final List<Tag> tagList = [];
     if(response.statusCode == 200) {
       var decoded = jsonDecode(response.body);

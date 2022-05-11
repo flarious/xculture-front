@@ -446,7 +446,7 @@ class _YourCommuPageState extends State<YourCommuPage> with TickerProviderStateM
   Future<User> getUserProfile() async {
     final userToken = await AuthHelper.getToken();
     final response = await http.get(
-      Uri.parse("http://10.0.2.2:3000/user"),
+      Uri.parse("https://xculture-server.herokuapp.com/user"),
       headers: <String, String> {
         'Authorization': 'bearer $userToken'
       }
@@ -467,7 +467,7 @@ class _YourCommuPageState extends State<YourCommuPage> with TickerProviderStateM
 
     final userToken = await AuthHelper.getToken();
     final response = await http.get(
-      Uri.parse('http://10.0.2.2:3000/user/communities'),
+      Uri.parse('https://xculture-server.herokuapp.com/user/communities'),
       headers: <String, String> {
         'Authorization': 'bearer $userToken'
       }
@@ -491,7 +491,7 @@ class _YourCommuPageState extends State<YourCommuPage> with TickerProviderStateM
 
     final userToken = await AuthHelper.getToken();
     final response = await http.get(
-      Uri.parse('http://10.0.2.2:3000/user/communities/joined'),
+      Uri.parse('https://xculture-server.herokuapp.com/user/communities/joined'),
       headers: <String, String> {
         'Authorization': 'bearer $userToken'
       }
@@ -510,7 +510,7 @@ class _YourCommuPageState extends State<YourCommuPage> with TickerProviderStateM
   }
 
   //   Future<List<Community>> getCommus() async {
-  //   final response = await http.get(Uri.parse('http://10.0.2.2:3000/communities'));
+  //   final response = await http.get(Uri.parse('https://xculture-server.herokuapp.com/communities'));
   //   final List<Community> forumList = [];
 
   //   if(response.statusCode == 200) {

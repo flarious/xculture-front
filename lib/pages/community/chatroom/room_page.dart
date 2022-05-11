@@ -336,19 +336,22 @@ class _RoomPageState extends State<RoomPage> {
                                         color: Colors.red,
                                         splashRadius: 20,
                                       ),
-                                    ),
-                                    Material(
-                                      color: Colors.white,
-                                      child: IconButton(
-                                        onPressed: () async {
-                                          if (_roomName.text != "") {
-                                            if (AuthHelper.checkAuth() && commu.members.any((member) => member.member.id == AuthHelper.auth.currentUser!.uid)) {
-                                              var success = await sendRoomDetail(commu.id, _roomName.text); 
-                                              if (success) {
-                                                Fluttertoast.showToast(msg: "Your community have been created.");
-                                                setState(() {
-                                                  isPost = !isPost;
-                                                });
+                                      Material(
+                                        color: Colors.white,
+                                        child: IconButton(
+                                          onPressed: () async {
+                                            if (_roomName.text != "") {
+                                              if (AuthHelper.checkAuth() && commu.members.any((member) => member.member.id == AuthHelper.auth.currentUser!.uid)) {
+                                                var success = await sendRoomDetail(commu.id, _roomName.text); 
+                                                if (success) {
+                                                  Fluttertoast.showToast(msg: "Your room has been created.");
+                                                  setState(() {
+                                                    isPost = !isPost;
+                                                  });
+                                                }
+                                              }
+                                              else {
+                                                Fluttertoast.showToast(msg: "Only members can create room");
                                               }
                                             }
                                             else {
@@ -410,7 +413,7 @@ class _RoomPageState extends State<RoomPage> {
   Future<bool> unjoinCommu(commuID) async {
     final userToken = await AuthHelper.getToken();
     final response = await http.put(
-      Uri.parse('http://10.0.2.2:3000/communities/$commuID/unjoin'),
+      Uri.parse('https://xculture-server.herokuapp.com/communities/$commuID/unjoin'),
       headers: <String, String> {
         'Authorization' : 'bearer $userToken'
       }
@@ -426,7 +429,7 @@ class _RoomPageState extends State<RoomPage> {
   }
 
   Future<List<Room>> getRooms(commuId) async {
-    final response = await http.get(Uri.parse("http://10.0.2.2:3000/communities/$commuId/rooms"));
+    final response = await http.get(Uri.parse("https://xculture-server.herokuapp.com/communities/$commuId/rooms"));
     final List<Room> roomList = [];
 
     if(response.statusCode == 200) {
@@ -443,7 +446,7 @@ class _RoomPageState extends State<RoomPage> {
   Future<bool> sendRoomDetail(commuId, name) async {
     final userToken = await AuthHelper.getToken();
     final response = await http.post(
-      Uri.parse("http://10.0.2.2:3000/communities/$commuId/rooms"),
+      Uri.parse("https://xculture-server.herokuapp.com/communities/$commuId/rooms"),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
         'Authorization': 'bearer $userToken',

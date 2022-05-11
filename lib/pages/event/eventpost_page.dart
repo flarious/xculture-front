@@ -94,7 +94,7 @@ class _EventPostPageState extends State<EventPostPage>{
                   color: Colors.transparent,
                   borderRadius: BorderRadius.circular(0)
               ),
-              child: Flexible(
+              child: Container(
                 child: Image.file(
                   image!,
                   width: 200,
@@ -493,7 +493,7 @@ class _EventPostPageState extends State<EventPostPage>{
   Future<bool> sendEventDetail(String name, String desc, String thumbnail, String location, String date) async {
     final userToken = await AuthHelper.getToken();
     final response = await http.post(
-      Uri.parse('http://10.0.2.2:3000/events'),
+      Uri.parse('https://xculture-server.herokuapp.com/events'),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
         'Authorization': 'bearer $userToken'

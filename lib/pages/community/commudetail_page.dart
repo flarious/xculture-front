@@ -451,7 +451,7 @@ class _CommuDetailPageState extends State<CommuDetailPage> {
 
   Future<Community> getCommu(commuID) async {
     final response =
-        await http.get(Uri.parse('http://10.0.2.2:3000/communities/$commuID'));
+        await http.get(Uri.parse('https://xculture-server.herokuapp.com/communities/$commuID'));
 
     if (response.statusCode == 200) {
       return Community.fromJson(jsonDecode(response.body));
@@ -466,7 +466,7 @@ class _CommuDetailPageState extends State<CommuDetailPage> {
   Future<bool> joinCommu(commuID) async {
     final userToken = await AuthHelper.getToken();
     final response = await http.put(
-      Uri.parse('http://10.0.2.2:3000/communities/$commuID/join'),
+      Uri.parse('https://xculture-server.herokuapp.com/communities/$commuID/join'),
       headers: <String, String> {
         'Authorization' : 'bearer $userToken'
       }
@@ -484,7 +484,7 @@ class _CommuDetailPageState extends State<CommuDetailPage> {
   Future<bool> cancelJoinRequest(commuID) async {
     final userToken = await AuthHelper.getToken();
     final response = await http.delete(
-      Uri.parse('http://10.0.2.2:3000/communities/$commuID/cancel'),
+      Uri.parse('https://xculture-server.herokuapp.com/communities/$commuID/cancel'),
       headers: <String, String> {
         'Authorization' : 'bearer $userToken'
       }
@@ -502,7 +502,7 @@ class _CommuDetailPageState extends State<CommuDetailPage> {
   Future<bool> deleteCommu(commuID) async {
     final userToken = await AuthHelper.getToken();
     final response = await http.delete(
-      Uri.parse("http://10.0.2.2:3000/communities/$commuID"),
+      Uri.parse("https://xculture-server.herokuapp.com/communities/$commuID"),
       headers: <String, String> {
         'Authorization' : 'bearer $userToken'
       }

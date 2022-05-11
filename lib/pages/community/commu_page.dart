@@ -426,7 +426,7 @@ class _CommuPageState extends State<CommuPage> {
 }
   
   Future<List<Community>> getCommus() async {
-    final response = await http.get(Uri.parse('http://10.0.2.2:3000/communities'));
+    final response = await http.get(Uri.parse('https://xculture-server.herokuapp.com/communities'));
     final List<Community> forumList = [];
 
     if(response.statusCode == 200) {

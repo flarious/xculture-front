@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:xculturetestapi/arguments.dart';
 import 'package:http/http.dart' as http;
+import 'package:xculturetestapi/helper/auth.dart';
 import 'package:xculturetestapi/pages/community/private/seeanswer_page.dart';
 import 'package:xculturetestapi/size_config.dart';
 import '../../data.dart';
@@ -117,37 +118,43 @@ class _MemberPageState extends State<MemberPage> with TickerProviderStateMixin{
                                             title: Text(snapshot.data!.members[index].member.name),
                                             //subtitle: Text("Score : 99"),
                                             // ignore: deprecated_member_use
-                                            trailing: FlatButton(
-                                              onPressed: () {
-                                                showDialog(
-                                                  context: context,
-                                                  builder: (context) => AlertDialog(
-                                                    title: Text("Remove"),
-                                                    content: Text("Do you want to remove this member?"),
-                                                    actions: [
-                                                      FlatButton(
-                                                        onPressed: (){
-                                                          Navigator.pop(context);
-                                                        }, 
-                                                        child: Text("No")
-                                                      ),
-                                                      FlatButton(
-                                                        onPressed: () {
-                                                          //Remove
-                                                        }, 
-                                                        child: Text("Yes", style: TextStyle(color: Colors.red)),
-                                                      ),
-                                                    ],
-                                                    elevation: 24.0,
-                                                  ),
-                                                );
-                                              }, 
-                                              child: const Text("Remove", style: TextStyle(color: Colors.white)),
-                                              color: Colors.red,
-                                              shape: RoundedRectangleBorder(
-                                                borderRadius: BorderRadius.circular(20.0),
-                                              ),
-                                            ),
+                                            // trailing: FlatButton(
+                                            //   onPressed: () {
+                                            //     if (AuthHelper.checkAuth() && snapshot.data!.owner.id == AuthHelper.auth.currentUser!.uid) {
+                                            //       showDialog(
+                                            //         context: context,
+                                            //         builder: (context) => AlertDialog(
+                                            //           title: Text("Remove"),
+                                            //           content: Text("Do you want to remove this member?"),
+                                            //           actions: [
+                                            //             FlatButton(
+                                            //               onPressed: (){
+                                            //                 Navigator.pop(context);
+                                            //               }, 
+                                            //               child: Text("No")
+                                            //             ),
+                                            //             FlatButton(
+                                            //               onPressed: () {
+                                            //                 //Remove
+                                            //               }, 
+                                            //               child: Text("Yes", style: TextStyle(color: Colors.red)),
+                                            //             ),
+                                            //           ],
+                                            //           elevation: 24.0,
+                                            //         ),
+                                            //       );
+                                            //     }
+                                            //     else {
+                                            //       Fluttertoast.showToast(msg: "Only the owner can remove members from community");
+                                            //     }
+                                                
+                                            //   }, 
+                                            //   child: const Text("Remove", style: TextStyle(color: Colors.white)),
+                                            //   color: Colors.red,
+                                            //   shape: RoundedRectangleBorder(
+                                            //     borderRadius: BorderRadius.circular(20.0),
+                                            //   ),
+                                            // ),
                                           ) : 
                                           Container();
                                         }
@@ -174,12 +181,12 @@ class _MemberPageState extends State<MemberPage> with TickerProviderStateMixin{
                                                   MaterialPageRoute(
                                                     builder: (context) => const FilterPage(),
                                                     settings: RouteSettings(
-                                                      arguments: FilterArguments(commu: commu, member: index)
+                                                      arguments: FilterArguments(commu: snapshot.data!, member: index)
                                                     )
                                                   )
                                                 );
                                                 setState(() {
-                                                  
+                                                  commuDetail = getCommu(snapshot.data!.id);
                                                 });
                                               }, 
                                               child: const Text("See answer", style: TextStyle(color: Colors.white)),
@@ -254,7 +261,7 @@ class _MemberPageState extends State<MemberPage> with TickerProviderStateMixin{
 
   Future<Community> getCommu(commuID) async {
     final response =
-        await http.get(Uri.parse('http://10.0.2.2:3000/communities/$commuID'));
+        await http.get(Uri.parse('https://xculture-server.herokuapp.com/communities/$commuID'));
 
     if (response.statusCode == 200) {
       return Community.fromJson(jsonDecode(response.body));
