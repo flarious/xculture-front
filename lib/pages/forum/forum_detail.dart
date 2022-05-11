@@ -47,6 +47,13 @@ class _ForumDetailPageState extends State<ForumDetailPage> {
   bool isShowReply = false;
   bool isFirstVisited = true;
 
+  bool isTapFavForum = false;
+  bool isTapComment = false;
+  bool isTapConfirmDelete = false;
+  final List<bool> isTapFavComments = [];
+  final List<bool> isTapReplies = [];
+  final List<List<bool>> isTapFavReplies = [];
+
   @override
   Widget build(BuildContext context) {
     final forumDetail = ModalRoute.of(context)!.settings.arguments as Forum;
@@ -75,6 +82,7 @@ class _ForumDetailPageState extends State<ForumDetailPage> {
                   _favComment = (AuthHelper.checkAuth() && comment.favoritedBy.contains(AuthHelper.auth.currentUser!.uid));
                   final TextEditingController _contentReply = TextEditingController();
                   List<bool> _favRepliesPerComment = [];
+                  List<bool> isTapFavRepliesPerComment = [];
                   var index = snapshot.data!.comments.indexOf(comment);
     
                   if(_contentReplies.length < snapshot.data!.comments.length) { // Depend on the amount of comments
@@ -85,12 +93,16 @@ class _ForumDetailPageState extends State<ForumDetailPage> {
                     incognitoReplies.add(incognitoReply);
                     _formKeyReplies.add(GlobalKey<FormState>());
                     _favRepliesTotal.add(_favRepliesPerComment);
+                    isTapFavComments.add(false);
+                    isTapReplies.add(false);
+                    isTapFavReplies.add(isTapFavRepliesPerComment);
                   }
                   
                   for(var reply in comment.replies) {
                     _favReply = (AuthHelper.checkAuth() && reply.favoritedBy.contains(AuthHelper.auth.currentUser!.uid));
                     if(_favRepliesTotal[index].length < comment.replies.length) { // Depend on the amount of replies
                       _favRepliesTotal[index].add(_favReply);
+                      isTapFavReplies[index].add(false);
                     }
                   }
                 }
@@ -184,11 +196,25 @@ class _ForumDetailPageState extends State<ForumDetailPage> {
                                           ),
                                           TextButton(
                                             onPressed: () async {
-                                              var success = await deleteForum(snapshot.data!.id);
-                                              if (success) {
-                                                Fluttertoast.showToast(msg: "Deleted");
-                                                Navigator.pop(context);
-                                                Navigator.pop(context);
+                                              if (isTapConfirmDelete) {
+                                                Fluttertoast.showToast(msg: "Please wait before press again");
+                                              }
+                                              else {
+                                                setState(() {
+                                                  isTapConfirmDelete = !isTapConfirmDelete;
+                                                });
+                                                var success = await deleteForum(snapshot.data!.id);
+                                                if (success) {
+                                                  Fluttertoast.showToast(msg: "Deleted");
+                                                  Navigator.pop(context);
+                                                  Navigator.pop(context);
+                                                }
+                                                else {
+                                                  Navigator.pop(context);
+                                                }
+                                                setState(() {
+                                                  isTapConfirmDelete = !isTapConfirmDelete;
+                                                });
                                               }
                                             }, 
                                             child: const Text("Yes", style: TextStyle(color: Colors.red)),
@@ -218,7 +244,7 @@ class _ForumDetailPageState extends State<ForumDetailPage> {
                                       )
                                     ).then(refreshPage);
                                   } else {
-                                    Fluttertoast.showToast(msg: "The owner can't report their fourm");
+                                    Fluttertoast.showToast(msg: "The owner can't report their forum");
                                   }
                                 }
                               ),
@@ -270,22 +296,30 @@ class _ForumDetailPageState extends State<ForumDetailPage> {
                                     color: Colors.red,
                                     iconSize: 40,
                                     onPressed: () async {
-                                      if (favourite == false ) {
-                                        favourite = true;
-                                        var success = await forumFavorited(snapshot.data!.id);
-                                        if(success) {
-                                          Fluttertoast.showToast(msg: "Favorited.");
-                                        }
-                                      } else {
-                                        favourite = false;
-                                        var success = await forumUnfavorited(snapshot.data!.id);
-                                        if(success) {
-                                          Fluttertoast.showToast(msg: "Unfavorited.");
-                                        }
-                                      }   
-                                      setState(() { 
-                                                                       
-                                      });
+                                      if (isTapFavForum) {
+                                        Fluttertoast.showToast(msg: "Please wait before tap again");
+                                      }
+                                      else {
+                                        setState(() {
+                                          isTapFavForum = !isTapFavForum;
+                                        });
+                                        if (favourite == false ) {
+                                          favourite = true;
+                                          var success = await forumFavorited(snapshot.data!.id);
+                                          if(success) {
+                                            Fluttertoast.showToast(msg: "Favorited.");
+                                          }
+                                        } else {
+                                          favourite = false;
+                                          var success = await forumUnfavorited(snapshot.data!.id);
+                                          if(success) {
+                                            Fluttertoast.showToast(msg: "Unfavorited.");
+                                          }
+                                        } 
+                                        setState(() {
+                                          isTapFavForum = !isTapFavForum;
+                                        });
+                                      }
                                     },
                                   ),
                                 ],
@@ -415,16 +449,26 @@ class _ForumDetailPageState extends State<ForumDetailPage> {
                                                     color: Colors.red,
                                                   ),
                                                   onPressed: () async {
-                                                    if(_formKeyComment.currentState!.validate()) {
-                                                      var success = await sendCommentDetail(snapshot.data!.id, _contentComment.text, incognitoComment);
-                                                      if (success) {
-                                                        Fluttertoast.showToast(msg: "Your comment has been posted.");
-                                                        refreshPage(snapshot.data!.id);
-                                                      }
+                                                    if (isTapComment) {
+                                                      Fluttertoast.showToast(msg: "Please wait before tap again");
                                                     }
-                                                    setState(() {
-                                                      _contentComment.text = "";
-                                                    });
+                                                    else {
+                                                      setState(() {
+                                                        isTapComment = !isTapComment;
+                                                      });
+                                                      if(_formKeyComment.currentState!.validate()) {
+                                                        var success = await sendCommentDetail(snapshot.data!.id, _contentComment.text, incognitoComment);
+                                                        if (success) {
+                                                          Fluttertoast.showToast(msg: "Your comment has been posted.");
+                                                          refreshPage(snapshot.data!.id);
+                                                        }
+                                                      }
+                                                      setState(() {
+                                                        isTapComment = !isTapComment;
+                                                        _contentComment.text = "";
+                                                      });
+                                                    }
+                                                    
                                                   },
                                                 ),
                                               ),
@@ -527,22 +571,30 @@ class _ForumDetailPageState extends State<ForumDetailPage> {
                                                   color: Colors.red,
                                                   iconSize: 20,
                                                   onPressed: () async {
-                                                    if (_favComments[index] == false ) {
+                                                    if (isTapFavComments[index]) {
+                                                      Fluttertoast.showToast(msg: "Please wait before tap again");
+                                                    }
+                                                    else {
+                                                      setState(() {
+                                                        isTapFavComments[index] = !isTapFavComments[index];
+                                                      });
+                                                      if (_favComments[index] == false ) {
                                                         _favComments[index] = true;
                                                         var success = await commentFavorited(snapshot.data!.id, snapshot.data!.comments[index].id);
                                                         if (success) {
-                                                          Fluttertoast.showToast(msg: "Favorite Comment.");
+                                                          Fluttertoast.showToast(msg: "Favorited Comment.");
                                                         }
                                                       } else {
                                                         _favComments[index] = false;
                                                         var success = await commentUnfavorited(snapshot.data!.id, snapshot.data!.comments[index].id);
                                                         if (success) {
-                                                          Fluttertoast.showToast(msg: "Unfavorite Comment.");
+                                                          Fluttertoast.showToast(msg: "Unfavorited Comment.");
                                                         }
-                                                      }        
-                                                    setState(() { 
-                                                                          
-                                                    });
+                                                      }  
+                                                      setState(() {
+                                                        isTapFavComments[index] = !isTapFavComments[index];
+                                                      });
+                                                    }
                                                   },
                                                 ),
 
@@ -635,17 +687,26 @@ class _ForumDetailPageState extends State<ForumDetailPage> {
                                                                 size: 30,
                                                               ),
                                                               onPressed: () async {
-                                                                if(_formKeyReplies[index].currentState!.validate()) {
-                                                                  var success = await sendReplyDetail(snapshot.data!.id, snapshot.data!.comments[index].id, _contentReplies[index].text, incognitoReplies[index]);
-                                                                  if (success) {
-                                                                    Fluttertoast.showToast(msg: "Your reply has been posted.");
-                                                                    refreshPage(snapshot.data!.id);
-                                                                  }
+                                                                if (isTapReplies[index]) {
+                                                                  Fluttertoast.showToast(msg: "Please wait before tap again");
                                                                 }
-                                                                setState(() {
-                                                                  _contentReplies[index].text = "";
-                                                                  _isReply[index] = false;
-                                                                });
+                                                                else {
+                                                                  setState(() {
+                                                                    isTapReplies[index] = !isTapReplies[index];
+                                                                  });
+                                                                  if(_formKeyReplies[index].currentState!.validate()) {
+                                                                    var success = await sendReplyDetail(snapshot.data!.id, snapshot.data!.comments[index].id, _contentReplies[index].text, incognitoReplies[index]);
+                                                                    if (success) {
+                                                                      Fluttertoast.showToast(msg: "Your reply has been posted.");
+                                                                      refreshPage(snapshot.data!.id);
+                                                                    }
+                                                                  }
+                                                                  setState(() {
+                                                                    isTapReplies[index] = !isTapReplies[index];
+                                                                    _contentReplies[index].text = "";
+                                                                    _isReply[index] = false;
+                                                                  });
+                                                                }
                                                               },
                                                             ),
                                                           ),
@@ -736,22 +797,30 @@ class _ForumDetailPageState extends State<ForumDetailPage> {
                                                           color: Colors.red,
                                                           iconSize: 20,
                                                           onPressed: () async {
-                                                            if (_favRepliesTotal[index][index2] == false ) {
+                                                            if (isTapFavReplies[index][index2]) {
+                                                              Fluttertoast.showToast(msg: "Please wait before tap again");
+                                                            }
+                                                            else {
+                                                              setState(() {
+                                                                isTapFavReplies[index][index2] = !isTapFavReplies[index][index2];
+                                                              });
+                                                              if (_favRepliesTotal[index][index2] == false ) {
                                                                 _favRepliesTotal[index][index2] = true;
                                                                 var success = await replyFavorited(snapshot.data!.id, snapshot.data!.comments[index].id, snapshot.data!.comments[index].replies[index2].id);
                                                                 if (success) {
-                                                                  Fluttertoast.showToast(msg: "Favorite Reply.");
+                                                                  Fluttertoast.showToast(msg: "Favorited Reply.");
                                                                 }
                                                               } else {
                                                                 _favRepliesTotal[index][index2] = false;
                                                                 var success = await replyUnfavorited(snapshot.data!.id, snapshot.data!.comments[index].id, snapshot.data!.comments[index].replies[index2].id);
                                                                 if (success) {
-                                                                  Fluttertoast.showToast(msg: "Unfavorite Reply.");
+                                                                  Fluttertoast.showToast(msg: "Unfavorited Reply.");
                                                                 }
-                                                              }   
-                                                            setState(() { 
-                                                                                       
-                                                            });
+                                                              }  
+                                                              setState(() {
+                                                                isTapFavReplies[index][index2] = !isTapFavReplies[index][index2];
+                                                              });
+                                                            }
                                                           },
                                                         ),
 
@@ -833,7 +902,6 @@ class _ForumDetailPageState extends State<ForumDetailPage> {
       return Forum.fromJson(jsonDecode(response.body));
     } else {
       Fluttertoast.showToast(msg: ServerResponse.fromJson(jsonDecode(response.body)).message);
-      Navigator.pop(context);
       return Forum(id: "", title: "", subtitle: "", content: "", thumbnail: "", author: User(id: "", name: "", profilePic: "", bio: "", email: "", lastBanned: "", userType: "", bannedAmount: 0, tags: []), 
       incognito: false, viewed: 0, favorited: 0, createDate: DateTime.now().toString(), updateDate: DateTime.now().toString(), comments: [], tags: [], favoritedBy: []);
     }
