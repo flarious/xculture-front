@@ -224,6 +224,7 @@ class _EventPageState extends State<EventPage> {
                                     shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(20)
                                     ),
+                                    color: Colors.grey[50],
                                     child: InkWell(
                                       child: SizedBox(
                                         width: getProportionateScreenWidth(280),
@@ -347,6 +348,7 @@ class _EventPageState extends State<EventPage> {
                                     shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(20)
                                     ),
+                                    
                                     child: InkWell(
                                       child: SizedBox(
                                         width: getProportionateScreenWidth(280),
@@ -361,7 +363,7 @@ class _EventPageState extends State<EventPage> {
                                             ),
 
                                             Padding(
-                                              padding: const EdgeInsets.all(10.0),
+                                              padding: const EdgeInsets.fromLTRB(10, 10, 0, 10),
                                               child: Text(snapshot.data![index].name,
                                                 overflow: TextOverflow.ellipsis,
                                                 style: TextStyle(

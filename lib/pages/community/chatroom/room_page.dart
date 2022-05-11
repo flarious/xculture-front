@@ -337,10 +337,10 @@ class _RoomPageState extends State<RoomPage> {
                                         splashRadius: 20,
                                       ),
                                     ),
-                                      Material(
-                                        color: Colors.white,
-                                        child: IconButton(
-                                          onPressed: () async {
+                                    Material(
+                                      color: Colors.white,
+                                      child: IconButton(
+                                        onPressed: () async {
                                           if (_roomName.text != "") {
                                             if (AuthHelper.checkAuth() && commu.members.any((member) => member.member.id == AuthHelper.auth.currentUser!.uid)) {
                                               var success = await sendRoomDetail(commu.id, _roomName.text); 
