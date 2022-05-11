@@ -34,6 +34,7 @@ class _EventDetailPageState extends State<EventDetailPage> {
     
     return SafeArea(
       child: Scaffold(
+        backgroundColor: Colors.white,
         body: SingleChildScrollView(
           child: FutureBuilder<Event>(
             future: eventDetail,
@@ -364,6 +365,7 @@ class _EventDetailPageState extends State<EventDetailPage> {
                                   width: double.infinity,
                                   height: 50,
                                   child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
                                     children: const [
                                       Icon(Icons.star_border),
                                       SizedBox(width: 5),

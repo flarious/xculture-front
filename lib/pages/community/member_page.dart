@@ -51,7 +51,7 @@ class _MemberPageState extends State<MemberPage> with TickerProviderStateMixin{
                       //Members text
                       Container(
                         //margin: const EdgeInsets.only(right: 0, left: 0),
-                        height: getProportionateScreenHeight(200),
+                        height: 170,
                         color: Colors.red,
                         child: Center(
                           child: Text("Members", 
@@ -83,9 +83,9 @@ class _MemberPageState extends State<MemberPage> with TickerProviderStateMixin{
                         
                       //White box(content)
                       Container(
-                        margin: EdgeInsets.only(top: getProportionateScreenWidth(140)),
+                        margin: const EdgeInsets.only(top: 150),
                         child: Container(
-                          padding: EdgeInsets.only(top: getProportionateScreenHeight(20)),
+                          padding: const EdgeInsets.only(top: 20),
                           width: MediaQuery.of(context).size.width,
                           decoration: const BoxDecoration(
                             color: Colors.white,
@@ -100,7 +100,7 @@ class _MemberPageState extends State<MemberPage> with TickerProviderStateMixin{
                               children: [
                                 //Member list
                                 SizedBox(
-                                  height: getProportionateScreenHeight(490),
+                                  height: 490,
                                   child: TabBarView(
                                     controller: _tabController,
                                     children: [
@@ -209,40 +209,42 @@ class _MemberPageState extends State<MemberPage> with TickerProviderStateMixin{
                       ),
                         
                       //Tabbar
-                      Container(
-                        height: getProportionateScreenHeight(45),
-                        width: getProportionateScreenHeight(260),
-                        margin: EdgeInsets.only(top: getProportionateScreenHeight(150), left: getProportionateScreenWidth(75)),
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          border: Border.all(color: Colors.red, width: 3.0),
-                          borderRadius: const BorderRadius.only(
-                            topLeft: Radius.circular(15),
-                            topRight: Radius.circular(15),
-                            bottomLeft: Radius.circular(15),
-                            bottomRight: Radius.circular(15),
-                          ),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.grey.withOpacity(0.7),
-                              blurRadius: 3.0,
-                              offset: const Offset(0.0, 4.0),
+                      Center(
+                        child: Container(
+                          height: 45,
+                          width: 260,
+                          margin: const EdgeInsets.only(top: 130),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            border: Border.all(color: Colors.red, width: 3.0),
+                            borderRadius: const BorderRadius.only(
+                              topLeft: Radius.circular(15),
+                              topRight: Radius.circular(15),
+                              bottomLeft: Radius.circular(15),
+                              bottomRight: Radius.circular(15),
                             ),
-                          ],
-                        ),
-                        child: TabBar(
-                          controller: _tabController,
-                          labelColor: Colors.black,
-                          labelStyle: const TextStyle(fontWeight: FontWeight.bold),
-                          unselectedLabelColor: Colors.grey,
-                          indicatorSize: TabBarIndicatorSize.label,
-                          indicatorColor: Colors.transparent,
-                          labelPadding: const EdgeInsets.all(0),
-                          indicatorPadding: const EdgeInsets.all(0),
-                          tabs: [
-                            _individualTab("In group"),
-                            const Tab(text: "Pending")
-                          ],
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.grey.withOpacity(0.7),
+                                blurRadius: 3.0,
+                                offset: const Offset(0.0, 4.0),
+                              ),
+                            ],
+                          ),
+                          child: TabBar(
+                            controller: _tabController,
+                            labelColor: Colors.black,
+                            labelStyle: const TextStyle(fontWeight: FontWeight.bold),
+                            unselectedLabelColor: Colors.grey,
+                            indicatorSize: TabBarIndicatorSize.label,
+                            indicatorColor: Colors.transparent,
+                            labelPadding: const EdgeInsets.all(0),
+                            indicatorPadding: const EdgeInsets.all(0),
+                            tabs: [
+                              _individualTab("In group"),
+                              const Tab(text: "Pending")
+                            ],
+                          ),
                         ),
                       ),
                     ],

@@ -403,7 +403,7 @@ class _EventPostPageState extends State<EventPostPage>{
                             Container(
                               alignment: Alignment.centerLeft,
                               padding: const EdgeInsets.symmetric(vertical: 5),
-                              child: Text(_dateTime == null ? "Click an calendar icon above" : _dateTime.toString(),
+                              child: Text(_dateTime == null ? "Click a calendar icon above" : _dateTime.toString(),
                                 style: const TextStyle(fontSize: 15, color: Colors.black),
                               ),
                             ),
