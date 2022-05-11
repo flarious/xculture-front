@@ -376,10 +376,18 @@ class _NewForumPageState extends State<NewForumPage> {
                               maxLines: 10,
                               keyboardType: TextInputType.multiline,
                               controller: _content,
-                              decoration: const InputDecoration(
-                                hintText: "Enter Your Content Here",
-                                hintStyle: TextStyle(color: Colors.grey),
-                                enabledBorder: UnderlineInputBorder(
+                              decoration: InputDecoration(
+                                label: Text("Description"),
+                                labelStyle: TextStyle(color: Colors.grey),
+                                alignLabelWithHint: true,
+                                enabledBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(20),
+                                  borderSide: BorderSide(
+                                    color: Colors.grey
+                                  ),
+                                ),
+                                focusedBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(20),
                                   borderSide: BorderSide(
                                     color: Colors.grey
                                   ),

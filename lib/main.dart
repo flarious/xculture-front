@@ -58,6 +58,7 @@ class MyApp extends StatelessWidget {
       // routes: routes,
       // home: MemberPage(),
       // home: const ForumPage(),
+      //home: SplashScreen(),
       home: SplashScreen(),
       //home: GuestHamburger(),
       // home: ReportPage(),

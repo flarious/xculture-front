@@ -45,27 +45,29 @@ class _CommuAllPageState extends State<CommuAllPage> {
     final commuList =
         ModalRoute.of(context)!.settings.arguments as Future<List<Community>>;
 
-    return Scaffold(
-      backgroundColor: Colors.white,
-      body: showAllCommu(commuList),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          if (AuthHelper.checkAuth()) {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => const CommuPostPage(),
-              )
-            );
-          }
-          else {
-            Fluttertoast.showToast(msg: "You are not signed in");
-          }
-        },
-        child: const Icon(Icons.post_add)
+    return SafeArea(
+      child: Scaffold(
+        backgroundColor: Colors.white,
+        body: showAllCommu(commuList),
+        floatingActionButton: FloatingActionButton(
+          onPressed: () {
+            if (AuthHelper.checkAuth()) {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const CommuPostPage(),
+                )
+              );
+            }
+            else {
+              Fluttertoast.showToast(msg: "You are not signed in");
+            }
+          },
+          child: const Icon(Icons.post_add)
+        ),
+        endDrawer: AuthHelper.checkAuth() ? const NavigationDrawerWidget() : const GuestHamburger(),
+        bottomNavigationBar: const Navbar(currentIndex: 3),
       ),
-      endDrawer: AuthHelper.checkAuth() ? const NavigationDrawerWidget() : const GuestHamburger(),
-      bottomNavigationBar: const Navbar(currentIndex: 3),
     );
   }
 

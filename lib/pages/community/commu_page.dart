@@ -9,6 +9,7 @@ import 'package:xculturetestapi/pages/community/commu_all.dart';
 import 'package:xculturetestapi/pages/community/commudetail_page.dart';
 import 'package:xculturetestapi/pages/community/commupost_page.dart';
 import 'package:http/http.dart' as http;
+import 'package:xculturetestapi/size_config.dart';
 import 'package:xculturetestapi/widgets/guesthamburger_widget.dart';
 import '../../data.dart';
 import '../../helper/auth.dart';
@@ -81,24 +82,24 @@ class _CommuPageState extends State<CommuPage> {
 
             //Post Forum text
             Container(
-              margin: const EdgeInsets.only(right: 0, left: 0),
-              height: 300,
+              //margin: const EdgeInsets.only(right: 0, left: 0),
+              height: getProportionateScreenHeight(300),
               color: Colors.red,
               child: Center(
                 child: Column(
                   children: [
 
-                    const SizedBox(height: 30),
+                    SizedBox(height: getProportionateScreenHeight(30)),
 
-                    const Text("Communities", 
-                      style: TextStyle(fontSize: 40, fontWeight: FontWeight.bold, color: Colors.white),
+                    Text("Communities", 
+                      style: TextStyle(fontSize: getProportionateScreenWidth(40), fontWeight: FontWeight.bold, color: Colors.white),
                     ),
 
-                    const SizedBox(height: 10),
+                    SizedBox(height: getProportionateScreenHeight(10)),
 
                     Container (                                  
-                      height: 40,
-                      width: 350,
+                      height: getProportionateScreenHeight(40),
+                      width: getProportionateScreenWidth(330),
                       // margin: const EdgeInsets.only(top: 50, left: 20, right: 20, bottom: 0),
                       //margin: const EdgeInsets.only(top: 100),
                       alignment: Alignment.centerLeft,
@@ -158,7 +159,7 @@ class _CommuPageState extends State<CommuPage> {
       
             // Content
             Container(          
-              margin: const EdgeInsets.only(top: 160, left: 0, right: 0, bottom: 0),
+              margin: EdgeInsets.only(top: getProportionateScreenHeight(180)),
               child: Container(
                 width: MediaQuery.of(context).size.width,
                 decoration: const BoxDecoration(
@@ -175,8 +176,8 @@ class _CommuPageState extends State<CommuPage> {
                       padding: const EdgeInsets.all(10.0),
                       child: Row(
                         children: [
-                          const Text("Trending Community",
-                            style: TextStyle(fontWeight: FontWeight.bold, color: Colors.red, fontSize: 22),
+                          Text("Trending Community",
+                            style: TextStyle(fontWeight: FontWeight.bold, color: Colors.red, fontSize: getProportionateScreenWidth(22)),
                           ),
                           const Spacer(),
                           TextButton(
@@ -198,7 +199,7 @@ class _CommuPageState extends State<CommuPage> {
                     ),
 
                     SizedBox(
-                      height: 270,
+                      height: getProportionateScreenHeight(300),
                       child: FutureBuilder<List<Community>>(
                         future: trendingCommu,
                         builder: (BuildContext context, AsyncSnapshot<List<Community>> snapshot){
@@ -208,7 +209,7 @@ class _CommuPageState extends State<CommuPage> {
                               itemCount: (snapshot.data!.length <= 5) ? snapshot.data!.length : 5,
                               scrollDirection: Axis.horizontal,
                               separatorBuilder: (BuildContext context, int index) { 
-                                return const SizedBox(width: 15); 
+                                return SizedBox(width: getProportionateScreenWidth(15)); 
                               },
                               itemBuilder: (BuildContext context, int index) {
                                 var contained = searchCommunity(snapshot.data![index], searchString);
@@ -220,14 +221,14 @@ class _CommuPageState extends State<CommuPage> {
                                     ),
                                     child: InkWell(
                                       child: SizedBox(
-                                        width: 300,
+                                        width: getProportionateScreenWidth(280),
                                         child: Column(
                                           crossAxisAlignment: CrossAxisAlignment.start,
                                           children: [
 
                                             Ink.image(
                                               image: NetworkImage(snapshot.data![index].thumbnail),
-                                              height: 150,
+                                              height: getProportionateScreenHeight(170),
                                               fit: BoxFit.cover,
                                             ),
 
@@ -235,8 +236,8 @@ class _CommuPageState extends State<CommuPage> {
                                               padding: const EdgeInsets.all(10.0),
                                               child: Text(snapshot.data![index].name,
                                                 overflow: TextOverflow.ellipsis,
-                                                style: const TextStyle(
-                                                  fontSize: 25.0,
+                                                style: TextStyle(
+                                                  fontSize: getProportionateScreenWidth(23),
                                                   fontWeight: FontWeight.bold,
                                                 ),
                                               ),
@@ -246,8 +247,8 @@ class _CommuPageState extends State<CommuPage> {
                                               padding: const EdgeInsets.symmetric(horizontal: 10),
                                               child: Text(snapshot.data![index].shortdesc,
                                                 overflow: TextOverflow.ellipsis,
-                                                style: const TextStyle(
-                                                  fontSize: 15.0,
+                                                style: TextStyle(
+                                                  fontSize: getProportionateScreenWidth(13),
                                                   color: Colors.black,
                                                 ),
                                               ),
@@ -259,8 +260,8 @@ class _CommuPageState extends State<CommuPage> {
                                               padding: const EdgeInsets.symmetric(horizontal: 10),
                                               child: Text("Members : ${snapshot.data![index].memberAmount.toString()}",
                                                 overflow: TextOverflow.ellipsis,
-                                                style: const TextStyle(
-                                                  fontSize: 15.0,
+                                                style: TextStyle(
+                                                  fontSize: getProportionateScreenWidth(13),
                                                   color: Colors.black,
                                                 ),
                                               ),
@@ -296,8 +297,8 @@ class _CommuPageState extends State<CommuPage> {
                       padding: const EdgeInsets.all(10.0),
                       child: Row(
                         children: [
-                          const Text("Newest Community",
-                            style: TextStyle(fontWeight: FontWeight.bold, color: Colors.red, fontSize: 22),
+                          Text("Newest Community",
+                            style: TextStyle(fontWeight: FontWeight.bold, color: Colors.red, fontSize: getProportionateScreenWidth(22)),
                           ),
                           const Spacer(),
                           TextButton(
@@ -319,7 +320,7 @@ class _CommuPageState extends State<CommuPage> {
                     ),
 
                     SizedBox(
-                      height: 270,
+                      height: getProportionateScreenHeight(300),
                       child: FutureBuilder<List<Community>>(
                         future: newestCommu,
                         builder: (BuildContext context, AsyncSnapshot<List<Community>> snapshot){
@@ -329,7 +330,7 @@ class _CommuPageState extends State<CommuPage> {
                               itemCount: (snapshot.data!.length <= 5) ? snapshot.data!.length : 5,
                               scrollDirection: Axis.horizontal,
                               separatorBuilder: (BuildContext context, int index) { 
-                                return const SizedBox(width: 15); 
+                                return SizedBox(width: getProportionateScreenWidth(15)); 
                               },
                               itemBuilder: (BuildContext context, int index) {
                                 var contained = searchCommunity(snapshot.data![index], searchString);
@@ -341,14 +342,14 @@ class _CommuPageState extends State<CommuPage> {
                                     ),
                                     child: InkWell(
                                       child: SizedBox(
-                                        width: 300,
+                                        width: getProportionateScreenWidth(280),
                                         child: Column(
                                           crossAxisAlignment: CrossAxisAlignment.start,
                                           children: [
 
                                             Ink.image(
                                               image: NetworkImage(snapshot.data![index].thumbnail),
-                                              height: 150,
+                                              height: getProportionateScreenHeight(170),
                                               fit: BoxFit.cover,
                                             ),
 
@@ -356,8 +357,8 @@ class _CommuPageState extends State<CommuPage> {
                                               padding: const EdgeInsets.all(10.0),
                                               child: Text(snapshot.data![index].name,
                                                 overflow: TextOverflow.ellipsis,
-                                                style: const TextStyle(
-                                                  fontSize: 25.0,
+                                                style: TextStyle(
+                                                  fontSize: getProportionateScreenWidth(23),
                                                   fontWeight: FontWeight.bold,
                                                 ),
                                               ),
@@ -367,8 +368,8 @@ class _CommuPageState extends State<CommuPage> {
                                               padding: const EdgeInsets.symmetric(horizontal: 10),
                                               child: Text(snapshot.data![index].shortdesc,
                                                 overflow: TextOverflow.ellipsis,
-                                                style: const TextStyle(
-                                                  fontSize: 15.0,
+                                                style: TextStyle(
+                                                  fontSize: getProportionateScreenWidth(13),
                                                   color: Colors.black,
                                                 ),
                                               ),
@@ -380,8 +381,8 @@ class _CommuPageState extends State<CommuPage> {
                                               padding: const EdgeInsets.symmetric(horizontal: 10),
                                               child: Text("Members : ${snapshot.data![index].memberAmount.toString()}",
                                                 overflow: TextOverflow.ellipsis,
-                                                style: const TextStyle(
-                                                  fontSize: 15.0,
+                                                style: TextStyle(
+                                                  fontSize: getProportionateScreenWidth(13),
                                                   color: Colors.black,
                                                 ),
                                               ),
@@ -412,7 +413,7 @@ class _CommuPageState extends State<CommuPage> {
                         },
                       ),
                     ),
-                    const SizedBox(height: 20),
+                    SizedBox(height: getProportionateScreenHeight(20)),
                   ],
                 ),
               ),
