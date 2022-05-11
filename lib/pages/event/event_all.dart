@@ -201,6 +201,7 @@ class _EventAllPageState extends State<EventAllPage> {
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(20)
                         ),
+                        color: Colors.grey[50],
                         child: InkWell(
                           // padding: const EdgeInsets.all(20.0),
                           child: SizedBox(
