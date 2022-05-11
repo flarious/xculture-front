@@ -356,7 +356,7 @@ class _RoomPageState extends State<RoomPage> {
                                             }
                                           }
                                           else {
-                                            Fluttertoast.showToast(msg: "You need a name to create a room");
+                                            Fluttertoast.showToast(msg: "Only members can create room");
                                           }
                                         }, 
                                         icon: const Icon(Icons.done),
