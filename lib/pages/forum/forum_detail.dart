@@ -318,7 +318,11 @@ class _ForumDetailPageState extends State<ForumDetailPage> {
                                 padding: const EdgeInsets.symmetric(vertical: 5.0),
                                 child: Row(
                                   children: [
-                                    const Icon(Icons.account_circle),
+                                    CircleAvatar(
+                                      radius: 20,
+                                      backgroundImage: snapshot.data!.incognito == true ? const AssetImage("assets/images/User_icon.jpg") :
+                                        snapshot.data!.author.profilePic == "" ? const AssetImage("assets/images/User_icon.jpg") : NetworkImage(snapshot.data!.author.profilePic) as ImageProvider,
+                                    ),
                                     const SizedBox(width: 5),
                                     (snapshot.data!.incognito == false) ? Text(snapshot.data!.author.name) : const Text("Author")
                                   ],
@@ -476,7 +480,8 @@ class _ForumDetailPageState extends State<ForumDetailPage> {
                                             ListTile(
                                               leading: CircleAvatar(
                                                 radius: 20,
-                                                backgroundImage: snapshot.data!.comments[index].author.profilePic == "" ? const AssetImage("assets/images/User_icon.jpg") : NetworkImage(snapshot.data!.comments[index].author.profilePic) as ImageProvider,
+                                                backgroundImage: snapshot.data!.comments[index].incognito == true ? const AssetImage("assets/images/User_icon.jpg") :
+                                                        snapshot.data!.comments[index].author.profilePic == "" ? const AssetImage("assets/images/User_icon.jpg") : NetworkImage(snapshot.data!.comments[index].author.profilePic) as ImageProvider,
                                               ),
                                               title: Row(
                                                 children: [
@@ -699,7 +704,8 @@ class _ForumDetailPageState extends State<ForumDetailPage> {
                                                     ListTile(
                                                       leading: CircleAvatar(
                                                         radius: 20,
-                                                        backgroundImage: snapshot.data!.comments[index].replies[index2].author.profilePic == "" ? const AssetImage("assets/images/User_icon.jpg") : NetworkImage(snapshot.data!.comments[index].replies[index2].author.profilePic) as ImageProvider,
+                                                        backgroundImage: snapshot.data!.comments[index].replies[index2].incognito == true ? const AssetImage("assets/images/User_icon.jpg") :
+                                                        snapshot.data!.comments[index].replies[index2].author.profilePic == "" ? const AssetImage("assets/images/User_icon.jpg") : NetworkImage(snapshot.data!.comments[index].replies[index2].author.profilePic) as ImageProvider,
                                                       ),
                                                       title: Row(
                                                         children: [
