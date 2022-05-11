@@ -87,18 +87,19 @@ class _FilterPageState extends State<FilterPage> {
                               itemCount: args.commu.questions.length,
                               itemBuilder: (context, index) {
                                 return Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     //Question
                                     Padding(
                                       padding: const EdgeInsets.symmetric(vertical: 10.0),
                                       child: Text(args.commu.questions[index].question,
-                                        style: TextStyle(fontWeight: FontWeight.bold),
+                                        style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
                                       ),
                                     ),
                                     Padding(
                                       padding: const EdgeInsets.symmetric(vertical: 10.0),
                                       child: Text(snapshot.data![index].answer,
-                                        style: TextStyle(fontWeight: FontWeight.bold),
+                                        style: TextStyle(fontSize: 18),
                                       ),
                                     ),
                                     const SizedBox(height: 40),
