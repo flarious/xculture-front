@@ -16,6 +16,7 @@ import 'package:xculturetestapi/pages/event/eventdetail_page.dart';
 import 'package:xculturetestapi/pages/community/commudetail_page.dart';
 import 'package:xculturetestapi/widgets/guesthamburger_widget.dart';
 
+import '../../size_config.dart';
 import '../../widgets/hamburger_widget.dart';
 
 
@@ -83,24 +84,24 @@ class _SearchPageState extends State<SearchPage> {
 
             //Post Forum text
             Container(
-              margin: const EdgeInsets.only(right: 0, left: 0),
-              height: 300,
+              //margin: const EdgeInsets.only(right: 0, left: 0),
+              height: getProportionateScreenHeight(300),
               color: Colors.red,
               child: Center(
                 child: Column(
                   children: [
 
-                    const SizedBox(height: 30),
+                    SizedBox(height: getProportionateScreenHeight(30)),
 
-                    const Text("Explore", 
-                      style: TextStyle(fontSize: 40, fontWeight: FontWeight.bold, color: Colors.white),
+                    Text("Explore", 
+                      style: TextStyle(fontSize: getProportionateScreenWidth(40), fontWeight: FontWeight.bold, color: Colors.white),
                     ),
 
-                    const SizedBox(height: 10),
+                    SizedBox(height: getProportionateScreenHeight(10)),
 
                     Container (                                  
-                      height: 40,
-                      width: 350,
+                      height: getProportionateScreenHeight(40),
+                      width: getProportionateScreenWidth(330),
                       // margin: const EdgeInsets.only(top: 50, left: 20, right: 20, bottom: 0),
                       //margin: const EdgeInsets.only(top: 100),
                       alignment: Alignment.centerLeft,
@@ -160,7 +161,7 @@ class _SearchPageState extends State<SearchPage> {
       
             // Content
             Container(          
-              margin: const EdgeInsets.only(top: 160, left: 0, right: 0, bottom: 0),
+              margin: EdgeInsets.only(top: getProportionateScreenHeight(180)),
               child: Container(
                 width: MediaQuery.of(context).size.width,
                 decoration: const BoxDecoration(

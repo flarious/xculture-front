@@ -336,29 +336,25 @@ class _RoomPageState extends State<RoomPage> {
                                         color: Colors.red,
                                         splashRadius: 20,
                                       ),
-                                      Material(
-                                        color: Colors.white,
-                                        child: IconButton(
-                                          onPressed: () async {
-                                            if (_roomName.text != "") {
-                                              if (AuthHelper.checkAuth() && commu.members.any((member) => member.member.id == AuthHelper.auth.currentUser!.uid)) {
-                                                var success = await sendRoomDetail(commu.id, _roomName.text); 
-                                                if (success) {
-                                                  Fluttertoast.showToast(msg: "Your room has been created.");
-                                                  setState(() {
-                                                    isPost = !isPost;
-                                                  });
-                                                }
-                                              }
-                                              else {
-                                                Fluttertoast.showToast(msg: "Only members can create room");
+                                    ),
+                                    Material(
+                                      color: Colors.white,
+                                      child: IconButton(
+                                        onPressed: () async {
+                                          if (_roomName.text != "") {
+                                            if (AuthHelper.checkAuth() && commu.members.any((member) => member.member.id == AuthHelper.auth.currentUser!.uid)) {
+                                              var success = await sendRoomDetail(commu.id, _roomName.text); 
+                                              if (success) {
+                                                Fluttertoast.showToast(msg: "Your room has been created.");
+                                                setState(() {
+                                                  isPost = !isPost;
+                                                });
                                               }
                                             }
                                             else {
                                               Fluttertoast.showToast(msg: "Only members can create room");
                                             }
-                                            
-                                          } 
+                                          }
                                           else {
                                             Fluttertoast.showToast(msg: "You need a name to create a room");
                                           }
