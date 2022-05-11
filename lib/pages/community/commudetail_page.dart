@@ -417,7 +417,7 @@ class _CommuDetailPageState extends State<CommuDetailPage> {
                                   width: double.infinity,
                                   height: 50,
                                   child: Center(
-                                    child: Text("Join community")
+                                    child: Text("Join Community")
                                   ),
                                 ),
                               ),

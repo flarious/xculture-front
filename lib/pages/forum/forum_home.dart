@@ -220,6 +220,7 @@ class _ForumPageState extends State<ForumPage> {
                                     shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(20)
                                     ),
+                                    color: Colors.grey[50],
                                     child: InkWell(
                                       child: SizedBox(
                                         width: 300,
@@ -342,6 +343,7 @@ class _ForumPageState extends State<ForumPage> {
                                     shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(20)
                                     ),
+                                    color: Colors.grey[50],
                                     child: InkWell(
                                       child: SizedBox(
                                         width: 300,
