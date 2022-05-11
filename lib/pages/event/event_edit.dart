@@ -88,7 +88,7 @@ class _EditEventPageState extends State<EditEventPage>{
                   color: Colors.transparent,
                   borderRadius: BorderRadius.circular(0)
               ),
-              child: Flexible(
+              child: Container(
                 child: Image.file(
                   image!,
                   width: 200,

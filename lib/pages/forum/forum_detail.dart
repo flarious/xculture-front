@@ -476,7 +476,7 @@ class _ForumDetailPageState extends State<ForumDetailPage> {
                                             ListTile(
                                               leading: CircleAvatar(
                                                 radius: 20,
-                                                backgroundImage: snapshot.data!.comments[index].author.profilePic == "" ? const AssetImage("assets/images/User_icon.jpg") : NetworkImage(snapshot.data!.author.profilePic) as ImageProvider,
+                                                backgroundImage: snapshot.data!.comments[index].author.profilePic == "" ? const AssetImage("assets/images/User_icon.jpg") : NetworkImage(snapshot.data!.comments[index].author.profilePic) as ImageProvider,
                                               ),
                                               title: Row(
                                                 children: [
@@ -568,18 +568,23 @@ class _ForumDetailPageState extends State<ForumDetailPage> {
                                                   ),
                                                   onPressed: () {
                                                     setState(() {
-                                                      Navigator.push(
-                                                        context,
-                                                        MaterialPageRoute(
-                                                          builder: (context) => const EditCommentPage(),
-                                                          settings: RouteSettings(
-                                                            arguments: EditCommentArguments(
-                                                              forumID: snapshot.data!.id, 
-                                                              comment: snapshot.data!.comments[index]
-                                                            ),
+                                                      if (AuthHelper.checkAuth() && snapshot.data!.comments[index].author.id == AuthHelper.auth.currentUser!.uid) {
+                                                        Navigator.push(
+                                                          context,
+                                                          MaterialPageRoute(
+                                                            builder: (context) => const EditCommentPage(),
+                                                            settings: RouteSettings(
+                                                              arguments: EditCommentArguments(
+                                                                forumID: snapshot.data!.id, 
+                                                                comment: snapshot.data!.comments[index]
+                                                              ),
+                                                            )
                                                           )
-                                                        )
-                                                      ).then(refreshPage);
+                                                        ).then(refreshPage);
+                                                      }
+                                                      else {
+                                                        Fluttertoast.showToast(msg: "Only owner can edit this comment");
+                                                      }
                                                     });
                                                   },
                                                 ),
@@ -694,7 +699,7 @@ class _ForumDetailPageState extends State<ForumDetailPage> {
                                                     ListTile(
                                                       leading: CircleAvatar(
                                                         radius: 20,
-                                                        backgroundImage: snapshot.data!.comments[index].replies[index2].author.profilePic == "" ? const AssetImage("assets/images/User_icon.jpg") : NetworkImage(snapshot.data!.author.profilePic) as ImageProvider,
+                                                        backgroundImage: snapshot.data!.comments[index].replies[index2].author.profilePic == "" ? const AssetImage("assets/images/User_icon.jpg") : NetworkImage(snapshot.data!.comments[index].replies[index2].author.profilePic) as ImageProvider,
                                                       ),
                                                       title: Row(
                                                         children: [
@@ -756,19 +761,24 @@ class _ForumDetailPageState extends State<ForumDetailPage> {
                                                           ),
                                                           onPressed: () {
                                                             setState(() {
-                                                              Navigator.push(
-                                                                context,
-                                                                MaterialPageRoute(
-                                                                  builder: (context) => const EditReplyPage(),
-                                                                  settings: RouteSettings(
-                                                                    arguments: EditReplyArguments(
-                                                                      forumID: snapshot.data!.id, 
-                                                                      commentID: snapshot.data!.comments[index].id,
-                                                                      reply: snapshot.data!.comments[index].replies[index2]
-                                                                    ),
+                                                              if (AuthHelper.checkAuth() && snapshot.data!.comments[index].replies[index2].author.id == AuthHelper.auth.currentUser!.uid) {
+                                                                Navigator.push(
+                                                                  context,
+                                                                  MaterialPageRoute(
+                                                                    builder: (context) => const EditReplyPage(),
+                                                                    settings: RouteSettings(
+                                                                      arguments: EditReplyArguments(
+                                                                        forumID: snapshot.data!.id, 
+                                                                        commentID: snapshot.data!.comments[index].id,
+                                                                        reply: snapshot.data!.comments[index].replies[index2]
+                                                                      ),
+                                                                    )
                                                                   )
-                                                                )
-                                                              ).then(refreshPage);
+                                                                ).then(refreshPage);
+                                                              }
+                                                              else {
+                                                                Fluttertoast.showToast(msg: "Only owner can edit this reply");
+                                                              }
                                                             });
                                                           },
                                                         ),

@@ -100,12 +100,13 @@ class _QuestionPageState extends State<QuestionPage> {
                             itemCount: commuDetail.questions.length,
                             itemBuilder: (context, index) {
                               return Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   //Question
                                   Padding(
                                     padding: const EdgeInsets.symmetric(vertical: 10.0),
                                     child: Text(commuDetail.questions[index].question,
-                                      style: TextStyle(fontWeight: FontWeight.bold),
+                                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
                                     ),
                                   ),
 

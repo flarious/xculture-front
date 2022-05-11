@@ -343,7 +343,7 @@ class _RoomPageState extends State<RoomPage> {
                                               if (AuthHelper.checkAuth() && commu.members.any((member) => member.member.id == AuthHelper.auth.currentUser!.uid)) {
                                                 var success = await sendRoomDetail(commu.id, _roomName.text); 
                                                 if (success) {
-                                                  Fluttertoast.showToast(msg: "Your community have been created.");
+                                                  Fluttertoast.showToast(msg: "Your room has been created.");
                                                   setState(() {
                                                     isPost = !isPost;
                                                   });

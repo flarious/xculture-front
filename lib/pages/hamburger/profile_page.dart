@@ -280,10 +280,19 @@ class _ProfilePageState extends State<ProfilePage> with TickerProviderStateMixin
                                     ),
 
                                     const SizedBox(height: 20),
+
+                                    Text(
+                                      snapshot.data!.bio.toString(),
+                                      style: TextStyle(
+                                        fontSize: 16,
+                                      ),
+                                    ),
+
+                                    const SizedBox(height: 20),
                                     
                                     // Tags
                                     const Text(
-                                      "Interest tag : ",
+                                      "Interested tags : ",
                                       style: TextStyle(
                                         fontWeight: FontWeight.bold,
                                         fontSize: 16,
@@ -303,24 +312,36 @@ class _ProfilePageState extends State<ProfilePage> with TickerProviderStateMixin
                                       ),
                                     ),
 
-                                    Row(
-                                      children: [
-                                        Text(
-                                          "Bio : ",
-                                          style: TextStyle(
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 16,
-                                          ),
-                                        ),
+                                    // Text(
+                                    //   "Bio : ",
+                                    //   style: TextStyle(
+                                    //     fontWeight: FontWeight.bold,
+                                    //     fontSize: 16,
+                                    //   ),
+                                    // ),
 
-                                        Text(
-                                          snapshot.data!.bio.toString(),
-                                          style: TextStyle(
-                                            fontSize: 16,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
+                                    
+
+                                    // Row(
+                                    //   children: [
+                                    //     Text(
+                                    //       "Bio : ",
+                                    //       style: TextStyle(
+                                    //         fontWeight: FontWeight.bold,
+                                    //         fontSize: 16,
+                                    //       ),
+                                    //     ),
+
+                                    //     Expanded(
+                                    //       child: Text(
+                                    //         snapshot.data!.bio.toString(),
+                                    //         style: TextStyle(
+                                    //           fontSize: 16,
+                                    //         ),
+                                    //       ),
+                                    //     ),
+                                    //   ],
+                                    // ),
                                     
                                     // // Bio
                                     // RichText(

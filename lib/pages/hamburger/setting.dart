@@ -121,39 +121,39 @@ class _SettingsPageState extends State<SettingsPage> {
                       ),
                       buildAccountOptionRow1(context, "Edit Profile"),
                       buildAccountOptionRow2(context, "Change Password"),
-                      buildNotificationOptionRow("Recommended System", valNotify5, onChangeFunction5),
+                      // buildNotificationOptionRow("Recommended System", valNotify5, onChangeFunction5),
                       SizedBox(
                         height: 40,
                       ),
-                      Row(
-                        children: [
-                          Icon(
-                            Icons.volume_up,
-                            color: Colors.red,
-                          ),
-                          SizedBox(
-                            width: 8,
-                          ),
-                          Text(
-                            "Notifications",
-                            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                          ),
-                        ],
-                      ),
-                      Divider(
-                        height: 15,
-                        thickness: 2,
-                      ),
-                      SizedBox(
-                        height: 10,
-                      ),
-                      buildNotificationOptionRow("Comments/Replys", valNotify1,onChangeFunction1),
-                      buildNotificationOptionRow("Community", valNotify2,onChangeFunction2),
-                      buildNotificationOptionRow("Event", valNotify3,onChangeFunction3),
-                      buildNotificationOptionRow("Report", valNotify4, onChangeFunction4),
-                      SizedBox(
-                        height: 50,
-                      ),
+                      // Row(
+                      //   children: [
+                      //     Icon(
+                      //       Icons.volume_up,
+                      //       color: Colors.red,
+                      //     ),
+                      //     SizedBox(
+                      //       width: 8,
+                      //     ),
+                      //     Text(
+                      //       "Notifications",
+                      //       style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                      //     ),
+                      //   ],
+                      // ),
+                      // Divider(
+                      //   height: 15,
+                      //   thickness: 2,
+                      // ),
+                      // SizedBox(
+                      //   height: 10,
+                      // ),
+                      // buildNotificationOptionRow("Comments/Replies", valNotify1,onChangeFunction1),
+                      // buildNotificationOptionRow("Community", valNotify2,onChangeFunction2),
+                      // buildNotificationOptionRow("Event", valNotify3,onChangeFunction3),
+                      // buildNotificationOptionRow("Report", valNotify4, onChangeFunction4),
+                      // SizedBox(
+                      //   height: 50,
+                      // ),
                     ],
                   ),
                 )
